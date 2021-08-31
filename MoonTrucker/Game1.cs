@@ -9,6 +9,8 @@ namespace MoonTrucker
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        // I hate M$
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
