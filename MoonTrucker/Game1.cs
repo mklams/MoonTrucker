@@ -6,13 +6,18 @@ namespace MoonTrucker
 {
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+        private GameContent gameContent;
+
+        private Car car;
+        private int screenWidth = 0;
+        private int screenHeight = 0;
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content/GameAssets";
             IsMouseVisible = true;
         }
 
@@ -25,9 +30,33 @@ namespace MoonTrucker
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            gameContent = new GameContent(Content);
+            screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+            //set game to 502x700 or screen max if smaller
+            if (screenWidth >= 502)
+            {
+                screenWidth = 502;
+            }
+            if (screenHeight >= 700)
+            {
+                screenHeight = 700;
+            }
+            graphics.PreferredBackBufferWidth = screenWidth;
+            graphics.PreferredBackBufferHeight = screenHeight;
+            graphics.ApplyChanges();
+
+            //create game objects
+            int carX = (screenWidth - gameContent.ImgViperCar.Width) / 2;
+            //we'll center the paddle on the screen to start
+            int carY = screenHeight - 300;  //paddle will be 100 pixels from the bottom of the screen
+            car = new Car(carX, carY, screenWidth, spriteBatch, gameContent);  // create the game paddle
+
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -45,6 +74,9 @@ namespace MoonTrucker
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            car.Draw();
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
