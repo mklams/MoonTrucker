@@ -13,6 +13,7 @@ namespace MoonTrucker
         private Car car;
         private int screenWidth = 0;
         private int screenHeight = 0;
+        private KeyboardState oldKeyboardState;
 
         public Game1()
         {
@@ -54,7 +55,7 @@ namespace MoonTrucker
             int carX = (screenWidth - gameContent.ImgViperCar.Width) / 2;
             //we'll center the paddle on the screen to start
             int carY = screenHeight - 300;  //paddle will be 100 pixels from the bottom of the screen
-            car = new Car(carX, carY, screenWidth, spriteBatch, gameContent);  // create the game paddle
+            car = new Car(carX, carY, screenWidth, screenHeight, spriteBatch, gameContent);  // create the game paddle
 
 
         }
@@ -65,6 +66,18 @@ namespace MoonTrucker
                 Exit();
 
             // TODO: Add your update logic here
+            KeyboardState newKeyboardState = Keyboard.GetState();
+
+            if (newKeyboardState.IsKeyDown(Keys.Up))
+            {
+                car.MoveUp();
+            }
+            if (newKeyboardState.IsKeyDown(Keys.Down))
+            {
+                car.MoveDown();
+            }
+
+            oldKeyboardState = newKeyboardState;
 
             base.Update(gameTime);
         }
