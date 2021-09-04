@@ -4,18 +4,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MoonTrucker
 {
-    public class Game1 : Game
+    public class MoonTruckerGame : Game
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private GameContent gameContent;
 
-        private Vehicle car;
+        private Vehicle truck;
         private int screenWidth = 0;
         private int screenHeight = 0;
         private KeyboardState oldKeyboardState;
 
-        public Game1()
+        public MoonTruckerGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content/GameAssets";
@@ -55,9 +55,7 @@ namespace MoonTrucker
             int carX = (screenWidth - gameContent.ImgViperCar.Width) / 2;
             //we'll center the paddle on the screen to start
             int carY = screenHeight - 300;  //paddle will be 100 pixels from the bottom of the screen
-            car = new Vehicle(new TruckSprite(gameContent), carX, carY, screenWidth, screenHeight, spriteBatch);  // create the game paddle
-
-
+            truck = new Vehicle(new TruckSprite(gameContent, spriteBatch), carX, carY, screenWidth, screenHeight);  // create the game paddle
         }
 
         protected override void Update(GameTime gameTime)
@@ -70,11 +68,11 @@ namespace MoonTrucker
 
             if (newKeyboardState.IsKeyDown(Keys.Up))
             {
-                car.MoveUp();
+                truck.MoveUp();
             }
             if (newKeyboardState.IsKeyDown(Keys.Down))
             {
-                car.MoveDown();
+                truck.MoveDown();
             }
 
             oldKeyboardState = newKeyboardState;
@@ -84,11 +82,11 @@ namespace MoonTrucker
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.WhiteSmoke);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
-            car.Draw();
+            truck.Draw();
             spriteBatch.End();
 
             base.Draw(gameTime);

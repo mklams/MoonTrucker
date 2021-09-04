@@ -8,33 +8,25 @@ namespace MoonTrucker
 {
     public class Vehicle
     {
-        public float X { get; set; } //x position of paddle on screen
-        public float Y { get; set; } //y position of paddle on screen
-        public float Width { get; set; } //width of paddle
-        public float Height { get; set; } //height of paddle
-        public float ScreenWidth { get; set; } //width of game screen
-        public float ScreenHeight { get; set; } //height of game screen
+        public float X { get; set; } 
+        public float Y { get; set; } 
+        public float ScreenWidth { get; set; } 
+        public float ScreenHeight { get; set; } 
 
-        private Texture2D sprite { get; set; }
-        private float imgScale { get; set; }
-        private SpriteBatch spriteBatch { get; set; }
+        private Sprite sprite { get; set; }
 
-        public Vehicle(Sprite vehicleSprite, float x, float y, float screenWidth, float screenHeight, SpriteBatch spriteBatch)
+        public Vehicle(Sprite vehicleSprite, float x, float y, float screenWidth, float screenHeight)
         {
             X = x;
             Y = y;
-            sprite = vehicleSprite.Image;
-            imgScale = vehicleSprite.ImageScale;
-            Width = vehicleSprite.Width;
-            Height = vehicleSprite.Height;
-            this.spriteBatch = spriteBatch;
+            sprite = vehicleSprite;
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
         }
 
         public void Draw()
         {
-            spriteBatch.Draw(sprite, new Vector2(X, Y), null, Color.White, 0, new Vector2(0, 0), imgScale, SpriteEffects.None, 0);
+            sprite.Draw(X, Y);
         }
 
         public void MoveUp()
@@ -48,9 +40,9 @@ namespace MoonTrucker
         public void MoveDown()
         {
             Y = Y + 5;
-            if ((Y + Height) > ScreenHeight)
+            if ((Y + sprite.Height) > ScreenHeight)
             {
-                Y = ScreenHeight - Height;
+                Y = ScreenHeight - sprite.Height;
             }
         }
 
@@ -58,13 +50,13 @@ namespace MoonTrucker
         {
             if (x >= 0)
             {
-                if (x < ScreenHeight - Height)
+                if (x < ScreenHeight - sprite.Height)
                 {
                     X = x;
                 }
                 else
                 {
-                    X = ScreenHeight - Height;
+                    X = ScreenHeight - sprite.Height;
                 }
             }
             else
