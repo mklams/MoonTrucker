@@ -8,64 +8,75 @@ namespace MoonTrucker
 {
     public class Vehicle
     {
-        public float X { get; private set; } 
-        public float Y { get; private set; }
         private readonly float _screenWidth;
         private readonly float _screenHeight;
 
+        public Vector2 _origin;
+        private Vector2 _position;
+        private Vector2 _direction => new Vector2((float)Math.Cos(_angle), (float)Math.Sin(_angle));
+        private float _speed = 5f;
+        private float _angle = 0;
+
+        private const float _rotationVelocity = 3f;
+        private const float _linearVelocity = 4f;
+
         private Sprite _sprite { get; set; }
 
-        public Vehicle(Sprite vehicleSprite, float x, float y, float screenWidth, float screenHeight)
+        public Vehicle(Sprite vehicleSprite, Vector2 position, float screenWidth, float screenHeight)
         {
             _sprite = vehicleSprite;
-            X = x;
-            Y = y;
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
+            _position = position;
         }
 
         public void Draw()
         {
-            _sprite.Draw(X, Y);
+            _sprite.Draw(_position, _angle);
         }
 
-        public void MoveUp()
+        public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)
         {
-            Y = Y - 5;
-            if (Y < 1)
+            // TODO: Maybe move it's own class that Vehicle implemnts(e.g. IDrivable)
+            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                Y = 1;
+                moveForward();
             }
-        }
-        public void MoveDown()
-        {
-            Y = Y + 5;
-            if ((Y + _sprite.Height) > _screenHeight)
+            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
-                Y = _screenHeight - _sprite.Height;
+                moveBack();
             }
+
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
+            {
+                turnLeft();
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+            {
+                turnRight();
+            }
+
+            _position = Vector2.Clamp(_position, new Vector2(0, 0), new Vector2(_screenWidth, _screenHeight));
         }
 
-        public void MoveTo(float x)
+        private void moveForward()
         {
-            if (x >= 0)
-            {
-                if (x < _screenHeight - _sprite.Height)
-                {
-                    X = x;
-                }
-                else
-                {
-                    X = _screenHeight - _sprite.Height;
-                }
-            }
-            else
-            {
-                if (x < 0)
-                {
-                    X = 0;
-                }
-            }
+            _position += _direction * _linearVelocity;
+        }
+        private void moveBack()
+        {
+            _position -= _direction * _linearVelocity;
+        }
+
+        private void turnLeft()
+        {
+            _angle -= MathHelper.ToRadians(_rotationVelocity);
+        }
+
+        private void turnRight()
+        {
+            _angle += MathHelper.ToRadians(_rotationVelocity);
         }
     }
 }

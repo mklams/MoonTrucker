@@ -11,8 +11,8 @@ namespace MoonTrucker
         private GameContent _gameContent;
 
         private Vehicle _truck;
-        private int _screenWidth = 0;
-        private int _screenHeight = 0;
+        private int _screenWidth = 1004;
+        private int _screenHeight = 700;
         private KeyboardState _oldKeyboardState;
 
         public MoonTruckerGame()
@@ -24,21 +24,17 @@ namespace MoonTrucker
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
             _gameContent = new GameContent(Content);
             _screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
-            //set game to 502x700 or screen max if smaller
+            //set game to 1004x700 or screen max if smaller
             if (_screenWidth >= 1004)
             {
                 _screenWidth = 1004;
@@ -52,28 +48,17 @@ namespace MoonTrucker
             _graphics.ApplyChanges();
 
             //create game objects
-            int carX = (_screenWidth - _gameContent.ImgViperCar.Width) / 2;
-            //we'll center the paddle on the screen to start
-            int carY = _screenHeight - 300;  //paddle will be 100 pixels from the bottom of the screen
-            _truck = new Vehicle(new TruckSprite(_gameContent, _spriteBatch), carX, carY, _screenWidth, _screenHeight);  // create the game paddle
+            _truck = new Vehicle(new TruckSprite(_gameContent, _spriteBatch), new Vector2(50,20), _screenWidth, _screenHeight);  // create the game paddle
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            // TODO: Add your update logic here
+            
             KeyboardState newKeyboardState = Keyboard.GetState();
 
-            if (newKeyboardState.IsKeyDown(Keys.Up))
-            {
-                _truck.MoveUp();
-            }
-            if (newKeyboardState.IsKeyDown(Keys.Down))
-            {
-                _truck.MoveDown();
-            }
+            _truck.UpdateVehicle(newKeyboardState, gameTime);
 
             _oldKeyboardState = newKeyboardState;
 
@@ -84,7 +69,6 @@ namespace MoonTrucker
         {
             GraphicsDevice.Clear(Color.WhiteSmoke);
 
-            // TODO: Add your drawing code here
             _spriteBatch.Begin();
             _truck.Draw();
             _spriteBatch.End();

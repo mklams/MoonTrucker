@@ -22,9 +22,9 @@ namespace MoonTrucker
         public float Height => Image.Height * ImageScale;
         public float Width => Image.Width * ImageScale;
 
-        public void Draw(float x, float y)
+        public void Draw(Vector2 position, float direction)
         {
-            _spriteBatch.Draw(Image, new Vector2(x, y), null, ImageColor, 0, new Vector2(0, 0), ImageScale, SpriteEffects.None, 0);
+            _spriteBatch.Draw(Image, position, null, ImageColor, direction, new Vector2(Image.Width / 2, Image.Height / 2), ImageScale, SpriteEffects.None, 0);
         }
     }
 
