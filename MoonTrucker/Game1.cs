@@ -55,7 +55,7 @@ namespace MoonTrucker
             int carX = (screenWidth - gameContent.ImgViperCar.Width) / 2;
             //we'll center the paddle on the screen to start
             int carY = screenHeight - 300;  //paddle will be 100 pixels from the bottom of the screen
-            car = new Car(carX, carY, screenWidth, screenHeight, spriteBatch, gameContent);  // create the game paddle
+            car = new Car(new TruckSprite(gameContent), carX, carY, screenWidth, screenHeight, spriteBatch);  // create the game paddle
 
 
         }

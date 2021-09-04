@@ -6,6 +6,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MoonTrucker
 {
+
+    public interface CarSprite
+    {
+        Texture2D CarImage { get; set; }
+        float ImageScale { get; set; }
+    }
+
     public class Car
     {
         public float X { get; set; } //x position of paddle on screen
@@ -13,20 +20,20 @@ namespace MoonTrucker
         public float Width { get; set; } //width of paddle
         public float Height { get; set; } //height of paddle
         public float ScreenWidth { get; set; } //width of game screen
-        public float ScreenHeight { get; set; } //width of game screen
+        public float ScreenHeight { get; set; } //height of game screen
 
-        private Texture2D imgViporCar { get; set; }
+        private Texture2D sprite { get; set; }
         private float imgScale { get; set; }
         private SpriteBatch spriteBatch { get; set; }
 
-        public Car(float x, float y, float screenWidth, float screenHeight, SpriteBatch spriteBatch, GameContent gameContent)
+        public Car(TruckSprite carSprite, float x, float y, float screenWidth, float screenHeight, SpriteBatch spriteBatch)
         {
             X = x;
             Y = y;
-            imgViporCar = gameContent.ImgViperCar;
+            sprite = carSprite.Image;
             imgScale = 0.25f;
-            Width = imgViporCar.Width*imgScale;
-            Height = imgViporCar.Height*imgScale;
+            Width = sprite.Width*imgScale;
+            Height = sprite.Height*imgScale;
             this.spriteBatch = spriteBatch;
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
@@ -34,7 +41,7 @@ namespace MoonTrucker
 
         public void Draw()
         {
-            spriteBatch.Draw(imgViporCar, new Vector2(X, Y), null, Color.White, 0, new Vector2(0, 0), imgScale * 1.0f, SpriteEffects.None, 0);
+            spriteBatch.Draw(sprite, new Vector2(X, Y), null, Color.White, 0, new Vector2(0, 0), imgScale * 1.0f, SpriteEffects.None, 0);
         }
 
         public void MoveUp()

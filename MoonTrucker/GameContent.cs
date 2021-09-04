@@ -9,11 +9,13 @@ namespace MoonTrucker
     public class GameContent
     {
         public Texture2D ImgViperCar { get; set; }
+        public Texture2D ImgTruck { get; set; }
 
         public GameContent(ContentManager content)
         {
             //load images
             ImgViperCar = content.Load<Texture2D>("Black_viper");
+            ImgTruck = content.Load<Texture2D>("truck");
         }
     }
 }
