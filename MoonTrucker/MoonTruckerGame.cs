@@ -6,18 +6,18 @@ namespace MoonTrucker
 {
     public class MoonTruckerGame : Game
     {
-        private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
-        private GameContent gameContent;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+        private GameContent _gameContent;
 
-        private Vehicle truck;
-        private int screenWidth = 0;
-        private int screenHeight = 0;
-        private KeyboardState oldKeyboardState;
+        private Vehicle _truck;
+        private int _screenWidth = 0;
+        private int _screenHeight = 0;
+        private KeyboardState _oldKeyboardState;
 
         public MoonTruckerGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content/GameAssets";
             IsMouseVisible = true;
         }
@@ -31,31 +31,31 @@ namespace MoonTrucker
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            gameContent = new GameContent(Content);
-            screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            _gameContent = new GameContent(Content);
+            _screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
             //set game to 502x700 or screen max if smaller
-            if (screenWidth >= 1004)
+            if (_screenWidth >= 1004)
             {
-                screenWidth = 1004;
+                _screenWidth = 1004;
             }
-            if (screenHeight >= 700)
+            if (_screenHeight >= 700)
             {
-                screenHeight = 700;
+                _screenHeight = 700;
             }
-            graphics.PreferredBackBufferWidth = screenWidth;
-            graphics.PreferredBackBufferHeight = screenHeight;
-            graphics.ApplyChanges();
+            _graphics.PreferredBackBufferWidth = _screenWidth;
+            _graphics.PreferredBackBufferHeight = _screenHeight;
+            _graphics.ApplyChanges();
 
             //create game objects
-            int carX = (screenWidth - gameContent.ImgViperCar.Width) / 2;
+            int carX = (_screenWidth - _gameContent.ImgViperCar.Width) / 2;
             //we'll center the paddle on the screen to start
-            int carY = screenHeight - 300;  //paddle will be 100 pixels from the bottom of the screen
-            truck = new Vehicle(new TruckSprite(gameContent, spriteBatch), carX, carY, screenWidth, screenHeight);  // create the game paddle
+            int carY = _screenHeight - 300;  //paddle will be 100 pixels from the bottom of the screen
+            _truck = new Vehicle(new TruckSprite(_gameContent, _spriteBatch), carX, carY, _screenWidth, _screenHeight);  // create the game paddle
         }
 
         protected override void Update(GameTime gameTime)
@@ -68,14 +68,14 @@ namespace MoonTrucker
 
             if (newKeyboardState.IsKeyDown(Keys.Up))
             {
-                truck.MoveUp();
+                _truck.MoveUp();
             }
             if (newKeyboardState.IsKeyDown(Keys.Down))
             {
-                truck.MoveDown();
+                _truck.MoveDown();
             }
 
-            oldKeyboardState = newKeyboardState;
+            _oldKeyboardState = newKeyboardState;
 
             base.Update(gameTime);
         }
@@ -85,9 +85,9 @@ namespace MoonTrucker
             GraphicsDevice.Clear(Color.WhiteSmoke);
 
             // TODO: Add your drawing code here
-            spriteBatch.Begin();
-            truck.Draw();
-            spriteBatch.End();
+            _spriteBatch.Begin();
+            _truck.Draw();
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

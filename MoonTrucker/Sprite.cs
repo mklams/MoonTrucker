@@ -10,13 +10,13 @@ namespace MoonTrucker
         public abstract Texture2D Image { get; }
         public abstract float ImageScale { get; }
         public abstract Color ImageColor { get; }
-        protected GameContent gamecontent;
-        protected SpriteBatch spriteBatch;
+        internal GameContent _gamecontent;
+        internal SpriteBatch _spriteBatch;
 
         public Sprite(GameContent content, SpriteBatch batch)
         {
-            gamecontent = content;
-            spriteBatch = batch;
+            _gamecontent = content;
+            _spriteBatch = batch;
         }
 
         public float Height => Image.Height * ImageScale;
@@ -24,13 +24,13 @@ namespace MoonTrucker
 
         public void Draw(float x, float y)
         {
-            spriteBatch.Draw(Image, new Vector2(x, y), null, ImageColor, 0, new Vector2(0, 0), ImageScale, SpriteEffects.None, 0);
+            _spriteBatch.Draw(Image, new Vector2(x, y), null, ImageColor, 0, new Vector2(0, 0), ImageScale, SpriteEffects.None, 0);
         }
     }
 
     public sealed class TruckSprite : Sprite
     {
-        public override Texture2D Image => gamecontent.ImgTruck;
+        public override Texture2D Image => _gamecontent.ImgTruck;
         public override float ImageScale => 0.25f;
         public override Color ImageColor => Color.MediumPurple;
 
@@ -39,7 +39,7 @@ namespace MoonTrucker
 
     public sealed class CarSprite : Sprite
     {
-        public override Texture2D Image => gamecontent.ImgViperCar;
+        public override Texture2D Image => _gamecontent.ImgViperCar;
         public override float ImageScale => 0.25f;
         public override Color ImageColor => Color.White;
 

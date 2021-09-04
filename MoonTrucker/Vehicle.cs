@@ -8,25 +8,25 @@ namespace MoonTrucker
 {
     public class Vehicle
     {
-        public float X { get; set; } 
-        public float Y { get; set; } 
-        public float ScreenWidth { get; set; } 
-        public float ScreenHeight { get; set; } 
+        public float X { get; private set; } 
+        public float Y { get; private set; }
+        private readonly float _screenWidth;
+        private readonly float _screenHeight;
 
-        private Sprite sprite { get; set; }
+        private Sprite _sprite { get; set; }
 
         public Vehicle(Sprite vehicleSprite, float x, float y, float screenWidth, float screenHeight)
         {
+            _sprite = vehicleSprite;
             X = x;
             Y = y;
-            sprite = vehicleSprite;
-            ScreenWidth = screenWidth;
-            ScreenHeight = screenHeight;
+            _screenWidth = screenWidth;
+            _screenHeight = screenHeight;
         }
 
         public void Draw()
         {
-            sprite.Draw(X, Y);
+            _sprite.Draw(X, Y);
         }
 
         public void MoveUp()
@@ -40,9 +40,9 @@ namespace MoonTrucker
         public void MoveDown()
         {
             Y = Y + 5;
-            if ((Y + sprite.Height) > ScreenHeight)
+            if ((Y + _sprite.Height) > _screenHeight)
             {
-                Y = ScreenHeight - sprite.Height;
+                Y = _screenHeight - _sprite.Height;
             }
         }
 
@@ -50,13 +50,13 @@ namespace MoonTrucker
         {
             if (x >= 0)
             {
-                if (x < ScreenHeight - sprite.Height)
+                if (x < _screenHeight - _sprite.Height)
                 {
                     X = x;
                 }
                 else
                 {
-                    X = ScreenHeight - sprite.Height;
+                    X = _screenHeight - _sprite.Height;
                 }
             }
             else
