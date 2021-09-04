@@ -16,6 +16,7 @@ namespace MoonTrucker
         public float ScreenHeight { get; set; } //width of game screen
 
         private Texture2D imgViporCar { get; set; }
+        private float imgScale { get; set; }
         private SpriteBatch spriteBatch { get; set; }
 
         public Car(float x, float y, float screenWidth, float screenHeight, SpriteBatch spriteBatch, GameContent gameContent)
@@ -23,8 +24,9 @@ namespace MoonTrucker
             X = x;
             Y = y;
             imgViporCar = gameContent.ImgViperCar;
-            Width = imgViporCar.Width;
-            Height = imgViporCar.Height;
+            imgScale = 0.25f;
+            Width = imgViporCar.Width*imgScale;
+            Height = imgViporCar.Height*imgScale;
             this.spriteBatch = spriteBatch;
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
@@ -32,7 +34,7 @@ namespace MoonTrucker
 
         public void Draw()
         {
-            spriteBatch.Draw(imgViporCar, new Vector2(X, Y), null, Color.White, 0, new Vector2(0, 0), 0.25f, SpriteEffects.None, 0);
+            spriteBatch.Draw(imgViporCar, new Vector2(X, Y), null, Color.White, 0, new Vector2(0, 0), imgScale * 1.0f, SpriteEffects.None, 0);
         }
 
         public void MoveUp()
@@ -46,9 +48,9 @@ namespace MoonTrucker
         public void MoveDown()
         {
             Y = Y + 5;
-            if ((Y + Width) > ScreenWidth)
+            if ((Y + Height) > ScreenHeight)
             {
-                Y = ScreenWidth - Width;
+                Y = ScreenHeight - Height;
             }
         }
 
@@ -56,13 +58,13 @@ namespace MoonTrucker
         {
             if (x >= 0)
             {
-                if (x < ScreenWidth - Width)
+                if (x < ScreenHeight - Height)
                 {
                     X = x;
                 }
                 else
                 {
-                    X = ScreenWidth - Width;
+                    X = ScreenHeight - Height;
                 }
             }
             else
