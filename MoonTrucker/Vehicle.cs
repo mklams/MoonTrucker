@@ -6,14 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MoonTrucker
 {
-
-    public interface CarSprite
-    {
-        Texture2D CarImage { get; set; }
-        float ImageScale { get; set; }
-    }
-
-    public class Car
+    public class Vehicle
     {
         public float X { get; set; } //x position of paddle on screen
         public float Y { get; set; } //y position of paddle on screen
@@ -26,14 +19,14 @@ namespace MoonTrucker
         private float imgScale { get; set; }
         private SpriteBatch spriteBatch { get; set; }
 
-        public Car(TruckSprite carSprite, float x, float y, float screenWidth, float screenHeight, SpriteBatch spriteBatch)
+        public Vehicle(Sprite vehicleSprite, float x, float y, float screenWidth, float screenHeight, SpriteBatch spriteBatch)
         {
             X = x;
             Y = y;
-            sprite = carSprite.Image;
-            imgScale = 0.25f;
-            Width = sprite.Width*imgScale;
-            Height = sprite.Height*imgScale;
+            sprite = vehicleSprite.Image;
+            imgScale = vehicleSprite.ImageScale;
+            Width = vehicleSprite.Width;
+            Height = vehicleSprite.Height;
             this.spriteBatch = spriteBatch;
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
@@ -41,7 +34,7 @@ namespace MoonTrucker
 
         public void Draw()
         {
-            spriteBatch.Draw(sprite, new Vector2(X, Y), null, Color.White, 0, new Vector2(0, 0), imgScale * 1.0f, SpriteEffects.None, 0);
+            spriteBatch.Draw(sprite, new Vector2(X, Y), null, Color.White, 0, new Vector2(0, 0), imgScale, SpriteEffects.None, 0);
         }
 
         public void MoveUp()

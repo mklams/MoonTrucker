@@ -5,7 +5,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MoonTrucker
 {
-    public class TruckSprite
+    public abstract class Sprite
+    {
+        public abstract Texture2D Image { get; }
+        public abstract float ImageScale { get; }
+
+        public float Height => Image.Height * ImageScale;
+        public float Width => Image.Width * ImageScale;
+    }
+
+    public sealed class TruckSprite : Sprite
     {
         public TruckSprite(GameContent gameContent)
         {
@@ -13,11 +22,19 @@ namespace MoonTrucker
         }
 
         private GameContent content;
-        public Texture2D Image => content.ImgTruck;
-        public float ImageScale = 0.25f;
+        public override Texture2D Image => content.ImgTruck;
+        public override float ImageScale => 0.25f;
+    }
 
-        public float Height => Image.Height * ImageScale;
-        public float Width => Image.Width * ImageScale;
+    public sealed class CarSprite : Sprite
+    {
+        public CarSprite(GameContent gameContent)
+        {
+            content = gameContent;
+        }
 
+        private GameContent content;
+        public override Texture2D Image => content.ImgViperCar;
+        public override float ImageScale => 0.25f;
     }
 }

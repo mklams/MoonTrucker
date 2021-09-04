@@ -10,7 +10,7 @@ namespace MoonTrucker
         private SpriteBatch spriteBatch;
         private GameContent gameContent;
 
-        private Car car;
+        private Vehicle car;
         private int screenWidth = 0;
         private int screenHeight = 0;
         private KeyboardState oldKeyboardState;
@@ -39,9 +39,9 @@ namespace MoonTrucker
             screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
             //set game to 502x700 or screen max if smaller
-            if (screenWidth >= 502)
+            if (screenWidth >= 1004)
             {
-                screenWidth = 502;
+                screenWidth = 1004;
             }
             if (screenHeight >= 700)
             {
@@ -55,7 +55,7 @@ namespace MoonTrucker
             int carX = (screenWidth - gameContent.ImgViperCar.Width) / 2;
             //we'll center the paddle on the screen to start
             int carY = screenHeight - 300;  //paddle will be 100 pixels from the bottom of the screen
-            car = new Car(new TruckSprite(gameContent), carX, carY, screenWidth, screenHeight, spriteBatch);  // create the game paddle
+            car = new Vehicle(new TruckSprite(gameContent), carX, carY, screenWidth, screenHeight, spriteBatch);  // create the game paddle
 
 
         }
