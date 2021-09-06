@@ -10,7 +10,7 @@ namespace MoonTrucker
         private SpriteBatch _spriteBatch;
         private GameContent _gameContent;
 
-        private VehicleWithMomentum _truck;
+        private Vehicle _truck;
         private int _screenWidth = 1004;
         private int _screenHeight = 700;
         private KeyboardState _oldKeyboardState;
@@ -48,7 +48,7 @@ namespace MoonTrucker
             _graphics.ApplyChanges();
 
             //create game objects
-            _truck = new VehicleWithMomentum(new CarSprite(_gameContent, _spriteBatch), new Vector2(50,20), _screenWidth, _screenHeight);  // create the game paddle
+            _truck = new Vehicle(new TruckSprite(_gameContent, _spriteBatch), new Vector2(50,20), _screenWidth, _screenHeight);  // create the game paddle
         }
 
         protected override void Update(GameTime gameTime)
