@@ -30,6 +30,16 @@ namespace MoonTrucker
             _position = position;
         }
 
+        public float GetHeight()
+        {
+            return _sprite.Height;
+        }
+
+        public float GetWidth()
+        {
+            return _sprite.Width;
+        }
+
         public void Draw()
         {
             _sprite.Draw(_position, _angle);
