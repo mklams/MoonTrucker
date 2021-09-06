@@ -21,9 +21,9 @@ namespace MoonTrucker
         private Sprite _sprite { get; set; }
         private bool _forward;
         private bool _stopped;
-        private const float MAX_SPEED = 3f;
+        private const float MAX_SPEED = 10f;
         private const float MIN_SPEED = .5f;
-        private const float DEGREES_TO_ROTATE = 2f;
+        private const float DEGREES_TO_ROTATE = 5f;
 
         public SpinningIceVehicle(Sprite sprite, Vector2 pos, float screenWidth, float screenHeight)
         {
@@ -38,7 +38,7 @@ namespace MoonTrucker
 
         public void Draw()
         {
-            _sprite.Draw(_position, _angle);
+            _sprite.Draw(_position, MathHelper.ToRadians(_angle));
         }
 
         public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)
