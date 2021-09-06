@@ -10,105 +10,153 @@ namespace MoonTrucker
     {
         private readonly float _screenWidth;
         private readonly float _screenHeight;
-
-        public Vector2 _origin;
+        private Vector2 _velocity;
+        private float _angle => MathHelper.ToRadians((float)Math.Tan(_velocity.Y/_velocity.X));
+        private float _lastAngle;
         private Vector2 _position;
-        private Vector2 _direction => new Vector2((float)Math.Cos(_angle), (float)Math.Sin(_angle));
-        private float _speed = 5f;
-        private float _angle = 0;
-        bool movingForward = true;
-
-        private const float _rotationVelocity = 3f;
-        private const float _linearVelocity = 4f;
-        private const float MAX_SPEED = 30f;
-        private const float MIN_SPEED = 1f;
-
         private Sprite _sprite { get; set; }
+        private bool _forward;
+        private bool _stopped;
+        private const float MAX_SPEED = 10f;
+        private const float MIN_SPEED = 1f;
+        
 
-        public VehicleWithMomentum(Sprite vehicleSprite, Vector2 position, float screenWidth, float screenHeight)
+        public VehicleWithMomentum(Sprite sprite, Vector2 pos, float screenWidth, float screenHeight)
         {
-            _sprite = vehicleSprite;
-            _screenWidth = screenWidth;
+            _position = pos;
+            _velocity = new Vector2(0.001f,0f);
+            _forward = true;
+            _stopped = true;
+            _sprite = sprite;
             _screenHeight = screenHeight;
-            _position = position;
+            _screenWidth = screenWidth;
         }
 
         public void Draw()
         {
-            _sprite.Draw(_position, _angle);
+            var angle = (_stopped)? _lastAngle : _angle;
+            _sprite.Draw(_position, angle);
         }
 
         public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)
         {
-            // TODO: Maybe move it's own class that Vehicle implemnts(e.g. IDrivable)
+            if(!_stopped)
+            {
+                _lastAngle = _angle;
+            }
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                moveForward();
+                handleUpKey();
             }
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
-                moveBack();
+                handleDownKey();
             }
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
-                turnLeft();
+                handleLeftKey();
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-                turnRight();
+                handleRightKey();
             }
-            _speed -= .5f;
-            _position -= _direction * _speed;
-            _position = Vector2.Clamp(_position, new Vector2(0, 0), new Vector2(_screenWidth, _screenHeight));
+            _position += _velocity;
+            _velocity *= .99f;
+            var clampedPos = Vector2.Clamp(_position, new Vector2(0, 0), new Vector2(_screenWidth, _screenHeight));
+            if(clampedPos != _position){
+                _stopped = true;
+                _velocity *= .001f;
+                _position = clampedPos;
+            } 
         }
 
-        private void moveForward()
+        private void handleUpKey()
         {
-            if(movingForward)
+            if(_stopped)
             {
-                _speed += 1f;
-                if(_speed > MAX_SPEED){
-                    _speed = MAX_SPEED;
-                }
+                _stopped = false;
+                _forward = true;
+                var newVel = new Vector2((float)Math.Cos(_lastAngle), (float)Math.Sin(_lastAngle));
+                newVel.Normalize();
+                _velocity = newVel;
+            }
+            else if(_forward)
+            {
+                accelerate();
             }
             else
             {
-                _speed -= 3f;
-                if(_speed < MIN_SPEED){
-                    _speed = 1;
-                    movingForward = false;
-                }
+                decelerate();
             }
         }
-        private void moveBack()
+
+        private void handleDownKey()
         {
-            if(!movingForward)
+            if(_stopped)
             {
-                _speed += 1f;
-                if(_speed > MAX_SPEED){
-                    _speed = MAX_SPEED;
-                }
+                _stopped = false;
+                _forward = false;
+                var newVel = new Vector2((float)Math.Cos(_lastAngle), (float)Math.Sin(_lastAngle));
+                newVel.Normalize();
+                newVel = newVel * -1f;
+                _velocity = newVel;
+            }
+            else if(!_forward){
+                accelerate();
+            }
+            else{
+                decelerate();
+            }
+        }
+
+        private void handleLeftKey(){
+            if(_stopped)
+            {
+                return;
+            }
+            _velocity = this.Rotate(_velocity, -2f);
+        }
+
+        private void handleRightKey(){
+            if(_stopped)
+            {
+                return;
+            }
+            _velocity = this.Rotate(_velocity, 2f);
+        }
+
+        private Vector2 Rotate(Vector2 v, float degrees) {
+         float sin = (float)Math.Sin(MathHelper.ToRadians(degrees));
+         float cos = (float)Math.Cos(MathHelper.ToRadians(degrees));
+         
+         float tx = v.X;
+         float ty = v.Y;
+         Vector2 newVec = new Vector2();
+         newVec.X = (cos * tx) - (sin * ty);
+         newVec.Y = (sin * tx) + (cos * ty);
+         return newVec;
+     }
+
+        private void accelerate()
+        {
+            var newVel = _velocity *= 1.1f;
+            if(newVel.Length() < MAX_SPEED){
+                _velocity = newVel;
+            }
+        }
+
+        private void decelerate()
+        {
+            var newVel = _velocity *= 0.9f;
+            if(newVel.Length() > MIN_SPEED){
+                _velocity = newVel;
             }
             else
             {
-                _speed -= 3f;
-                if(_speed < MIN_SPEED){
-                    _speed = 1;
-                    movingForward = true;
-                }
+                _stopped = true;
             }
-        }
-
-        private void turnLeft()
-        {
-            _angle -= MathHelper.ToRadians(_rotationVelocity);
-        }
-
-        private void turnRight()
-        {
-            _angle += MathHelper.ToRadians(_rotationVelocity);
         }
     }
 }
