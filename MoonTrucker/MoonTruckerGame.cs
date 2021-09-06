@@ -16,7 +16,7 @@ namespace MoonTrucker
         private SpriteBatch _spriteBatch;
         private GameContent _gameContent;
 
-        private SpinningIceVehicle _truck;
+        private Car _truck;
         private int _screenWidth = 1004;
         private int _screenHeight = 700;
         private KeyboardState _oldKeyboardState;
@@ -66,7 +66,7 @@ namespace MoonTrucker
             _wallSprite = Content.Load<Texture2D>("CircleSprite"); //  96px x 96px => 1.5m x 1.5m
 
             //create game objects
-            _truck = new SpinningIceVehicle(new CarSprite(_gameContent, _spriteBatch), new Vector2(50,20), _screenWidth, _screenHeight);  // create the game paddle
+            _truck = new Car(new CarSprite(_gameContent, _spriteBatch), new Vector2(50,20), _screenWidth, _screenHeight);  // create the game paddle
 
             createPhysicsBodies();
         }
