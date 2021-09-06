@@ -23,9 +23,15 @@ namespace MoonTrucker
 
         private readonly World _world;
         private Body _carBody;
+        private Vector2 _carOrigin;
+        private Body _circleBody;
+        private Texture2D _circleSprite;
+        private Vector2 _circleOrigin;
+
         private Body _wallBody;
         private Texture2D _wallSprite;
         private Vector2 _wallOrigin;
+        
 
         public MoonTruckerGame()
         {
@@ -33,8 +39,8 @@ namespace MoonTrucker
             Content.RootDirectory = "Content/GameAssets";
             IsMouseVisible = false;
 
-            _world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
-            //_world = new World(new Vector2(0, 9.82f));
+            //_world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
+            _world = new World(new Vector2(0, 9.82f));
         }
 
         protected override void Initialize()
@@ -70,37 +76,43 @@ namespace MoonTrucker
 
         private void createPhysicsBodies()
         {
-            _wallSprite = new Texture2D(GraphicsDevice, 1, 1);
-            _wallSprite.SetData(new[] { Color.Black });
             // Velcro Physics expects objects to be scaled to MKS (meters, kilos, seconds)
             // 1 meters equals 64 pixels here
             // TODO: Figure out if this is the convertion rate we want
             ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
-            // Load Sprites
 
-            /* wall */
-            _wallSprite = Content.Load<Texture2D>("CircleSprite"); //  96px x 96px => 1.5m x 1.5m
-            _wallOrigin = new Vector2(_wallSprite.Width / 2f, _wallSprite.Height / 2f);
             // Convert screen center from pixels to meters
             var screenCenter = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
-            Vector2 circlePosition = ConvertUnits.ToSimUnits(screenCenter) + new Vector2(0, -1.5f);
-            // Create the circle fixture
-            _wallBody = BodyFactory.CreateCircle(_world, ConvertUnits.ToSimUnits(96 / 2f), 1f, circlePosition, BodyType.Dynamic);
-            // Give it some bounce and friction
+            // Load Sprites
+            /* wall */
+            _wallSprite = Content.Load<Texture2D>("GroundSprite"); // 512px x 64px =>   8m x 1m
+            _wallOrigin = new Vector2(_wallSprite.Width / 2f, _wallSprite.Height / 2f);
+
+            Vector2 wallPosition = ConvertUnits.ToSimUnits(screenCenter) + new Vector2(0, 1.25f);
+
+            // Create the wall fixture
+            _wallBody = BodyFactory.CreateRectangle(_world, ConvertUnits.ToSimUnits(512f), ConvertUnits.ToSimUnits(64f), 1f, wallPosition);
+            _wallBody.BodyType = BodyType.Static;
             _wallBody.Restitution = 0.3f;
             _wallBody.Friction = 0.5f;
 
-            /* car */
-            // TODO: Probably an easier way to make a rectange. Also current rectange is not centered on car
-            // Vertices vertices = new Vertices(4);
-            // vertices.Add(new Vector2(50, 20));
-            // vertices.Add(new Vector2(50 + _truck.GetWidth(), 20));
-            // vertices.Add(new Vector2(50, 20 + _truck.GetHeight()));
-            // vertices.Add(new Vector2(50 + _truck.GetWidth(), 20 + _truck.GetHeight()));
-            // PolygonShape carShape = new PolygonShape(vertices, 2f);
+            /* circle */
+            _circleSprite = Content.Load<Texture2D>("CircleSprite"); //  96px x 96px => 1.5m x 1.5m
+            _circleOrigin = new Vector2(_circleSprite.Width / 2f, _circleSprite.Height / 2f);
+            
+            Vector2 circlePosition = ConvertUnits.ToSimUnits(screenCenter) + new Vector2(0, -1.5f);
+            // Create the circle fixture
+            _circleBody = BodyFactory.CreateCircle(_world, ConvertUnits.ToSimUnits(96 / 2f), 1f, circlePosition, BodyType.Dynamic);
+            // Give it some bounce and friction
+            _circleBody.Restitution = 0.3f;
+            _circleBody.Friction = 0.5f;
 
-            // _carBody = BodyFactory.CreateBody(_world);
-            // _carBody.BodyType = BodyType.Dynamic;
+            /* car */
+            _carBody = BodyFactory.CreateRectangle(_world, ConvertUnits.ToSimUnits(512f), ConvertUnits.ToSimUnits(64f), 1f, wallPosition);
+            _carBody.BodyType = BodyType.Dynamic;
+            _carBody.Restitution = 0.3f;
+            _carBody.Friction = 0.5f; // TODO: Does friction do anything in a no gravity world?
+
             // _carBody.Position = ConvertUnits.ToSimUnits(new Vector2(50,50)); // TODO: Do this before creating the sprite object so that the position can for the sprite can be pulled from the body position
             // _carBody.CreateFixture(carShape);
         }
@@ -127,13 +139,13 @@ namespace MoonTrucker
             KeyboardState state = Keyboard.GetState();
              // We make it possible to rotate the circle body
             if (state.IsKeyDown(Keys.A))
-                _wallBody.ApplyTorque(-10);
+                _circleBody.ApplyTorque(-10);
 
             if (state.IsKeyDown(Keys.D))
-                _wallBody.ApplyTorque(10);
+                _circleBody.ApplyTorque(10);
 
             if (state.IsKeyDown(Keys.Space) && _oldKeyboardState.IsKeyUp(Keys.Space))
-                _wallBody.ApplyLinearImpulse(new Vector2(0, -10));
+                _circleBody.ApplyLinearImpulse(new Vector2(0, -10));
         }
 
         protected override void Draw(GameTime gameTime)
@@ -143,7 +155,8 @@ namespace MoonTrucker
             _spriteBatch.Begin();
             _truck.Draw();
 
-             _spriteBatch.Draw(_wallSprite, ConvertUnits.ToDisplayUnits(_wallBody.Position), null, Color.White, _wallBody.Rotation, _wallOrigin, 1f, SpriteEffects.None, 0f);
+             _spriteBatch.Draw(_circleSprite, ConvertUnits.ToDisplayUnits(_circleBody.Position), null, Color.White, _circleBody.Rotation, _circleOrigin, 1f, SpriteEffects.None, 0f);
+             _spriteBatch.Draw(_wallSprite, ConvertUnits.ToDisplayUnits(_wallBody.Position), null, Color.White, 0f, _wallOrigin, 1f, SpriteEffects.None, 0f);
 
             _spriteBatch.End();
 
