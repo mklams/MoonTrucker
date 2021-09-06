@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,6 +25,44 @@ namespace MoonTrucker
         private const float MIN_SPEED = .9f;
         private const float DEGREES_TO_ROTATE = 5f;
 
+        private long ticksSinceStopping; 
+#region Mark's APIs
+        /*
+         * Mark's Position API
+         */
+        public Vector2 Position{
+            get {return _position;}
+        }
+
+        /*
+         * Mark's API to stop car. Does not reset ticksSinceStopping.
+         * Returns - Vector2 of the position
+         */
+        public Vector2 Stop()
+        {
+            _speed = 0f;
+            _stopped = true;
+            return _position;
+        }
+
+        /*
+         * Mark's API for sprite width
+         */
+        public float GetSpriteWidth()
+        {
+            return _sprite.Width;
+        }
+
+        /*
+         * Mark's API for sprite height
+         */
+        public float GetSpriteHeight()
+        {
+            return _sprite.Height;
+        }
+
+#endregion
+
 
         public Car(Sprite sprite, Vector2 pos, float screenWidth, float screenHeight)
         {
@@ -31,6 +70,7 @@ namespace MoonTrucker
             _speed = 0f;
             _stopped = true;
             _sprite = sprite;
+            ticksSinceStopping = 0L;
             _screenHeight = screenHeight;
             _screenWidth = screenWidth;
         }
@@ -44,11 +84,11 @@ namespace MoonTrucker
         {
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                handleUpKey();
+                handleUpKey(gameTime.TotalGameTime.Ticks - ticksSinceStopping > 10000000L/5L, gameTime);
             }
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
-                handleDownKey();
+                handleDownKey(gameTime.TotalGameTime.Ticks - ticksSinceStopping > 10000000L/5L, gameTime);
             }
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
@@ -62,21 +102,23 @@ namespace MoonTrucker
             }
             _position += _velocity;
             _speed *= .99f; //friction
-            if(Math.Abs(_speed) < MIN_SPEED){
+            if(!_stopped && Math.Abs(_speed) < MIN_SPEED){
                 _speed = 0f;
                 _stopped = true;
+                ticksSinceStopping = gameTime.TotalGameTime.Ticks;
             }
             var clampedPos = Vector2.Clamp(_position, new Vector2(0, 0), new Vector2(_screenWidth, _screenHeight));
             if(clampedPos != _position){
                 _stopped = true;
+                ticksSinceStopping = gameTime.TotalGameTime.Ticks;
                 _speed = 0f;
                 _position = clampedPos;
             } 
         }
 
-        private void handleUpKey()
+        private void handleUpKey(bool canStart, GameTime gameTime)
         {
-            if(_stopped)
+            if(_stopped && canStart)
             {
                 _stopped = false;
                 _speed = 1f;
@@ -87,13 +129,13 @@ namespace MoonTrucker
             }
             else
             {
-                decelerate();
+                decelerate(gameTime);
             }
         }
 
-        private void handleDownKey()
+        private void handleDownKey(bool canStart, GameTime gameTime)
         {
-            if(_stopped)
+            if(_stopped && canStart)
             {
                 _stopped = false;
                 _speed = -1f;
@@ -102,7 +144,7 @@ namespace MoonTrucker
                 accelerate();
             }
             else{
-                decelerate();
+                decelerate(gameTime);
             }
         }
 
@@ -134,12 +176,13 @@ namespace MoonTrucker
             }
         }
 
-        private void decelerate()
+        private void decelerate(GameTime gameTime)
         {
             _speed*=.9f;
-            if(Math.Abs(_speed) < MIN_SPEED){
+            if(!_stopped && Math.Abs(_speed) < MIN_SPEED){
                 _speed = 0f;
                 _stopped = true;
+                ticksSinceStopping = gameTime.TotalGameTime.Ticks;
             }
         }
     }
