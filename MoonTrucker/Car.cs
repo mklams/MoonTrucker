@@ -22,10 +22,11 @@ namespace MoonTrucker
         private Sprite _sprite { get; set; }
         private bool _stopped;
         private const float MAX_SPEED = 8f;
-        private const float MIN_SPEED = .9f;
+        private const float MIN_SPEED = .5f;
         private const float DEGREES_TO_ROTATE = 5f;
+        private const int MILLI_PAUSE_AFTER_STOPPING = 200;
 
-        private long ticksSinceStopping; 
+        private int milliSinceStopping; 
 #region Mark's APIs
         /*
          * Mark's Position API
@@ -70,7 +71,7 @@ namespace MoonTrucker
             _speed = 0f;
             _stopped = true;
             _sprite = sprite;
-            ticksSinceStopping = 0L;
+            milliSinceStopping = 0;
             _screenHeight = screenHeight;
             _screenWidth = screenWidth;
         }
@@ -84,11 +85,11 @@ namespace MoonTrucker
         {
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                handleUpKey(gameTime.TotalGameTime.Ticks - ticksSinceStopping > 10000000L/5L, gameTime);
+                handleUpKey(gameTime.TotalGameTime.Ticks - milliSinceStopping > MILLI_PAUSE_AFTER_STOPPING, gameTime);
             }
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
-                handleDownKey(gameTime.TotalGameTime.Ticks - ticksSinceStopping > 10000000L/5L, gameTime);
+                handleDownKey(gameTime.TotalGameTime.Milliseconds - milliSinceStopping > MILLI_PAUSE_AFTER_STOPPING, gameTime);
             }
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
@@ -101,16 +102,16 @@ namespace MoonTrucker
                 handleRightKey();
             }
             _position += _velocity;
-            _speed *= .99f; //friction
+            _speed *= .97f; //friction
             if(!_stopped && Math.Abs(_speed) < MIN_SPEED){
                 _speed = 0f;
                 _stopped = true;
-                ticksSinceStopping = gameTime.TotalGameTime.Ticks;
+                milliSinceStopping = gameTime.TotalGameTime.Milliseconds;
             }
             var clampedPos = Vector2.Clamp(_position, new Vector2(0, 0), new Vector2(_screenWidth, _screenHeight));
             if(clampedPos != _position){
                 _stopped = true;
-                ticksSinceStopping = gameTime.TotalGameTime.Ticks;
+                milliSinceStopping = gameTime.TotalGameTime.Milliseconds;
                 _speed = 0f;
                 _position = clampedPos;
             } 
@@ -154,7 +155,8 @@ namespace MoonTrucker
             {
                 return;
             }
-            var degreesToRotate = (_speed > 0f)? -DEGREES_TO_ROTATE : DEGREES_TO_ROTATE;
+            var allowedRadius = getTurnRadius();
+            var degreesToRotate = (_speed > 0f)? -allowedRadius : allowedRadius;
             _angle += degreesToRotate;
         }
 
@@ -164,13 +166,14 @@ namespace MoonTrucker
             {
                 return;
             }
-            var degreesToRotate = (_speed > 0f)? DEGREES_TO_ROTATE : -DEGREES_TO_ROTATE;
+            var allowedRadius = getTurnRadius();
+            var degreesToRotate = (_speed > 0f)? allowedRadius : -allowedRadius;
             _angle += degreesToRotate;
         }
 
         private void accelerate()
         {
-            _speed *= 1.5f;
+            _speed *= getAccelerationAmount();
             if(Math.Abs(_speed) > MAX_SPEED){
                 _speed = (_speed > 0f)? MAX_SPEED : -MAX_SPEED;
             }
@@ -182,8 +185,48 @@ namespace MoonTrucker
             if(!_stopped && Math.Abs(_speed) < MIN_SPEED){
                 _speed = 0f;
                 _stopped = true;
-                ticksSinceStopping = gameTime.TotalGameTime.Ticks;
+                milliSinceStopping = gameTime.TotalGameTime.Milliseconds;
             }
+        }
+
+        private float getAccelerationAmount(){
+            if(_speed < 0f){
+                return 1.05f;
+            }
+            float speedPercentile = (_speed/MAX_SPEED)*100;
+            if(speedPercentile < 25f){
+                return (.15f*_speed)+1f;
+            }
+            else if(speedPercentile < ((35f/80f)*100)){
+                return (.1f*_speed)+1.05f;
+            }
+            else if(speedPercentile < 50f){
+                return (-.4f*_speed)+2.9f;
+            }
+            else if(speedPercentile < 67.5f){
+                return (-.2f*_speed)+2.1f;
+            }
+            else if(speedPercentile < 75){
+                return (-.05f*_speed)+1.35f;
+            }
+            else {
+                return (-.03f*_speed)+1.14f;
+            }
+        }
+
+        private float getTurnRadius(){
+            var absSpeed = Math.Abs(_speed);
+            var speedPercentile = absSpeed/MAX_SPEED;
+            if(speedPercentile < 25){
+                return 4f;
+            }
+            if(speedPercentile < 50){
+                return 3f;
+            }
+            if(speedPercentile < 75){
+                return 2f;
+            }
+            return 1.5f;
         }
     }
 }
