@@ -50,6 +50,7 @@ namespace MoonTrucker
 
         public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)
         {
+            
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 _vehicleBody.ApplyLinearImpulse(new Vector2(0, -5));
@@ -68,6 +69,8 @@ namespace MoonTrucker
             {
                 _vehicleBody.ApplyLinearImpulse(new Vector2(5, 0));
             }
+
+            //Vector2 velocity = _vehicleBody.GetLinearVelocityFromLocalPoint()
         }
     }
 }

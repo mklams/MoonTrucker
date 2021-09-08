@@ -85,7 +85,7 @@ namespace MoonTrucker
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.WhiteSmoke);
+            GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
             _vehicle.Draw();
