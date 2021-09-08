@@ -15,19 +15,12 @@ namespace MoonTrucker
         private readonly float _screenWidth;
         private readonly float _screenHeight;
 
-        public Vector2 _origin;
         private Vector2 _position;
-        private Vector2 _direction => new Vector2((float)Math.Cos(_angle), (float)Math.Sin(_angle));
-        private float _speed = 5f;
         private float _angle = 0;
-
-        private const float _rotationVelocity = 3f;
-        private const float _linearVelocity = 4f;
 
         private Sprite _sprite { get; }
 
         private Body _vehicleBody { get; }
-        private Vector2 _vehicleOrigin;
 
         public VehicleWithPhysics(Sprite vehicleSprite, World world, Vector2 position, float screenWidth, float screenHeight)
         {
@@ -35,8 +28,7 @@ namespace MoonTrucker
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
             _position = position;
-            _vehicleOrigin = new Vector2(GetWidth() / 2f, GetHeight() / 2f);
-            _vehicleBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(GetWidth()), ConvertUnits.ToSimUnits(GetHeight()), 1f, ConvertUnits.ToSimUnits(_position), _angle, BodyType.Dynamic);
+            _vehicleBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(_sprite.Width), ConvertUnits.ToSimUnits(_sprite.Height), 1f, ConvertUnits.ToSimUnits(_position), _angle, BodyType.Dynamic);
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
         }

@@ -54,4 +54,13 @@ namespace MoonTrucker
 
         public CircleSprite(GameContent content, SpriteBatch batch) : base(content, batch) { }
     }
+
+    public sealed class WallSprite : Sprite
+    {
+        public override Texture2D Image => _gamecontent.ImgGround;
+        public override float ImageScale => 1f;
+        public override Color ImageColor => Color.White;
+
+        public WallSprite(GameContent content, SpriteBatch batch) : base(content, batch) { }
+    }
 }

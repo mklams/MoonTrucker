@@ -17,6 +17,7 @@ namespace MoonTrucker
         private GameContent _gameContent;
 
         private VehicleWithPhysics _vehicle;
+        private Wall _wall;
         private int _screenWidth = 1004;
         private int _screenHeight = 700;
         private KeyboardState _oldKeyboardState;
@@ -62,7 +63,8 @@ namespace MoonTrucker
             _graphics.ApplyChanges();
 
             //create game objects
-            _vehicle = new VehicleWithPhysics(new CarSprite(_gameContent, _spriteBatch), _world, new Vector2(50,20), _screenWidth, _screenHeight);  // create the game paddle 
+            _vehicle = new VehicleWithPhysics(new CarSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2,20), _screenWidth, _screenHeight); 
+            _wall = new Wall(new WallSprite(_gameContent, _spriteBatch), _world, new Vector2(100,100),  _screenWidth, _screenHeight);
         }
 
         protected override void Update(GameTime gameTime)
@@ -87,6 +89,7 @@ namespace MoonTrucker
 
             _spriteBatch.Begin();
             _vehicle.Draw();
+            _wall.Draw();
             _spriteBatch.End();
 
             base.Draw(gameTime);
