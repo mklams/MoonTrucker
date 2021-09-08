@@ -49,7 +49,7 @@ namespace MoonTrucker
     public sealed class CircleSprite : Sprite
     {
         public override Texture2D Image => _gamecontent.ImgCircle;
-        public override float ImageScale => 0.25f;
+        public override float ImageScale => 1f;
         public override Color ImageColor => Color.White;
 
         public CircleSprite(GameContent content, SpriteBatch batch) : base(content, batch) { }
