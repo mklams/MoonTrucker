@@ -19,6 +19,8 @@ namespace MoonTrucker
         private VehicleWithPhysics _vehicle;
         private Wall _leftWall;
         private Wall _rightWall;
+        private Wall _topWall;
+        private Wall _bottomWall;
         private int _screenWidth = 1004;
         private int _screenHeight = 700;
         private KeyboardState _oldKeyboardState;
@@ -68,8 +70,10 @@ namespace MoonTrucker
 
             //create game objects
             _vehicle = new VehicleWithPhysics(new CarSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2,20), _screenWidth, _screenHeight); 
-            _leftWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenHeight, 5f), _world, new Vector2(0,_screenHeight/2),  _screenWidth, _screenHeight);
-            _rightWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenHeight, 5f), _world, new Vector2(_screenWidth - 5f, _screenHeight / 2), _screenWidth, _screenHeight);
+            _leftWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, 5f, _screenHeight), _world, new Vector2(0,_screenHeight/2),  _screenWidth, _screenHeight);
+            _rightWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, 5f, _screenHeight), _world, new Vector2(_screenWidth - 5f, _screenHeight / 2), _screenWidth, _screenHeight);
+            _topWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenWidth, 5f), _world, new Vector2(_screenWidth / 2.0f, 0),  _screenWidth, _screenHeight);
+            _bottomWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenWidth, 5f), _world, new Vector2(_screenWidth / 2.0f, _screenHeight -5f), _screenWidth, _screenHeight);
         }
 
         protected override void Update(GameTime gameTime)
@@ -96,6 +100,8 @@ namespace MoonTrucker
             _vehicle.Draw();
             _rightWall.Draw();
             _leftWall.Draw();
+            _topWall.Draw();
+            _bottomWall.Draw();
             _spriteBatch.End();
 
             base.Draw(gameTime);
