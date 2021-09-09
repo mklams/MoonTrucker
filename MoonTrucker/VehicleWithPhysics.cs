@@ -57,12 +57,10 @@ namespace MoonTrucker
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 _vehicleBody.ApplyLinearImpulse(this.getImpulseVector(_vehicleBody.LinearVelocity));
-               //_vehicleBody.ApplyLinearImpulse(new Vector2(0, -5));
             }
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
-                _vehicleBody.ApplyLinearImpulse(this.getReverseImpulseVector(_vehicleBody.LinearVelocity));
-                //_vehicleBody.ApplyLinearImpulse(new Vector2(0, 5));
+                _vehicleBody.ApplyLinearImpulse(this.getImpulseVector(_vehicleBody.LinearVelocity));
             }
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
