@@ -17,7 +17,8 @@ namespace MoonTrucker
         private GameContent _gameContent;
 
         private VehicleWithPhysics _vehicle;
-        private Wall _wall;
+        private Wall _leftWall;
+        private Wall _rightWall;
         private int _screenWidth = 1004;
         private int _screenHeight = 700;
         private KeyboardState _oldKeyboardState;
@@ -45,7 +46,7 @@ namespace MoonTrucker
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _gameContent = new GameContent(Content);
+            _gameContent = new GameContent(Content, GraphicsDevice);
             _screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
@@ -62,9 +63,13 @@ namespace MoonTrucker
             _graphics.PreferredBackBufferHeight = _screenHeight;
             _graphics.ApplyChanges();
 
+            // Convert screen center from pixels to meters
+            var screenCenter = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
+
             //create game objects
             _vehicle = new VehicleWithPhysics(new CarSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2,20), _screenWidth, _screenHeight); 
-            _wall = new Wall(new WallSprite(_gameContent, _spriteBatch), _world, new Vector2(100,100),  _screenWidth, _screenHeight);
+            _leftWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenHeight, 5f), _world, new Vector2(0,_screenHeight/2),  _screenWidth, _screenHeight);
+            _rightWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenHeight, 5f), _world, new Vector2(_screenWidth - 5f, _screenHeight / 2), _screenWidth, _screenHeight);
         }
 
         protected override void Update(GameTime gameTime)
@@ -89,7 +94,8 @@ namespace MoonTrucker
 
             _spriteBatch.Begin();
             _vehicle.Draw();
-            _wall.Draw();
+            _rightWall.Draw();
+            _leftWall.Draw();
             _spriteBatch.End();
 
             base.Draw(gameTime);

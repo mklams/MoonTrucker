@@ -12,14 +12,16 @@ namespace MoonTrucker
         public Texture2D ImgTruck { get; set; }
         public Texture2D ImgCircle { get; set; }
         public Texture2D ImgGround {get; set; }
+        public Texture2D SolidRectangle { get; set; }
 
-        public GameContent(ContentManager content)
+        public GameContent(ContentManager content, GraphicsDevice graphicsdevice)
         {
             //load images
             ImgViperCar = content.Load<Texture2D>("Black_viper");
             ImgTruck = content.Load<Texture2D>("truck");
             ImgCircle = content.Load<Texture2D>("CircleSprite");
             ImgGround = content.Load<Texture2D>("GroundSprite");
+            SolidRectangle = new Texture2D(graphicsdevice, 1, 1);
         }
     }
 }
