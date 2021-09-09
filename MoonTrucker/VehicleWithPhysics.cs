@@ -14,6 +14,7 @@ namespace MoonTrucker
     {
         private readonly float _screenWidth;
         private readonly float _screenHeight;
+        private const float IMPULSE_FACTOR = .2f;
 
         private Vector2 _position;
         private float _angle = 0;
@@ -43,6 +44,8 @@ namespace MoonTrucker
             return _sprite.Width;
         }
 
+        
+
         public void Draw()
         {
             _sprite.Draw(ConvertUnits.ToDisplayUnits(_vehicleBody.Position), _vehicleBody.Rotation);
@@ -53,11 +56,13 @@ namespace MoonTrucker
             
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                _vehicleBody.ApplyLinearImpulse(new Vector2(0, -5));
+                _vehicleBody.ApplyLinearImpulse(this.getImpulseVector(_vehicleBody.LinearVelocity));
+               //_vehicleBody.ApplyLinearImpulse(new Vector2(0, -5));
             }
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
-                _vehicleBody.ApplyLinearImpulse(new Vector2(0, 5));
+                _vehicleBody.ApplyLinearImpulse(this.getReverseImpulseVector(_vehicleBody.LinearVelocity));
+                //_vehicleBody.ApplyLinearImpulse(new Vector2(0, 5));
             }
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
@@ -71,6 +76,45 @@ namespace MoonTrucker
             }
 
             //Vector2 velocity = _vehicleBody.GetLinearVelocityFromLocalPoint()
+        }
+
+        private Vector2 getImpulseVector(Vector2 vector)
+        {
+            Vector2 impulse;
+            if(_vehicleBody.LinearVelocity.Length() == 0f)
+                {
+                    impulse = new Vector2(MathF.Cos(_vehicleBody.Rotation), MathF.Sin(_vehicleBody.Rotation));
+                }
+            else
+            {
+                impulse = this.copyVector(vector);
+                impulse.Normalize();
+            }
+
+            return impulse*IMPULSE_FACTOR;
+        }
+
+        private Vector2 getReverseImpulseVector(Vector2 vector)
+        {
+            Vector2 impulse;
+            if(_vehicleBody.LinearVelocity.Length() == 0f)
+                {
+                    impulse = new Vector2(MathF.Cos(_vehicleBody.Rotation), MathF.Sin(_vehicleBody.Rotation));
+                }
+            else
+            {
+                impulse = this.copyVector(vector);
+                impulse.Normalize();
+            }
+
+            return -impulse*IMPULSE_FACTOR;
+        }
+
+        private Vector2 copyVector(Vector2 vector)
+        {
+            float vx,vy;
+            _vehicleBody.LinearVelocity.Deconstruct(out vx, out vy);
+            return new Vector2(vx,vy);
         }
     }
 }
