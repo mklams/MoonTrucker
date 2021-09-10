@@ -15,6 +15,8 @@ namespace MoonTrucker
         private readonly float _screenWidth;
         private readonly float _screenHeight;
         private const float IMPULSE_FACTOR = .2f;
+        private const float TRACT_FACT = .2f;
+        private const float TURN_FACTOR = .2f;
 
         private Vector2 _position;
         private float _angle = 0;
@@ -71,28 +73,67 @@ namespace MoonTrucker
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
-                _vehicleBody.Rotation += MathHelper.ToRadians(-2f);
+                this.handleLeftKey();
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-                _vehicleBody.Rotation += MathHelper.ToRadians(2f);
+                this.handleRightKey();
             }
+            this.snapVelocityToZero();
+            this.applyFriction();
+            //this.applyTraction();
 
             //Vector2 velocity = _vehicleBody.GetLinearVelocityFromLocalPoint()
+        }
+
+        private void snapVelocityToZero()
+        {
+            if(_vehicleBody.LinearVelocity.Length() < .1f){
+                _vehicleBody.LinearVelocity = Vector2.Zero;
+            }
+        }
+
+        private void applyFriction(){
+            _vehicleBody.LinearVelocity *= .98f;
+        }
+
+        private void applyTraction()
+        {
+            if(_vehicleBody.LinearVelocity.Length() != 0f)
+            {
+                var velocity = this.copyVector(_vehicleBody.LinearVelocity);
+                velocity.Normalize();
+                var directionVec = this.getUnitDirectionVector();
+                var degrees = MathHelper.ToDegrees(MathF.Acos(Vector2.Dot(velocity, directionVec)));
+                _vehicleBody.LinearVelocity = this.rotate(velocity, TRACT_FACT*degrees);
+            }
+        }
+
+        private void handleLeftKey()
+        {
+            _vehicleBody.ApplyTorque(-TURN_FACTOR);
+        }
+
+        private void handleRightKey()
+        {
+            _vehicleBody.ApplyTorque(TURN_FACTOR);
+        }
+
+        private Vector2 rotate(Vector2 vector, float degrees) 
+        {
+            float Vx, Vy;
+            Vx = vector.Length()*MathF.Cos(_angle + MathHelper.ToRadians(degrees));
+            Vy = vector.Length()*MathF.Sin(_angle + MathHelper.ToRadians(degrees));
+            return new Vector2(Vx, Vy);
         }
 
         private void handleUpKey()
         {
             Vector2 impulse;
-            if(_vehicleBody.LinearVelocity.Length() == 0f)//stopped
+            if(_vehicleBody.LinearVelocity.Length() == 0f || (this.isMovingForward()))//stopped or accelerating
             {
-                impulse = new Vector2(MathF.Cos(_vehicleBody.Rotation), MathF.Sin(_vehicleBody.Rotation));
-            }
-            else if(this.isMovingForward()) //accelerate
-            {
-                impulse = this.copyVector(_vehicleBody.LinearVelocity);
-                impulse.Normalize();
+                impulse = this.getUnitDirectionVector();
             }
             else//decelerate
             {
@@ -106,21 +147,16 @@ namespace MoonTrucker
         private void handleDownKey()
         {
             Vector2 impulse;
-            if(_vehicleBody.LinearVelocity.Length() == 0f)//stopped
+            if(_vehicleBody.LinearVelocity.Length() == 0f || !this.isMovingForward())//stopped
             {
-                impulse = new Vector2(MathF.Cos(_vehicleBody.Rotation), MathF.Sin(_vehicleBody.Rotation));
+                impulse = this.getUnitDirectionVector();
                 impulse *= -1;
             }
-            else if(this.isMovingForward()) //decelerate
+            else //decelerate
             {
                 impulse = this.copyVector(_vehicleBody.LinearVelocity);
                 impulse.Normalize();
                 impulse *= -1;
-            }
-            else//acelerate
-            {
-                impulse = this.copyVector(_vehicleBody.LinearVelocity);
-                impulse.Normalize();
             }
             _vehicleBody.ApplyLinearImpulse(impulse*IMPULSE_FACTOR);
         }
@@ -130,6 +166,11 @@ namespace MoonTrucker
             float vx,vy;
             _vehicleBody.LinearVelocity.Deconstruct(out vx, out vy);
             return new Vector2(vx,vy);
+        }
+
+        private Vector2 getUnitDirectionVector()
+        {
+            return new Vector2(MathF.Cos(_vehicleBody.Rotation), MathF.Sin(_vehicleBody.Rotation));
         }
     }
 }
