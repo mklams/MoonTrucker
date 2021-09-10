@@ -44,3 +44,6 @@ MoonTrucker/obj/Debug/netcoreapp3.1/MoonTrucker.dll
 MoonTrucker/obj/Debug/netcoreapp3.1/MoonTrucker.GeneratedMSBuildEditorConfig.editorconfig
 MoonTrucker/obj/Debug/netcoreapp3.1/MoonTrucker.genruntimeconfig.cache
 MoonTrucker/obj/Debug/netcoreapp3.1/MoonTrucker.pdb
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/GameAssets/GroundSprite.xnb
+MoonTrucker/Content/bin/DesktopGL/Content/GameAssets/GroundSprite.xnb
+MoonTrucker/Content/obj/DesktopGL/Content/GameAssets/GroundSprite.mgcontent
