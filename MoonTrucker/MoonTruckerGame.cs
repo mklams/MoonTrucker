@@ -15,17 +15,12 @@ namespace MoonTrucker
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private GameContent _gameContent;
-
         private VehicleWithPhysics _vehicle;
+        private Tire _tire;
         private Wall[] _walls;
-        private Wall _rightWall;
-        private Wall _topWall;
-        private Wall _bottomWall;
-
-        private int _screenWidth = 1004;
-        private int _screenHeight = 700;
+        private int _screenWidth;
+        private int _screenHeight;
         private KeyboardState _oldKeyboardState;
-
         private readonly World _world;
 
         public MoonTruckerGame()
@@ -53,7 +48,8 @@ namespace MoonTrucker
             setScreenDimensions();
 
             //create game objects
-            _vehicle = new VehicleWithPhysics(new CarSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2,20), _screenWidth, _screenHeight); 
+            _vehicle = new VehicleWithPhysics(new CarSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2,20), _screenWidth, _screenHeight);
+            //_tire = new Tire(new TruckSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2, 20), _screenWidth, _screenHeight);
             _walls = createWalls();
         }
 
