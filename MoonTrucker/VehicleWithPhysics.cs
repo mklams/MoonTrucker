@@ -16,7 +16,7 @@ namespace MoonTrucker
         private readonly float _screenHeight;
         private const float IMPULSE_FACTOR = .2f;
         private const float TRACT_FACT = .2f;
-        private const float TURN_FACTOR = .2f;
+        private const float TURN_FACTOR = 1f;
 
         private Vector2 _position;
         private float _angle = 0;
@@ -96,6 +96,7 @@ namespace MoonTrucker
 
         private void applyFriction(){
             _vehicleBody.LinearVelocity *= .98f;
+            _vehicleBody.AngularVelocity *= .98f;
         }
 
         private void applyTraction()
@@ -112,12 +113,20 @@ namespace MoonTrucker
 
         private void handleLeftKey()
         {
-            _vehicleBody.ApplyTorque(-TURN_FACTOR);
+            if(_vehicleBody.LinearVelocity.Length() != 0f)
+            {
+                var posNeg = this.isMovingForward()? -1 : 1;
+                _vehicleBody.ApplyTorque(posNeg * TURN_FACTOR);
+            }
         }
 
         private void handleRightKey()
         {
-            _vehicleBody.ApplyTorque(TURN_FACTOR);
+            if(_vehicleBody.LinearVelocity.Length() != 0f)
+            {
+                var posNeg = this.isMovingForward()? 1 : -1;
+                _vehicleBody.ApplyTorque(posNeg * TURN_FACTOR);
+            }
         }
 
         private Vector2 rotate(Vector2 vector, float degrees) 
