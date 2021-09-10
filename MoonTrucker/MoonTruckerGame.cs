@@ -15,21 +15,19 @@ namespace MoonTrucker
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private GameContent _gameContent;
-
         private VehicleWithPhysics _vehicle;
-        private Wall _leftWall;
-        private Wall _rightWall;
-        private int _screenWidth = 1004;
-        private int _screenHeight = 700;
+        private Tire _tire;
+        private Wall[] _walls;
+        private int _screenWidth;
+        private int _screenHeight;
         private KeyboardState _oldKeyboardState;
-
         private readonly World _world;
 
         public MoonTruckerGame()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content/GameAssets";
-            IsMouseVisible = false;
+            IsMouseVisible = true;
 
             _world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
             // Velcro Physics expects objects to be scaled to MKS (meters, kilos, seconds)
@@ -47,6 +45,16 @@ namespace MoonTrucker
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _gameContent = new GameContent(Content, GraphicsDevice);
+            setScreenDimensions();
+
+            //create game objects
+            _vehicle = new VehicleWithPhysics(new CarSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2,20), _screenWidth, _screenHeight);
+            //_tire = new Tire(new TruckSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2, 20), _screenWidth, _screenHeight);
+            _walls = createWalls();
+        }
+
+        private void setScreenDimensions()
+        {
             _screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
@@ -62,14 +70,20 @@ namespace MoonTrucker
             _graphics.PreferredBackBufferWidth = _screenWidth;
             _graphics.PreferredBackBufferHeight = _screenHeight;
             _graphics.ApplyChanges();
+        }
 
+        private Wall[] createWalls()
+        {
             // Convert screen center from pixels to meters
             var screenCenter = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
 
-            //create game objects
-            _vehicle = new VehicleWithPhysics(new CarSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2,20), _screenWidth, _screenHeight); 
-            _leftWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenHeight, 5f), _world, new Vector2(0,_screenHeight/2),  _screenWidth, _screenHeight);
-            _rightWall = new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenHeight, 5f), _world, new Vector2(_screenWidth - 5f, _screenHeight / 2), _screenWidth, _screenHeight);
+            return new Wall[] {
+            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, 5f, _screenHeight), _world, new Vector2(0,_screenHeight/2),  _screenWidth, _screenHeight),
+            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, 5f, _screenHeight), _world, new Vector2(_screenWidth - 5f, _screenHeight / 2), _screenWidth, _screenHeight),
+            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenWidth, 5f), _world, new Vector2(_screenWidth / 2.0f, 0),  _screenWidth, _screenHeight),
+            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenWidth, 5f), _world, new Vector2(_screenWidth / 2.0f, _screenHeight -5f), _screenWidth, _screenHeight),
+            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, 100f, 100f), _world, screenCenter, _screenWidth, _screenHeight)
+            };
         }
 
         protected override void Update(GameTime gameTime)
@@ -94,8 +108,10 @@ namespace MoonTrucker
 
             _spriteBatch.Begin();
             _vehicle.Draw();
-            _rightWall.Draw();
-            _leftWall.Draw();
+            foreach (Wall wall in _walls)
+            {
+                wall.Draw();
+            }
             _spriteBatch.End();
 
             base.Draw(gameTime);

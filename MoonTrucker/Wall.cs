@@ -30,8 +30,8 @@ namespace MoonTrucker
             // Create the wall fixture
             _wallBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(_sprite.Width), ConvertUnits.ToSimUnits(_sprite.Height), 1f, ConvertUnits.ToSimUnits(orgin));
             _wallBody.BodyType = BodyType.Static;
-            _wallBody.Restitution = 0.3f;
-            _wallBody.Friction = 0.5f;
+            _wallBody.Restitution = 1f;
+            _wallBody.Friction = 1f;
         }
 
         public void Draw()

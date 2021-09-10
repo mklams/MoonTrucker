@@ -74,7 +74,7 @@ namespace MoonTrucker
             _height = 1;
             _width = 1;
         }
-        public RectangleWall(GameContent content, SpriteBatch batch, Color color, float height, float width) : base(content, batch) {
+        public RectangleWall(GameContent content, SpriteBatch batch, Color color, float width, float height) : base(content, batch) {
             ImageColor = color;
             _height = height;
             _width = width;
