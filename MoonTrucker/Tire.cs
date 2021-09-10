@@ -15,6 +15,7 @@ namespace MoonTrucker
         private float _maxForwardSpeed = 25;
         private float _maxBackwardSpeed = -5;
         private float _maxDriveForce = 40;
+        private float _maxLateralImpulse = 2.5f;
 
         private readonly float _screenWidth;
         private readonly float _screenHeight;
@@ -62,10 +63,18 @@ namespace MoonTrucker
 
         private void updateFriction()
         {
+            // lateral linear velocity
             Vector2 impulse = _body.Mass * -getLateralVelocity();
+            if(impulse.Length() > _maxLateralImpulse)
+            {
+                impulse *= _maxLateralImpulse / impulse.Length();
+            }
             _body.ApplyLinearImpulse(impulse, _body.WorldCenter);
+
+            // angular velocity
             _body.ApplyAngularImpulse(IMPULSE_FACTOR * _body.Inertia * -_body.AngularVelocity);
 
+            // forward linear velocity
             Vector2 currentForwardNormal = getForwardVelocity();
             float currentForwardSpeed = Vector2.Normalize(currentForwardNormal).Length();
             float dragForceMagnitude = -2 * currentForwardSpeed;

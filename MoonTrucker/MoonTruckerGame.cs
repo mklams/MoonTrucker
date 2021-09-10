@@ -94,6 +94,7 @@ namespace MoonTrucker
             KeyboardState newKeyboardState = Keyboard.GetState();
 
             _vehicle.UpdateVehicle(newKeyboardState, gameTime);
+            //_tire.UpdateVehicle(newKeyboardState, gameTime);
 
             _oldKeyboardState = newKeyboardState;
 
@@ -108,6 +109,7 @@ namespace MoonTrucker
 
             _spriteBatch.Begin();
             _vehicle.Draw();
+            //_tire.Draw();
             foreach (Wall wall in _walls)
             {
                 wall.Draw();
