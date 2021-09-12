@@ -22,6 +22,8 @@ namespace MoonTrucker
             ImgCircle = content.Load<Texture2D>("CircleSprite");
             ImgGround = content.Load<Texture2D>("GroundSprite");
             SolidRectangle = new Texture2D(graphicsdevice, 1, 1);
+            SolidRectangle.SetData(new[] { Color.White });
+
         }
     }
 }

@@ -12,28 +12,27 @@ namespace MoonTrucker
 {
     public class VehicleWithPhysics
     {
-        private readonly float _screenWidth;
-        private readonly float _screenHeight;
         private const float IMPULSE_FACTOR = .2f;
         private const float TRACT_FACT = .2f;
         private const float TURN_FACTOR = 1f;
 
-        private Vector2 _position;
         private float _angle = 0;
 
-        private Sprite _sprite { get; }
+        private Texture2D _sprite { get; }
 
         private Body _vehicleBody { get; }
+        private SpriteBatch _batch;
 
-        public VehicleWithPhysics(Sprite vehicleSprite, World world, Vector2 position, float screenWidth, float screenHeight)
+        public VehicleWithPhysics(World world, TextureManager manager, SpriteBatch batch)
         {
-            _sprite = vehicleSprite;
-            _screenWidth = screenWidth;
-            _screenHeight = screenHeight;
-            _position = position;
-            _vehicleBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(_sprite.Width), ConvertUnits.ToSimUnits(_sprite.Height), 1f, ConvertUnits.ToSimUnits(_position), _angle, BodyType.Dynamic);
+            
+            //_vehicleBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(_sprite.Width), ConvertUnits.ToSimUnits(_sprite.Height), 1f, ConvertUnits.ToSimUnits(_position), _angle, BodyType.Dynamic);
+            _vehicleBody = BodyFactory.CreateRectangle(world, 1f, 0.5f, 1f, new Vector2(7f, 7f), _angle, BodyType.Dynamic);
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
+
+            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.DarkMagenta, Color.DeepPink);
+            _batch = batch;
         }
 
         public float GetHeight()
@@ -56,7 +55,9 @@ namespace MoonTrucker
 
         public void Draw()
         {
-            _sprite.Draw(ConvertUnits.ToDisplayUnits(_vehicleBody.Position), _vehicleBody.Rotation);
+            //_sprite.Draw(ConvertUnits.ToDisplayUnits(_vehicleBody.Position), _vehicleBody.Rotation + +1.5708f); // TODO: Why does this need +90 degrees
+            var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, Color.White, _vehicleBody.Rotation, origin, 1f, SpriteEffects.None, 0f);
         }
 
         public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)

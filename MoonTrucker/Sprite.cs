@@ -59,7 +59,7 @@ namespace MoonTrucker
         public WallSprite(GameContent content, SpriteBatch batch) : base(content, batch) { }
     }
 
-    public sealed class RectangleWall : Sprite
+    public sealed class RectangleSprite : Sprite
     {
         public override Texture2D Image => _gamecontent.SolidRectangle;
         public override float Height => _height * ImageScale;
@@ -69,12 +69,12 @@ namespace MoonTrucker
         private float _height;
         private float _width;
 
-        public RectangleWall(GameContent content, SpriteBatch batch) : base(content, batch) {
+        public RectangleSprite(GameContent content, SpriteBatch batch) : base(content, batch) {
             ImageColor = Color.Black;
             _height = 1;
             _width = 1;
         }
-        public RectangleWall(GameContent content, SpriteBatch batch, Color color, float width, float height) : base(content, batch) {
+        public RectangleSprite(GameContent content, SpriteBatch batch, Color color, float width, float height) : base(content, batch) {
             ImageColor = color;
             _height = height;
             _width = width;
@@ -82,9 +82,8 @@ namespace MoonTrucker
 
         public override void Draw(Vector2 orgin, float direction)
         {
-            _spriteBatch.Draw(_gamecontent.SolidRectangle, new Vector2(orgin.X - Width / 2, orgin.Y - Height / 2), null,
-            ImageColor, direction, Vector2.Zero, new Vector2(Width, Height),
-            SpriteEffects.None, 0f);
+            _spriteBatch.Draw(_gamecontent.SolidRectangle, orgin, null,
+            ImageColor, direction, Vector2.Zero, new Vector2(Width, Height), SpriteEffects.None, 0f);
         }
     }
 }

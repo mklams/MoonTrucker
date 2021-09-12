@@ -7,6 +7,7 @@ using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Utilities;
 using Genbox.VelcroPhysics.Collision.Shapes;
 using Genbox.VelcroPhysics.Shared;
+using System.Collections.Generic;
 
 namespace MoonTrucker
 {
@@ -16,12 +17,12 @@ namespace MoonTrucker
         private SpriteBatch _spriteBatch;
         private GameContent _gameContent;
         private VehicleWithPhysics _vehicle;
-        private Tire _tire;
-        private Wall[] _walls;
+        private List<RectangleBody> _walls;
         private int _screenWidth;
         private int _screenHeight;
         private KeyboardState _oldKeyboardState;
         private readonly World _world;
+        private TextureManager _textureManager;
 
         public MoonTruckerGame()
         {
@@ -45,12 +46,15 @@ namespace MoonTrucker
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _gameContent = new GameContent(Content, GraphicsDevice);
+            _textureManager = new TextureManager(Content, GraphicsDevice);
             setScreenDimensions();
-
+            var screenCenter = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
             //create game objects
-            _vehicle = new VehicleWithPhysics(new CarSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2,20), _screenWidth, _screenHeight);
-            //_tire = new Tire(new TruckSprite(_gameContent, _spriteBatch), _world, new Vector2(_screenWidth / 2, 20), _screenWidth, _screenHeight);
-            _walls = createWalls();
+            var vehicleSprite = new RectangleSprite(_gameContent, _spriteBatch, Color.AliceBlue, 20, 40);
+            //_vehicle = new VehicleWithPhysics(vehicleSprite, _world, new Vector2(_screenWidth / 2,20), _screenWidth, _screenHeight);
+            _vehicle = new VehicleWithPhysics(_world, _textureManager, _spriteBatch);
+            var cityGenerator = new GeneratedCity(_gameContent, _spriteBatch, _screenWidth, _screenHeight, _world, _vehicle, _textureManager);
+            _walls = cityGenerator.GenerateSquareCity();
         }
 
         private void setScreenDimensions()
@@ -59,31 +63,17 @@ namespace MoonTrucker
             _screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
             //set game to 1004x700 or screen max if smaller
-            if (_screenWidth >= 1004)
+            if (_screenWidth >= 1500)
             {
-                _screenWidth = 1004;
+                _screenWidth = 1500;
             }
-            if (_screenHeight >= 700)
+            if (_screenHeight >= 1000)
             {
-                _screenHeight = 700;
+                _screenHeight = 1000;
             }
             _graphics.PreferredBackBufferWidth = _screenWidth;
             _graphics.PreferredBackBufferHeight = _screenHeight;
             _graphics.ApplyChanges();
-        }
-
-        private Wall[] createWalls()
-        {
-            // Convert screen center from pixels to meters
-            var screenCenter = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
-
-            return new Wall[] {
-            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, 5f, _screenHeight), _world, new Vector2(0,_screenHeight/2),  _screenWidth, _screenHeight),
-            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, 5f, _screenHeight), _world, new Vector2(_screenWidth - 5f, _screenHeight / 2), _screenWidth, _screenHeight),
-            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenWidth, 5f), _world, new Vector2(_screenWidth / 2.0f, 0),  _screenWidth, _screenHeight),
-            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, _screenWidth, 5f), _world, new Vector2(_screenWidth / 2.0f, _screenHeight -5f), _screenWidth, _screenHeight),
-            new Wall(new RectangleWall(_gameContent, _spriteBatch, Color.Aqua, 100f, 100f), _world, screenCenter, _screenWidth, _screenHeight)
-            };
         }
 
         protected override void Update(GameTime gameTime)
@@ -94,7 +84,6 @@ namespace MoonTrucker
             KeyboardState newKeyboardState = Keyboard.GetState();
 
             _vehicle.UpdateVehicle(newKeyboardState, gameTime);
-            //_tire.UpdateVehicle(newKeyboardState, gameTime);
 
             _oldKeyboardState = newKeyboardState;
 
@@ -109,8 +98,7 @@ namespace MoonTrucker
 
             _spriteBatch.Begin();
             _vehicle.Draw();
-            //_tire.Draw();
-            foreach (Wall wall in _walls)
+            foreach (RectangleBody wall in _walls)
             {
                 wall.Draw();
             }
