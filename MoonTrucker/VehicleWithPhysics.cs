@@ -15,8 +15,8 @@ namespace MoonTrucker
         private readonly float _screenWidth;
         private readonly float _screenHeight;
         private const float IMPULSE_FACTOR = .2f;
-        private const float TRACT_FACT = .2f;
-        private const float TURN_FACTOR = 1f;
+        private const float TRACT_FACT = .03f;
+        private const float TURN_FACTOR = 2f;
 
         private Vector2 _position;
         private float _angle = 0;
@@ -61,7 +61,6 @@ namespace MoonTrucker
 
         public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)
         {
-            
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 this.handleUpKey();
@@ -81,10 +80,9 @@ namespace MoonTrucker
                 this.handleRightKey();
             }
             this.snapVelocityToZero();
-            this.applyFriction();
-            //this.applyTraction();
+            this.applyRotationalFriction();
+            this.applyTraction();
 
-            //Vector2 velocity = _vehicleBody.GetLinearVelocityFromLocalPoint()
         }
 
         private void snapVelocityToZero()
@@ -94,8 +92,7 @@ namespace MoonTrucker
             }
         }
 
-        private void applyFriction(){
-            _vehicleBody.LinearVelocity *= .98f;
+        private void applyRotationalFriction(){
             _vehicleBody.AngularVelocity *= .98f;
         }
 
@@ -103,11 +100,7 @@ namespace MoonTrucker
         {
             if(_vehicleBody.LinearVelocity.Length() != 0f)
             {
-                var velocity = this.copyVector(_vehicleBody.LinearVelocity);
-                velocity.Normalize();
-                var directionVec = this.getUnitDirectionVector();
-                var degrees = MathHelper.ToDegrees(MathF.Acos(Vector2.Dot(velocity, directionVec)));
-                _vehicleBody.LinearVelocity = this.rotate(velocity, TRACT_FACT*degrees);
+                _vehicleBody.ApplyLinearImpulse(-_vehicleBody.LinearVelocity * TRACT_FACT);
             }
         }
 
