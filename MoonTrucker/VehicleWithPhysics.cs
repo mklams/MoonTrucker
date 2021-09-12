@@ -25,13 +25,11 @@ namespace MoonTrucker
 
         public VehicleWithPhysics(World world, TextureManager manager, SpriteBatch batch)
         {
-            
-            //_vehicleBody = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(_sprite.Width), ConvertUnits.ToSimUnits(_sprite.Height), 1f, ConvertUnits.ToSimUnits(_position), _angle, BodyType.Dynamic);
             _vehicleBody = BodyFactory.CreateRectangle(world, 1f, 0.5f, 1f, new Vector2(7f, 7f), _angle, BodyType.Dynamic);
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
 
-            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.DarkMagenta, Color.DeepPink);
+            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Black, Color.Red);
             _batch = batch;
         }
 
@@ -55,7 +53,6 @@ namespace MoonTrucker
 
         public void Draw()
         {
-            //_sprite.Draw(ConvertUnits.ToDisplayUnits(_vehicleBody.Position), _vehicleBody.Rotation + +1.5708f); // TODO: Why does this need +90 degrees
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
             _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, Color.White, _vehicleBody.Rotation, origin, 1f, SpriteEffects.None, 0f);
         }
