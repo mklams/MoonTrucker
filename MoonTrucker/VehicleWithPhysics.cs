@@ -12,10 +12,9 @@ namespace MoonTrucker
 {
     public class VehicleWithPhysics
     {
-        private const float IMPULSE_FACTOR = .2f;
-        private const float TRACT_FACT = .03f;
-        private const float TURN_FACTOR = 1f;
-
+        private const float IMPULSE_FACTOR = 8f;
+        private const float TRACT_FACT = .3f;
+        private const float TURN_FACTOR = 100f;
         private float _angle = 0;
 
         private Texture2D _sprite { get; }
@@ -109,7 +108,7 @@ namespace MoonTrucker
             {
                 this.handleRightKey();
             }
-            //this.snapVelocityToZero();
+            this.snapVelocityToZero();
             this.applyRotationalFriction();
             this.applyTraction();
 
@@ -117,7 +116,7 @@ namespace MoonTrucker
 
         private void snapVelocityToZero()
         {
-            if(_vehicleBody.LinearVelocity.Length() < .4f){
+            if(_vehicleBody.LinearVelocity.Length() < .1f){
                 _vehicleBody.LinearVelocity = Vector2.Zero;
             }
         }
