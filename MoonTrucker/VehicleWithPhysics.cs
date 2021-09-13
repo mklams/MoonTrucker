@@ -12,9 +12,9 @@ namespace MoonTrucker
 {
     public class VehicleWithPhysics
     {
-        private const float IMPULSE_FACTOR = .2f;
-        private const float TRACT_FACT = .03f;
-        private const float TURN_FACTOR = 1f;
+        private const float IMPULSE_FACTOR = 1.2f;
+        private const float TRACT_FACT = .1f;
+        private const float TURN_FACTOR = 6f;
 
         private float _angle = 0;
 
@@ -23,10 +23,17 @@ namespace MoonTrucker
 
         private Body _vehicleBody { get; }
         private SpriteBatch _batch;
-        private bool _isBraking = false; 
+        private bool _isBraking = false;
+
+        public float Height { get;  }
+        public float Width { get;  }
 
         public VehicleWithPhysics(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
         {
+            
+            Height = width;
+            Width = height;
+
             _vehicleBody = BodyFactory.CreateRectangle(world, height, width, 1f,position, _angle, BodyType.Dynamic);
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
@@ -39,16 +46,6 @@ namespace MoonTrucker
             }
             _light.SetData(colors);
             _batch = batch;
-        }
-
-        public float GetHeight()
-        {
-            return _sprite.Height;
-        }
-
-        public float GetWidth()
-        {
-            return _sprite.Width;
         }
 
         public bool isMovingForward()
