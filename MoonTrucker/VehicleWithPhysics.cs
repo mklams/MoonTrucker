@@ -118,6 +118,7 @@ namespace MoonTrucker
         {
             if(_vehicleBody.LinearVelocity.Length() < .1f){
                 _vehicleBody.LinearVelocity = Vector2.Zero;
+                _vehicleBody.AngularVelocity = 0f;
             }
         }
 
