@@ -74,9 +74,9 @@ namespace MoonTrucker
             };
         }
 
-        private static Vector2 createVectorRelativeToOrgin(Vector2 origin, float x, float y)
+        private static Vector2 createVectorRelativeToOrgin(Vector2 origin, float xOffset, float yOffset)
         {
-            return new Vector2(origin.X + x, origin.Y + y);
+            return new Vector2(origin.X + xOffset, origin.Y + yOffset);
         }
 
         private static Vector2 convertPointToRectangleCenter(Vector2 point, float width, float height)

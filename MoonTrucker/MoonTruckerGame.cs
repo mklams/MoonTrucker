@@ -33,7 +33,7 @@ namespace MoonTrucker
             // Velcro Physics expects objects to be scaled to MKS (meters, kilos, seconds)
             // 1 meters equals 64 pixels here
             // TODO: Figure out if this is the convertion rate we want
-            ConvertUnits.SetDisplayUnitToSimUnitRatio(64f);
+            ConvertUnits.SetDisplayUnitToSimUnitRatio(14f);
         }
 
         protected override void Initialize()
@@ -46,9 +46,9 @@ namespace MoonTrucker
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
             setScreenDimensions();
-            var screenCenter = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
+            var screenCenterInSim = ConvertUnits.ToSimUnits(new Vector2(_screenWidth / 2f, _screenHeight / 2f));
             //create game objects
-            _vehicle = new VehicleWithPhysics(_world, _textureManager, _spriteBatch, GraphicsDevice);
+            _vehicle = new VehicleWithPhysics(2f, 5f, screenCenterInSim, _world, _textureManager, _spriteBatch, GraphicsDevice);
             var cityGenerator = new GeneratedCity(_spriteBatch, _screenWidth, _screenHeight, _world, _vehicle, _textureManager);
             _walls = cityGenerator.GenerateSquareCity();
         }

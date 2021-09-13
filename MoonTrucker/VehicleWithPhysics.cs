@@ -25,16 +25,16 @@ namespace MoonTrucker
         private SpriteBatch _batch;
         private bool _isBraking = false; 
 
-        public VehicleWithPhysics(World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
+        public VehicleWithPhysics(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
         {
-            _vehicleBody = BodyFactory.CreateRectangle(world, 1f, 0.5f, 1f, new Vector2(7f, 7f), _angle, BodyType.Dynamic);
+            _vehicleBody = BodyFactory.CreateRectangle(world, height, width, 1f,position, _angle, BodyType.Dynamic);
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
 
-            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Blue);
-            _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(.5f));
-            Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(.5f))];
-            for(int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(.5f)); i++){
+            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
+            _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
+            Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(width))];
+            for(int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(width)); i++){
                 colors[i] = Color.White;
             }
             _light.SetData(colors);
@@ -109,7 +109,7 @@ namespace MoonTrucker
             {
                 this.handleRightKey();
             }
-            this.snapVelocityToZero();
+            //this.snapVelocityToZero();
             this.applyRotationalFriction();
             this.applyTraction();
 
