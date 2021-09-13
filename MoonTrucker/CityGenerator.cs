@@ -8,7 +8,6 @@ namespace MoonTrucker
 {
     public class GeneratedCity
     {
-        private GameContent _gameContent;
         private SpriteBatch _spriteBatch;
         private float _screenWidth;
         private float _screenHeight;
@@ -16,9 +15,8 @@ namespace MoonTrucker
         private VehicleWithPhysics _mainVehicle;
         private TextureManager _manager;
 
-        public GeneratedCity(GameContent gameContent, SpriteBatch spriteBatch, float screenWidth, float screenHeight, World world, VehicleWithPhysics mainVehicle, TextureManager manager)
+        public GeneratedCity(SpriteBatch spriteBatch, float screenWidth, float screenHeight, World world, VehicleWithPhysics mainVehicle, TextureManager manager)
         {
-            _gameContent = gameContent;
             _spriteBatch = spriteBatch;
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;

@@ -15,7 +15,6 @@ namespace MoonTrucker
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private GameContent _gameContent;
         private VehicleWithPhysics _vehicle;
         private List<RectangleBody> _walls;
         private int _screenWidth;
@@ -27,7 +26,7 @@ namespace MoonTrucker
         public MoonTruckerGame()
         {
             _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content/GameAssets";
+            Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
             _world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
@@ -45,13 +44,12 @@ namespace MoonTrucker
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _gameContent = new GameContent(Content, GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
             setScreenDimensions();
             var screenCenter = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
             //create game objects
             _vehicle = new VehicleWithPhysics(_world, _textureManager, _spriteBatch);
-            var cityGenerator = new GeneratedCity(_gameContent, _spriteBatch, _screenWidth, _screenHeight, _world, _vehicle, _textureManager);
+            var cityGenerator = new GeneratedCity(_spriteBatch, _screenWidth, _screenHeight, _world, _vehicle, _textureManager);
             _walls = cityGenerator.GenerateSquareCity();
         }
 

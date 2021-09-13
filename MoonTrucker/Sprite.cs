@@ -10,12 +10,12 @@ namespace MoonTrucker
         public abstract Texture2D Image { get; }
         public virtual float ImageScale => 1f;
         public virtual Color ImageColor => Color.White;
-        internal GameContent _gamecontent;
+        internal TextureManager _textureManager;
         internal SpriteBatch _spriteBatch;
 
-        public Sprite(GameContent content, SpriteBatch batch)
+        public Sprite(TextureManager manager, SpriteBatch batch)
         {
-            _gamecontent = content;
+            _textureManager = manager;
             _spriteBatch = batch;
         }
 
@@ -30,60 +30,32 @@ namespace MoonTrucker
 
     public sealed class TruckSprite : Sprite
     {
-        public override Texture2D Image => _gamecontent.ImgTruck;
+        public override Texture2D Image => _textureManager.GetTexture("truck");
         public override float ImageScale => 0.25f;
         public override Color ImageColor => Color.MediumPurple;
 
-        public TruckSprite(GameContent content, SpriteBatch batch) : base(content, batch) { }
+        public TruckSprite(TextureManager manager, SpriteBatch batch) : base(manager, batch) { }
     }
 
     public sealed class CarSprite : Sprite
     {
-        public override Texture2D Image => _gamecontent.ImgViperCar;
+        public override Texture2D Image => _textureManager.GetTexture("Black_viper");
         public override float ImageScale => 0.25f;
 
-        public CarSprite(GameContent content, SpriteBatch batch) : base(content, batch) { }
+        public CarSprite(TextureManager manager, SpriteBatch batch) : base(manager, batch) { }
     }
 
     public sealed class CircleSprite : Sprite
     {
-        public override Texture2D Image => _gamecontent.ImgCircle;
+        public override Texture2D Image => _textureManager.GetTexture("CircleSprite");
 
-        public CircleSprite(GameContent content, SpriteBatch batch) : base(content, batch) { }
+        public CircleSprite(TextureManager manager, SpriteBatch batch) : base(manager, batch) { }
     }
 
     public sealed class WallSprite : Sprite
     {
-        public override Texture2D Image => _gamecontent.ImgGround;
+        public override Texture2D Image => _textureManager.GetTexture("GroundSprite");
 
-        public WallSprite(GameContent content, SpriteBatch batch) : base(content, batch) { }
-    }
-
-    public sealed class RectangleSprite : Sprite
-    {
-        public override Texture2D Image => _gamecontent.SolidRectangle;
-        public override float Height => _height * ImageScale;
-        public override float Width => _width * ImageScale;
-        public override Color ImageColor { get; }
-
-        private float _height;
-        private float _width;
-
-        public RectangleSprite(GameContent content, SpriteBatch batch) : base(content, batch) {
-            ImageColor = Color.Black;
-            _height = 1;
-            _width = 1;
-        }
-        public RectangleSprite(GameContent content, SpriteBatch batch, Color color, float width, float height) : base(content, batch) {
-            ImageColor = color;
-            _height = height;
-            _width = width;
-        }
-
-        public override void Draw(Vector2 orgin, float direction)
-        {
-            _spriteBatch.Draw(_gamecontent.SolidRectangle, orgin, null,
-            ImageColor, direction, Vector2.Zero, new Vector2(Width, Height), SpriteEffects.None, 0f);
-        }
+        public WallSprite(TextureManager manager, SpriteBatch batch) : base(manager, batch) { }
     }
 }

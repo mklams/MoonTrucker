@@ -29,19 +29,19 @@ namespace MoonTrucker
             _textureList["Blank"].Name = "Blank";
 
             // Load all graphics
-            //string[] gfxFolders = { "Common", "DemoGFX", "Materials" };
-            //foreach (string folder in gfxFolders)
-            //{
-            //    DirectoryInfo currentAssetFolder = new DirectoryInfo(content.RootDirectory + "/" + folder);
-            //    FileInfo[] currentFileList = currentAssetFolder.GetFiles("*.xnb");
+            string[] gfxFolders = { "GameAssets" };
+            foreach (string folder in gfxFolders)
+            {
+                DirectoryInfo currentAssetFolder = new DirectoryInfo(content.RootDirectory + "/" + folder);
+                FileInfo[] currentFileList = currentAssetFolder.GetFiles("*.xnb");
 
-            //    for (int i = 0; i < currentFileList.Length; i++)
-            //    {
-            //        string textureName = Path.GetFileNameWithoutExtension(currentFileList[i].Name);
-            //        _textureList[textureName] = content.Load<Texture2D>(folder + "/" + textureName);
-            //        _textureList[textureName].Name = textureName;
-            //    }
-            //}
+                for (int i = 0; i < currentFileList.Length; i++)
+                {
+                    string textureName = Path.GetFileNameWithoutExtension(currentFileList[i].Name);
+                    _textureList[textureName] = content.Load<Texture2D>(folder + "/" + textureName);
+                    _textureList[textureName].Name = textureName;
+                }
+            }
 
             // Add basic effect for texture generation
             _effect = new BasicEffect(_graphicsDevice);
