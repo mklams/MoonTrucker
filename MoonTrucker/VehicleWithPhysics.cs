@@ -152,14 +152,6 @@ namespace MoonTrucker
             }
         }
 
-        private Vector2 rotate(Vector2 vector, float degrees) 
-        {
-            float Vx, Vy;
-            Vx = vector.Length()*MathF.Cos(_angle + MathHelper.ToRadians(degrees));
-            Vy = vector.Length()*MathF.Sin(_angle + MathHelper.ToRadians(degrees));
-            return new Vector2(Vx, Vy);
-        }
-
         private void handleUpKey()
         {
             Vector2 impulse;
