@@ -50,7 +50,7 @@ namespace MoonTrucker
             setScreenDimensions();
             var screenCenter = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
             //create game objects
-            _vehicle = new VehicleWithPhysics(_world, _textureManager, _spriteBatch);
+            _vehicle = new VehicleWithPhysics(_world, _textureManager, _spriteBatch, _gameContent.Light);
             var cityGenerator = new GeneratedCity(_gameContent, _spriteBatch, _screenWidth, _screenHeight, _world, _vehicle, _textureManager);
             _walls = cityGenerator.GenerateSquareCity();
         }

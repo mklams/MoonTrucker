@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Genbox.VelcroPhysics.Utilities;
 
 namespace MoonTrucker
 {
@@ -13,6 +14,7 @@ namespace MoonTrucker
         public Texture2D ImgCircle { get; set; }
         public Texture2D ImgGround {get; set; }
         public Texture2D SolidRectangle { get; set; }
+        public Texture2D Light { get; set; }
 
         public GameContent(ContentManager content, GraphicsDevice graphicsdevice)
         {
@@ -23,6 +25,12 @@ namespace MoonTrucker
             ImgGround = content.Load<Texture2D>("GroundSprite");
             SolidRectangle = new Texture2D(graphicsdevice, 1, 1);
             SolidRectangle.SetData(new[]{Color.White});
+            Light = new Texture2D(graphicsdevice, 3, (int)ConvertUnits.ToDisplayUnits(.5f));
+            Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(.5f))];
+            for(int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(.5f)); i++){
+                colors[i] = Color.White;
+            }
+            Light.SetData(colors);
         }
     }
 }
