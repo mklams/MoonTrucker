@@ -106,7 +106,7 @@ namespace MoonTrucker
             }
             this.snapVelocityToZero();
             this.applyRotationalFriction();
-            //this.applyTraction();
+            this.applyTraction();
 
         }
 
@@ -119,14 +119,14 @@ namespace MoonTrucker
 
         private void applyRotationalFriction(){
             _vehicleBody.AngularVelocity *= .98f;
-            _vehicleBody.LinearVelocity *= .98f;
+            //_vehicleBody.LinearVelocity *= .98f;
         }
 
         private void applyTraction()
         {
             if(_vehicleBody.LinearVelocity.Length() != 0f)
             {
-                _vehicleBody.ApplyLinearImpulse(-_vehicleBody.LinearVelocity * TRACT_FACT);
+                _vehicleBody.ApplyLinearImpulse(-_vehicleBody.LinearVelocity * TRACT_FACT);                
             }
         }
 
