@@ -14,7 +14,7 @@ namespace MoonTrucker
     {
         private const float IMPULSE_FACTOR = .2f;
         private const float TRACT_FACT = .03f;
-        private const float TURN_FACTOR = 2f;
+        private const float TURN_FACTOR = 1f;
 
         private float _angle = 0;
 
@@ -92,6 +92,7 @@ namespace MoonTrucker
 
         private void applyRotationalFriction(){
             _vehicleBody.AngularVelocity *= .98f;
+            //_vehicleBody.LinearVelocity *= .98f;
         }
 
         private void applyTraction()
