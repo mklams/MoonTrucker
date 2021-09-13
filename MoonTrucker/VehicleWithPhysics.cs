@@ -14,22 +14,30 @@ namespace MoonTrucker
     {
         private const float IMPULSE_FACTOR = .2f;
         private const float TRACT_FACT = .03f;
-        private const float TURN_FACTOR = 2f;
+        private const float TURN_FACTOR = 1f;
 
         private float _angle = 0;
 
         private Texture2D _sprite { get; }
+        private Texture2D _light  {get; }
 
         private Body _vehicleBody { get; }
         private SpriteBatch _batch;
+        private bool _isBraking = false; 
 
-        public VehicleWithPhysics(World world, TextureManager manager, SpriteBatch batch)
+        public VehicleWithPhysics(World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
         {
             _vehicleBody = BodyFactory.CreateRectangle(world, 1f, 0.5f, 1f, new Vector2(7f, 7f), _angle, BodyType.Dynamic);
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
 
-            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Black, Color.Red);
+            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Blue);
+            _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(.5f));
+            Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(.5f))];
+            for(int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(.5f)); i++){
+                colors[i] = Color.White;
+            }
+            _light.SetData(colors);
             _batch = batch;
         }
 
@@ -55,10 +63,34 @@ namespace MoonTrucker
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
             _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, Color.White, _vehicleBody.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            this.drawTailLights(origin);
+        }
+
+        private void drawTailLights(Vector2 carOrigin){
+            Color tailLightColor;
+            if(_vehicleBody.LinearVelocity.Length() == 0f)//stopped
+            {
+                tailLightColor = Color.DarkRed;
+            }
+            else //in motion
+            {
+                if(_isBraking){
+                    tailLightColor = Color.Red;
+                }
+                else if(isMovingForward()){
+                    tailLightColor = Color.DarkRed;
+                }
+                else{
+                    tailLightColor = Color.White;
+                }
+            }
+            _batch.Draw(_light, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, tailLightColor, _vehicleBody.Rotation, carOrigin, 1f, SpriteEffects.None, 0f);
+
         }
 
         public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)
         {
+            _isBraking = false;
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 this.handleUpKey();
@@ -85,20 +117,21 @@ namespace MoonTrucker
 
         private void snapVelocityToZero()
         {
-            if(_vehicleBody.LinearVelocity.Length() < .1f){
+            if(_vehicleBody.LinearVelocity.Length() < .4f){
                 _vehicleBody.LinearVelocity = Vector2.Zero;
             }
         }
 
         private void applyRotationalFriction(){
             _vehicleBody.AngularVelocity *= .98f;
+            //_vehicleBody.LinearVelocity *= .98f;
         }
 
         private void applyTraction()
         {
             if(_vehicleBody.LinearVelocity.Length() != 0f)
             {
-                _vehicleBody.ApplyLinearImpulse(-_vehicleBody.LinearVelocity * TRACT_FACT);
+                _vehicleBody.ApplyLinearImpulse(-_vehicleBody.LinearVelocity * TRACT_FACT);                
             }
         }
 
@@ -137,6 +170,7 @@ namespace MoonTrucker
             }
             else//decelerate
             {
+                _isBraking = true;
                 impulse = this.copyVector(_vehicleBody.LinearVelocity);
                 impulse.Normalize();
                 impulse *= -1;
@@ -154,6 +188,7 @@ namespace MoonTrucker
             }
             else //decelerate
             {
+                _isBraking = true;
                 impulse = this.copyVector(_vehicleBody.LinearVelocity);
                 impulse.Normalize();
                 impulse *= -1;
@@ -164,7 +199,7 @@ namespace MoonTrucker
         private Vector2 copyVector(Vector2 vector)
         {
             float vx,vy;
-            _vehicleBody.LinearVelocity.Deconstruct(out vx, out vy);
+            vector.Deconstruct(out vx, out vy);
             return new Vector2(vx,vy);
         }
 
