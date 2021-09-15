@@ -115,6 +115,7 @@ namespace MoonTrucker
         {
             if(_vehicleBody.LinearVelocity.Length() < .1f){
                 _vehicleBody.LinearVelocity = Vector2.Zero;
+                _vehicleBody.AngularVelocity = 0f;
             }
         }
 
@@ -147,14 +148,6 @@ namespace MoonTrucker
                 var posNeg = this.isMovingForward()? 1 : -1;
                 _vehicleBody.ApplyTorque(posNeg * TURN_FACTOR);
             }
-        }
-
-        private Vector2 rotate(Vector2 vector, float degrees) 
-        {
-            float Vx, Vy;
-            Vx = vector.Length()*MathF.Cos(_angle + MathHelper.ToRadians(degrees));
-            Vy = vector.Length()*MathF.Sin(_angle + MathHelper.ToRadians(degrees));
-            return new Vector2(Vx, Vy);
         }
 
         private void handleUpKey()

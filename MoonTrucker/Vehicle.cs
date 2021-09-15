@@ -1,33 +1,36 @@
 ﻿using System;
+using Genbox.VelcroPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Genbox.VelcroPhysics.Factories;
+using Genbox.VelcroPhysics.Utilities;
 
 namespace MoonTrucker
 {
-    public class Vehicle
+    public abstract class Vehicle
     {
-        private readonly float _screenWidth;
-        private readonly float _screenHeight;
+        private Texture2D _sprite { get; }
+        private Texture2D _light  {get; }
 
-        public Vector2 _origin;
-        private Vector2 _position;
-        private Vector2 _direction => new Vector2((float)Math.Cos(_angle), (float)Math.Sin(_angle));
-        private float _speed = 5f;
-        private float _angle = 0;
-
-        private const float _rotationVelocity = 3f;
-        private const float _linearVelocity = 4f;
-
-        private Sprite _sprite { get; set; }
-
-        public Vehicle(Sprite vehicleSprite, Vector2 position, float screenWidth, float screenHeight)
+        private Body _vehicleBody { get; }
+        private SpriteBatch _batch;
+        private bool _isBraking = false; 
+        public Vehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
         {
-            _sprite = vehicleSprite;
-            _screenWidth = screenWidth;
-            _screenHeight = screenHeight;
-            _position = position;
+            _vehicleBody = BodyFactory.CreateRectangle(world, height, width, 1f,position, 0f, BodyType.Dynamic);
+            _vehicleBody.Restitution = 0.3f;
+            _vehicleBody.Friction = 0.5f;
+
+            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
+            _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
+            Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(width))];
+            for(int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(width)); i++){
+                colors[i] = Color.White;
+            }
+            _light.SetData(colors);
+            _batch = batch;
         }
 
         public float GetHeight()
@@ -42,51 +45,66 @@ namespace MoonTrucker
 
         public void Draw()
         {
-            _sprite.Draw(_position, _angle);
+            var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, Color.White, _vehicleBody.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            this.drawTailLights(origin);
+        }
+
+        private void drawTailLights(Vector2 carOrigin){
+            Color tailLightColor;
+            if(VectorHelpers.IsStopped(_vehicleBody))
+            {
+                tailLightColor = Color.DarkRed;
+            }
+            else //in motion
+            {
+                if(_isBraking){
+                    tailLightColor = Color.Red;
+                }
+                else if(VectorHelpers.IsMovingForward(_vehicleBody)){
+                    tailLightColor = Color.DarkRed;
+                }
+                else{
+                    tailLightColor = Color.White;
+                }
+            }
+            _batch.Draw(_light, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, tailLightColor, _vehicleBody.Rotation, carOrigin, 1f, SpriteEffects.None, 0f);
+
         }
 
         public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)
         {
-            // TODO: Maybe move it's own class that Vehicle implemnts(e.g. IDrivable)
+            _isBraking = false;
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                moveForward();
+                this.handleUpKey();
             }
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
-                moveBack();
+                this.handleDownKey();
             }
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
-                turnLeft();
+                this.handleLeftKey();
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-                turnRight();
+                this.handleRightKey();
             }
-
-            _position = Vector2.Clamp(_position, new Vector2(0, 0), new Vector2(_screenWidth, _screenHeight));
+            this.snapVelocityToZero();
+            this.applyFriction();
+            this.applyTraction();
         }
 
-        private void moveForward()
-        {
-            _position += _direction * _linearVelocity;
-        }
-        private void moveBack()
-        {
-            _position -= _direction * _linearVelocity;
-        }
+        protected abstract void handleUpKey();
+        protected abstract void handleDownKey();
+        protected abstract void handleLeftKey();
+        protected abstract void handleRightKey();
+        protected abstract void snapVelocityToZero();
+        protected abstract void applyFriction();
+        protected abstract void applyTraction();
 
-        private void turnLeft()
-        {
-            _angle -= MathHelper.ToRadians(_rotationVelocity);
-        }
-
-        private void turnRight()
-        {
-            _angle += MathHelper.ToRadians(_rotationVelocity);
-        }
     }
 }
