@@ -25,7 +25,6 @@ namespace MoonTrucker
         public List<IDrawable> GenerateSquareCity()
         {
             var city = createBoundryWalls();
-            //city.Add(createSquare(_mainVehicle.Width, new Vector2(5f, 10f)));
             city.AddRange(createSquareCityBlock(new Vector2(1f,1f))); // offset by 1m due to wall
 
             return city;
@@ -43,11 +42,6 @@ namespace MoonTrucker
             };
         }
 
-        private RectangleBody createSquare(float sideLength, Vector2 position)
-        {
-            return _bodyFactory.CreateRectangleBody(sideLength, sideLength, position);
-        }
-
         /// <summary>
         /// Creates a city block with four square buildings
         /// </summary>
@@ -56,7 +50,7 @@ namespace MoonTrucker
         private List<IDrawable> createSquareCityBlock(Vector2 blockCorner)
         {
             var buildingLength = _mainVehicle.Height * 3f;
-            var roadLaneWidth = _mainVehicle.Height;
+            var roadLaneWidth = _mainVehicle.Height * 1.5f;
             var firstBuilding = new SquareBuilding(buildingLength, roadLaneWidth, blockCorner, _bodyFactory);
             var secondBuilding = new SquareBuilding(buildingLength, roadLaneWidth, firstBuilding.TopRightCorner, _bodyFactory);
             var thirdBuilding = new SquareBuilding(buildingLength, roadLaneWidth, firstBuilding.BottomLeftCorner, _bodyFactory);
@@ -69,23 +63,6 @@ namespace MoonTrucker
                 thirdBuilding,
                 fourthBuildg
             };
-        }
-
-        private static Vector2 createVectorRelativeToOrgin(Vector2 origin, float xOffset, float yOffset)
-        {
-            return new Vector2(origin.X + xOffset, origin.Y + yOffset);
-        }
-
-        public static Vector2 convertPointToRectangleCenter(Vector2 point, float width, float height)
-        {
-            return new Vector2(point.X + width / 2, point.Y + height / 2);
-        }
-
-        private RectangleBody createRectangleBuildingAtPoint(Vector2 point, float width, float height)
-        {
-            var origin = convertPointToRectangleCenter(point, width, height);
-
-            return _bodyFactory.CreateRectangleBody(width, height, origin);
         }
 
     }
