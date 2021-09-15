@@ -9,47 +9,43 @@ namespace MoonTrucker
 {
     public class GeneratedCity
     {
-        private SpriteBatch _spriteBatch;
         private float _worldWidth;
         private float _worldHeight;
-        private World _world;
         private VehicleWithPhysics _mainVehicle;
-        private TextureManager _manager;
+        private StaticBodyFactory _bodyFactory;
 
-        public GeneratedCity(SpriteBatch spriteBatch, float screenWidth, float screenHeight, World world, VehicleWithPhysics mainVehicle, TextureManager manager)
+        public GeneratedCity(StaticBodyFactory bodyFactory, float screenWidth, float screenHeight, VehicleWithPhysics mainVehicle)
         {
-            _spriteBatch = spriteBatch;
+            _bodyFactory = bodyFactory;
             _worldWidth = ConvertUnits.ToSimUnits(screenWidth);
             _worldHeight = ConvertUnits.ToSimUnits(screenHeight);
-            _world = world;
             _mainVehicle = mainVehicle;
-            _manager = manager;
         }
 
-        public List<RectangleBody> GenerateSquareCity()
+        public List<IDrawable> GenerateSquareCity()
         {
             var city = createBoundryWalls();
-            city.Add(createSquare(_mainVehicle.Width, new Vector2(5f, 5f)));
-            //city.AddRange(createSquareCityBlock(new Vector2(0,0)));
+            //city.Add(createSquare(_mainVehicle.Width, new Vector2(5f, 10f)));
+            city.AddRange(createSquareCityBlock(new Vector2(1f,1f))); // offset by 1m due to wall
 
             return city;
         }
 
-        private List<RectangleBody> createBoundryWalls()
+        private List<IDrawable> createBoundryWalls()
         {
             const float wallWidth = 1f;
-            return new List<RectangleBody>
+            return new List<IDrawable>
             {
-                new RectangleBody(wallWidth, _worldHeight, new Vector2(wallWidth / 2, _worldHeight / 2f), _world, _manager, _spriteBatch),
-                new RectangleBody(wallWidth, _worldHeight, new Vector2(_worldWidth - wallWidth / 2, _worldHeight / 2f), _world, _manager, _spriteBatch),
-                new RectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, wallWidth / 2), _world, _manager, _spriteBatch),
-                new RectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, _worldHeight - wallWidth /2), _world, _manager, _spriteBatch),
+                _bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(wallWidth / 2, _worldHeight / 2f)),
+                _bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(_worldWidth - wallWidth / 2, _worldHeight / 2f)),
+                _bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, wallWidth / 2)),
+                _bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, _worldHeight - wallWidth /2)),
             };
         }
 
         private RectangleBody createSquare(float sideLength, Vector2 position)
         {
-            return new RectangleBody(sideLength, sideLength, position, _world, _manager, _spriteBatch);
+            return _bodyFactory.CreateRectangleBody(sideLength, sideLength, position);
         }
 
         /// <summary>
@@ -57,22 +53,21 @@ namespace MoonTrucker
         /// </summary>
         /// <param name="blockCorner"></param>
         /// <returns></returns>
-        private List<RectangleBody> createSquareCityBlock(Vector2 blockCorner)
+        private List<IDrawable> createSquareCityBlock(Vector2 blockCorner)
         {
-            float vehicleHeight = _mainVehicle.Height;
-            var buildingLength = _mainVehicle.Width * 3f;
-            var roadLaneWidth = vehicleHeight;
-            var firstBuildingCorner = createVectorRelativeToOrgin(blockCorner, vehicleHeight, vehicleHeight);
-            var secondBuildingCorner = createVectorRelativeToOrgin(blockCorner, vehicleHeight, 6 * vehicleHeight);
-            var thirdBuildingCorner = createVectorRelativeToOrgin(blockCorner, 6 * vehicleHeight, vehicleHeight);
-            var fourthBuildgCorner = createVectorRelativeToOrgin(blockCorner, 6 * vehicleHeight, 6 * vehicleHeight);
+            var buildingLength = _mainVehicle.Height * 3f;
+            var roadLaneWidth = _mainVehicle.Height;
+            var firstBuilding = new SquareBuilding(buildingLength, roadLaneWidth, blockCorner, _bodyFactory);
+            var secondBuilding = new SquareBuilding(buildingLength, roadLaneWidth, firstBuilding.TopRightCorner, _bodyFactory);
+            var thirdBuilding = new SquareBuilding(buildingLength, roadLaneWidth, firstBuilding.BottomLeftCorner, _bodyFactory);
+            var fourthBuildg = new SquareBuilding(buildingLength, roadLaneWidth, firstBuilding.BottomRightCorner, _bodyFactory);
 
-            return new List<RectangleBody>
+            return new List<IDrawable>
             {
-                createRectangleBuildingAtPoint(firstBuildingCorner, buildingLength, buildingLength),
-                createRectangleBuildingAtPoint(secondBuildingCorner, buildingLength, buildingLength),
-                createRectangleBuildingAtPoint(thirdBuildingCorner, buildingLength, buildingLength),
-                createRectangleBuildingAtPoint(fourthBuildgCorner, buildingLength, buildingLength),
+                firstBuilding,
+                secondBuilding,
+                thirdBuilding,
+                fourthBuildg
             };
         }
 
@@ -90,28 +85,44 @@ namespace MoonTrucker
         {
             var origin = convertPointToRectangleCenter(point, width, height);
 
-            return new RectangleBody(width, height, origin, _world, _manager, _spriteBatch);
+            return _bodyFactory.CreateRectangleBody(width, height, origin);
         }
 
     }
 
-    public class City
+    public interface IDrawable
     {
-        // Future: If different type of Body is made create an abstraction on that concept
-        
-
-
+        public void Draw();
     }
 
-
     //TODO: Move this to it's own class
-    public class SquareBuilding
+    public class SquareBuilding : IDrawable
     {
-        //private RectangleBody createRectangleBuildingAtPoint(Vector2 point, float width, float height)
-        //{
-        //    var origin = GeneratedCity.convertPointToRectangleCenter(point, width, height);
+        private float _length;
+        private float _streetWidth;
+        private Vector2 _leftCorner;
+        private RectangleBody _buildingBody;
+        public Vector2 TopRightCorner { get; }
+        public Vector2 BottomRightCorner { get; }
+        public Vector2 BottomLeftCorner { get; }
 
-        //    return new RectangleBody(width, height, origin, _world, _manager, _spriteBatch);
-        //}
+        public SquareBuilding(float length, float streeWidth, Vector2 leftCorner, StaticBodyFactory bodyFactory)
+        {
+            float offsetToOrigin = streeWidth + length / 2; // add street width since streets surround the entire building 
+
+            Vector2 buildingOrigin = Vector2.Add(leftCorner, new Vector2(offsetToOrigin, offsetToOrigin));
+
+            _buildingBody = bodyFactory.CreateRectangleBody(length, length, buildingOrigin);
+
+            float offSetToCorner = streeWidth * 2 + length; // add 2 street width since there is a street on each side of building
+            TopRightCorner = Vector2.Add(leftCorner, new Vector2(offSetToCorner, 0));
+            BottomRightCorner = Vector2.Add(leftCorner, new Vector2(offSetToCorner, offSetToCorner));
+            BottomLeftCorner = Vector2.Add(leftCorner, new Vector2(0, offSetToCorner));
+        }
+
+        public void Draw()
+        {
+            _buildingBody.Draw();
+        }
     }
 }

@@ -10,7 +10,27 @@ using Genbox.VelcroPhysics.Shared;
 
 namespace MoonTrucker
 {
-    public class RectangleBody
+
+    public class StaticBodyFactory
+    {
+        private World _world;
+        private SpriteBatch _spriteBatch;
+        private TextureManager _textureManager;
+
+        public StaticBodyFactory(World world, TextureManager manager, SpriteBatch batch)
+        {
+            _world = world;
+            _textureManager = manager;
+            _spriteBatch = batch;
+        }
+
+        public RectangleBody CreateRectangleBody(float width, float height, Vector2 origin)
+        {
+            return new RectangleBody(width, height, origin, _world, _textureManager, _spriteBatch);
+        }
+    }
+
+    public class RectangleBody : IDrawable
     {
         private Body _wallBody;
         private Texture2D _sprite;

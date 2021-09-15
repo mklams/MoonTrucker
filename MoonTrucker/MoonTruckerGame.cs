@@ -16,12 +16,13 @@ namespace MoonTrucker
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private VehicleWithPhysics _vehicle;
-        private List<RectangleBody> _walls;
+        private List<IDrawable> _city;
         private int _screenWidth;
         private int _screenHeight;
         private KeyboardState _oldKeyboardState;
         private readonly World _world;
         private TextureManager _textureManager;
+        private StaticBodyFactory _bodyFactory;
 
         public MoonTruckerGame()
         {
@@ -45,12 +46,13 @@ namespace MoonTrucker
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
+            _bodyFactory = new StaticBodyFactory(_world, _textureManager, _spriteBatch);
             setScreenDimensions();
             var screenCenterInSim = ConvertUnits.ToSimUnits(new Vector2(_screenWidth / 2f, _screenHeight / 2f));
             //create game objects
             _vehicle = new VehicleWithPhysics(2f, 5f, screenCenterInSim, _world, _textureManager, _spriteBatch, GraphicsDevice);
-            var cityGenerator = new GeneratedCity(_spriteBatch, _screenWidth, _screenHeight, _world, _vehicle, _textureManager);
-            _walls = cityGenerator.GenerateSquareCity();
+            var cityGenerator = new GeneratedCity(_bodyFactory, _screenWidth, _screenHeight, _vehicle);
+            _city = cityGenerator.GenerateSquareCity();
         }
 
         private void setScreenDimensions()
@@ -94,9 +96,9 @@ namespace MoonTrucker
 
             _spriteBatch.Begin();
             _vehicle.Draw();
-            foreach (RectangleBody wall in _walls)
+            foreach (IDrawable body in _city)
             {
-                wall.Draw();
+                body.Draw();
             }
             _spriteBatch.End();
 
