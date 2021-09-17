@@ -62,6 +62,11 @@ namespace MoonTrucker
             this.drawTailLights(origin);
         }
 
+        public Vector2 GetPosition()
+        {
+            return _vehicleBody.Position;
+        }
+
         private void drawTailLights(Vector2 carOrigin){
             Color tailLightColor;
             if(_vehicleBody.LinearVelocity.Length() == 0f)//stopped
