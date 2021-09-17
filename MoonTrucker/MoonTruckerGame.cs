@@ -19,8 +19,8 @@ namespace MoonTrucker
         private SpriteBatch _spriteBatch;
         private VehicleWithPhysics _vehicle;
         private List<IDrawable> _city;
-        private int _screenWidth;
-        private int _screenHeight;
+        private int _screenWidthPx;
+        private int _screenHeightPx;
         private KeyboardState _oldKeyboardState;
         private readonly World _world;
         private TextureManager _textureManager;
@@ -51,8 +51,8 @@ namespace MoonTrucker
         {
             setScreenDimensions();
             _camera.Zoom = 1f;
-            _camera.Position = new Vector2(_screenWidth / 2f, _screenHeight / 2f);
-            initializeResolutionIndependence(_screenWidth, _screenHeight);
+            _camera.Position = new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f);
+            initializeResolutionIndependence(_screenWidthPx, _screenHeightPx);
             
             base.Initialize();
         }
@@ -63,10 +63,10 @@ namespace MoonTrucker
             _textureManager = new TextureManager(Content, GraphicsDevice);
             _bodyFactory = new StaticBodyFactory(_world, _textureManager, _spriteBatch);
             
-            var screenCenterInSim = ConvertUnits.ToSimUnits(new Vector2(_screenWidth / 2f, _screenHeight / 2f));
+            var screenCenterInSim = ConvertUnits.ToSimUnits(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
             //create game objects
             _vehicle = new VehicleWithPhysics(2f, 5f, screenCenterInSim, _world, _textureManager, _spriteBatch, GraphicsDevice);
-            var cityGenerator = new GeneratedCity(_bodyFactory, _screenWidth, _screenHeight, _vehicle);
+            var cityGenerator = new GeneratedCity(_bodyFactory, _screenWidthPx, _screenHeightPx, _vehicle);
             _city = cityGenerator.GenerateSquareCity();
         }
 
@@ -83,11 +83,11 @@ namespace MoonTrucker
 
         private void setScreenDimensions()
         {
-            _screenWidth = _fullScreen ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : 1600;
-            _screenHeight = _fullScreen ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height: 900; 
+            _screenWidthPx = _fullScreen ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : 1600;
+            _screenHeightPx = _fullScreen ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height: 900; 
 
-            _graphics.PreferredBackBufferWidth = _screenWidth;
-            _graphics.PreferredBackBufferHeight = _screenHeight;
+            _graphics.PreferredBackBufferWidth = _screenWidthPx;
+            _graphics.PreferredBackBufferHeight = _screenHeightPx;
             _graphics.ApplyChanges();
         }
 
