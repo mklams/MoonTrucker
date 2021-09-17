@@ -38,7 +38,7 @@ namespace MoonTrucker
                 _bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(wallWidth / 2, _worldHeight / 2f)),
                 _bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(_worldWidth - wallWidth / 2, _worldHeight / 2f)),
                 _bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, wallWidth / 2)),
-                _bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, _worldHeight - wallWidth /2)),
+                //_bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, _worldHeight - wallWidth /2)),
             };
         }
 

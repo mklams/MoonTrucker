@@ -13,6 +13,8 @@ namespace MoonTrucker
 {
     public class MoonTruckerGame : Game
     {
+        private bool _fullScreen;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private VehicleWithPhysics _vehicle;
@@ -25,6 +27,9 @@ namespace MoonTrucker
         private StaticBodyFactory _bodyFactory;
         private Camera2D _camera;
         private ResolutionIndependentRenderer _independentRenderer;
+
+        private const int _resolutionWidthPx = 1920;
+        private const int _resolutionHeightPx = 1080;
 
         public MoonTruckerGame()
         {
@@ -67,8 +72,8 @@ namespace MoonTrucker
 
         private void initializeResolutionIndependence(int realScreenWidth, int realScreenHeight)
         {
-            _independentRenderer.VirtualWidth = 1366;
-            _independentRenderer.VirtualHeight = 768;
+            _independentRenderer.VirtualWidth = _resolutionWidthPx;
+            _independentRenderer.VirtualHeight = _resolutionHeightPx;
             _independentRenderer.ScreenWidth = realScreenWidth;
             _independentRenderer.ScreenHeight = realScreenHeight;
             _independentRenderer.Initialize();
@@ -78,18 +83,9 @@ namespace MoonTrucker
 
         private void setScreenDimensions()
         {
-            _screenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _screenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            _screenWidth = _fullScreen ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : 1600;
+            _screenHeight = _fullScreen ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height: 900; 
 
-            //set game to 1004x700 or screen max if smaller
-            if (_screenWidth >= 1500)
-            {
-                _screenWidth = 1500;
-            }
-            if (_screenHeight >= 1000)
-            {
-                _screenHeight = 1000;
-            }
             _graphics.PreferredBackBufferWidth = _screenWidth;
             _graphics.PreferredBackBufferHeight = _screenHeight;
             _graphics.ApplyChanges();

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MoonTrucker
 {
-
+    // http://blog.roboblob.com/2013/07/27/solving-resolution-independent-rendering-and-2d-camera-using-monogame/comment-page-1/
     public class ResolutionIndependentRenderer
     {
         private readonly Game _game;
@@ -18,11 +18,6 @@ namespace MoonTrucker
         public ResolutionIndependentRenderer(Game game)
         {
             _game = game;
-            VirtualWidth = 1366;
-            VirtualHeight = 768;
-
-            ScreenWidth = 1024;
-            ScreenHeight = 768;
         }
 
         public int VirtualHeight;
