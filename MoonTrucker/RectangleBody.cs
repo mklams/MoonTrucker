@@ -42,7 +42,7 @@ namespace MoonTrucker
             _wallBody.BodyType = BodyType.Static;
             _wallBody.Restitution = 1f;
             _wallBody.Friction = 1f;
-            _sprite = manager.TextureFromShape(_wallBody.FixtureList[0].Shape, Color.Aqua, Color.Wheat);
+            _sprite = manager.TextureFromShape(_wallBody.FixtureList[0].Shape, Color.Aqua, Color.Aquamarine);
             _batch = batch;
         }
 

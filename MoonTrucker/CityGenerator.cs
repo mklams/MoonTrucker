@@ -34,8 +34,7 @@ namespace MoonTrucker
             var buildingLength = _mainVehicle.Height * 3f;
             var roadLaneWidth = _mainVehicle.Height * 1.5f;
 
-            var city = createBoundryWalls();
-            city.AddRange(createSquareCityBlock(new Vector2(1f,1f), buildingLength, roadLaneWidth)); // offset by 1m due to wall
+            var city = createSquareCityBlock(new Vector2(1f,1f), buildingLength, roadLaneWidth); // offset by 1m due to wall
 
             return city;
         }
@@ -45,10 +44,10 @@ namespace MoonTrucker
             const float wallWidth = 1f;
             return new List<IDrawable>
             {
-                //_bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(wallWidth / 2, _worldHeight / 2f)),
-                //_bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(_worldWidth - wallWidth / 2, _worldHeight / 2f)),
-                //_bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, wallWidth / 2)),
-                //_bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, _worldHeight - wallWidth /2)),
+                _bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(wallWidth / 2, _worldHeight / 2f)),
+                _bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(_worldWidth - wallWidth / 2, _worldHeight / 2f)),
+                _bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, wallWidth / 2)),
+                _bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, _worldHeight - wallWidth /2)),
             };
         }
 
