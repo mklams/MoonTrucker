@@ -64,6 +64,13 @@ namespace MoonTrucker
                     _color = Color.Tomato;
                 }
             };
+
+            _wallBody.OnSeparation = (Fixture fixtureA, Fixture fixtureB, Contact contact) => {
+                if (isSensor)
+                {
+                    _color = Color.White;
+                }
+            };
         }
 
         public void Draw()
