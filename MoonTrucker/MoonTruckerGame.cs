@@ -114,11 +114,12 @@ namespace MoonTrucker
             _independentRenderer.BeginDraw();
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
                 null, _camera.GetViewTransformationMatrix());
-            _vehicle.Draw();
+            
             foreach (IDrawable body in _city)
             {
                 body.Draw();
             }
+            _vehicle.Draw();
             _spriteBatch.End();
 
             base.Draw(gameTime);
