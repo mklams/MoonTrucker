@@ -23,6 +23,7 @@ namespace MoonTrucker
         private Body _vehicleBody { get; }
         private SpriteBatch _batch;
         private bool _isBraking = false;
+        private bool _inDrive = false;
 
         public float Height { get;  }
         public float Width { get;  }
@@ -75,13 +76,17 @@ namespace MoonTrucker
             }
             else //in motion
             {
-                if(_isBraking){
-                    tailLightColor = Color.Red;
-                }
-                else if(isMovingForward()){
+                if (_inDrive)
+                {
                     tailLightColor = Color.DarkRed;
                 }
-                else{
+                
+                else if (_isBraking)
+                {
+                    tailLightColor = Color.Red;
+                }
+                else
+                {
                     tailLightColor = Color.White;
                 }
             }
@@ -157,6 +162,7 @@ namespace MoonTrucker
 
         private void handleUpKey()
         {
+            _inDrive = true;
             Vector2 impulse;
             if(_vehicleBody.LinearVelocity.Length() == 0f || (this.isMovingForward()))//stopped or accelerating
             {
@@ -174,6 +180,7 @@ namespace MoonTrucker
 
         private void handleDownKey()
         {
+            _inDrive = false;
             Vector2 impulse;
             if(_vehicleBody.LinearVelocity.Length() == 0f || !this.isMovingForward())//stopped
             {

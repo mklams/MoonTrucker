@@ -13,7 +13,7 @@ namespace MoonTrucker
 {
     public class MoonTruckerGame : Game
     {
-        private bool _fullScreen;
+        private bool _fullScreen = false;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
