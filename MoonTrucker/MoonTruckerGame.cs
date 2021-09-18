@@ -40,8 +40,9 @@ namespace MoonTrucker
             _independentRenderer = new ResolutionIndependentRenderer(this);
             _camera = new Camera2D(_independentRenderer);
             
-
+            
             _world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
+
             // Velcro Physics expects objects to be scaled to MKS (meters, kilos, seconds)
             // 1 meters equals 14 pixels here
             ConvertUnits.SetDisplayUnitToSimUnitRatio(14f);
@@ -66,7 +67,7 @@ namespace MoonTrucker
             var screenCenterInSim = ConvertUnits.ToSimUnits(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
             //create game objects
             _vehicle = new VehicleWithPhysics(2f, 5f, screenCenterInSim, _world, _textureManager, _spriteBatch, GraphicsDevice);
-            var cityGenerator = new GeneratedCity(_bodyFactory, _screenWidthPx, _screenHeightPx, _vehicle);
+            var cityGenerator = new GeneratedCity(_bodyFactory, _vehicle);
             _city = cityGenerator.GenerateSquareCity();
         }
 

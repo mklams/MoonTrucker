@@ -10,23 +10,12 @@ namespace MoonTrucker
 {
     public class GeneratedCity
     {
-        private float _worldWidth;
-        private float _worldHeight;
         private VehicleWithPhysics _mainVehicle;
         private StaticBodyFactory _bodyFactory;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="bodyFactory"></param>
-        /// <param name="screenWidth">Screen width in pixels</param>
-        /// <param name="screenHeight">Screen hieght in pixels</param>
-        /// <param name="mainVehicle"></param>
-        public GeneratedCity(StaticBodyFactory bodyFactory, float screenWidth, float screenHeight, VehicleWithPhysics mainVehicle)
+        public GeneratedCity(StaticBodyFactory bodyFactory, VehicleWithPhysics mainVehicle)
         {
             _bodyFactory = bodyFactory;
-            _worldWidth = ConvertUnits.ToSimUnits(screenWidth);
-            _worldHeight = ConvertUnits.ToSimUnits(screenHeight);
             _mainVehicle = mainVehicle;
         }
 
@@ -144,6 +133,7 @@ namespace MoonTrucker
             TopRightCorner = Vector2.Add(leftCorner, new Vector2(widthOffSetToCorner, 0));
             BottomRightCorner = Vector2.Add(leftCorner, new Vector2(widthOffSetToCorner, heightOffSetToCorner));
             BottomLeftCorner = Vector2.Add(leftCorner, new Vector2(0, heightOffSetToCorner));
+
         }
 
         public void Draw()

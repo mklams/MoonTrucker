@@ -7,6 +7,7 @@ using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Utilities;
 using Genbox.VelcroPhysics.Collision.Shapes;
 using Genbox.VelcroPhysics.Shared;
+using Genbox.VelcroPhysics.Collision.ContactSystem;
 
 namespace MoonTrucker
 {
@@ -45,6 +46,7 @@ namespace MoonTrucker
         private Body _wallBody;
         private Texture2D _sprite;
         private SpriteBatch _batch;
+        private Color _color = Color.White;
         // TODO: Abstract away the parameters wolrd, manager, batch
         public RectangleBody(float width, float height, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
         {
@@ -55,12 +57,19 @@ namespace MoonTrucker
             _wallBody.IsSensor = isSensor;
             _sprite = manager.TextureFromShape(_wallBody.FixtureList[0].Shape, Color.Aqua, Color.Aquamarine);
             _batch = batch;
+
+            _wallBody.OnCollision = (Fixture fixtureA, Fixture fixtureB, Contact contact) => {
+                if (isSensor)
+                {
+                    _color = Color.Tomato;
+                }
+            };
         }
 
         public void Draw()
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_wallBody.Position),null, Color.White, _wallBody.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_wallBody.Position),null, _color, _wallBody.Rotation, origin, 1f, SpriteEffects.None, 0f);
         }
     }
 
