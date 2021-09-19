@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Utilities;
 using Microsoft.Xna.Framework;
@@ -9,23 +10,12 @@ namespace MoonTrucker
 {
     public class GeneratedCity
     {
-        private float _worldWidth;
-        private float _worldHeight;
         private MoonTruck _mainVehicle;
         private StaticBodyFactory _bodyFactory;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="bodyFactory"></param>
-        /// <param name="screenWidth">Screen width in pixels</param>
-        /// <param name="screenHeight">Screen hieght in pixels</param>
-        /// <param name="mainVehicle"></param>
-        public GeneratedCity(StaticBodyFactory bodyFactory, float screenWidth, float screenHeight, MoonTruck mainVehicle)
+        public GeneratedCity(StaticBodyFactory bodyFactory, MoonTruck mainVehicle)
         {
             _bodyFactory = bodyFactory;
-            _worldWidth = ConvertUnits.ToSimUnits(screenWidth);
-            _worldHeight = ConvertUnits.ToSimUnits(screenHeight);
             _mainVehicle = mainVehicle;
         }
 
@@ -34,21 +24,12 @@ namespace MoonTrucker
             var buildingLength = _mainVehicle.GetHeight() * 3f;
             var roadLaneWidth = _mainVehicle.GetHeight() * 1.5f;
 
-            var city = createSquareCityBlock(new Vector2(1f,1f), buildingLength, roadLaneWidth); // offset by 1m due to wall
+            var city = createSquareCityBlock(new Vector2(0f,0f), buildingLength, roadLaneWidth);
+            var nextPos = city.Last().TopRightCorner;
+            city.AddRange(createHiddenPassageBuilding(nextPos, buildingLength, buildingLength * 3, roadLaneWidth));
+
 
             return city;
-        }
-
-        private List<IDrawable> createBoundryWalls()
-        {
-            const float wallWidth = 1f;
-            return new List<IDrawable>
-            {
-                _bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(wallWidth / 2, _worldHeight / 2f)),
-                _bodyFactory.CreateRectangleBody(wallWidth, _worldHeight, new Vector2(_worldWidth - wallWidth / 2, _worldHeight / 2f)),
-                _bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, wallWidth / 2)),
-                _bodyFactory.CreateRectangleBody(_worldWidth, wallWidth, new Vector2(_worldWidth / 2, _worldHeight - wallWidth /2)),
-            };
         }
 
 
@@ -60,21 +41,34 @@ namespace MoonTrucker
         private List<IDrawable> createSquareCityBlock(Vector2 blockCorner, float buildingLength, float roadLaneWidth)
         {
             
-            var firstBuilding = new SquareBuilding(buildingLength, roadLaneWidth, blockCorner, _bodyFactory);
-            var secondBuilding = new SquareBuilding(buildingLength, roadLaneWidth, firstBuilding.TopRightCorner, _bodyFactory);
-            var thirdBuilding = new SquareBuilding(buildingLength, roadLaneWidth, firstBuilding.BottomLeftCorner, _bodyFactory);
-            var fourthBuildg = new SquareBuilding(buildingLength, roadLaneWidth, firstBuilding.BottomRightCorner, _bodyFactory);
+            var topLeftBuilding = new SquareBuilding(buildingLength, roadLaneWidth, blockCorner, _bodyFactory);
+            var topRightBuilding = new SquareBuilding(buildingLength, roadLaneWidth, topLeftBuilding.TopRightCorner, _bodyFactory);
+            var bottomLeftBuilding = new SquareBuilding(buildingLength, roadLaneWidth, topLeftBuilding.BottomLeftCorner, _bodyFactory);
+            var bottomRightBuilding = new SquareBuilding(buildingLength, roadLaneWidth, topLeftBuilding.BottomRightCorner, _bodyFactory);
 
-            var factory = new RectangleBuilding(buildingLength*2, buildingLength * 3, roadLaneWidth, secondBuilding.TopRightCorner, _bodyFactory); // TODO: Refactor out
+            return new List<IDrawable>
+            {  
+                topLeftBuilding,
+                bottomLeftBuilding,
+                bottomRightBuilding,
+                topRightBuilding, // BAD ASSUMPTION: last building has top left corner of block
+            };
+        }
+
+        private List<IDrawable> createHiddenPassageBuilding(Vector2 topLeftCorner, float buildingWidth, float buildingHeight, float roadLaneWidth)
+        {
+            var buildingLeftCorner = Vector2.Add(topLeftCorner, new Vector2(roadLaneWidth, roadLaneWidth));
+            var topSection = new RectangleBuilding(buildingWidth, buildingHeight/3, 0, buildingLeftCorner, _bodyFactory);
+            var middleHiddenSection = new RectangleBuilding(buildingWidth, buildingHeight/3, 0, topSection.BottomLeftCorner, _bodyFactory, true);
+            var bottomSection = new RectangleBuilding(buildingWidth, buildingHeight / 3, 0, middleHiddenSection.BottomLeftCorner, _bodyFactory);
 
             return new List<IDrawable>
             {
-                firstBuilding,
-                secondBuilding,
-                thirdBuilding,
-                fourthBuildg,
-                factory
+                topSection,
+                middleHiddenSection,
+                bottomSection
             };
+
         }
 
     }
@@ -82,6 +76,11 @@ namespace MoonTrucker
     public interface IDrawable
     {
         public void Draw();
+
+        public Vector2 TopRightCorner { get; }
+        public Vector2 BottomRightCorner { get; }
+        public Vector2 BottomLeftCorner { get; }
+
     }
 
     //TODO: Move this to it's own class
@@ -120,20 +119,21 @@ namespace MoonTrucker
         public Vector2 BottomRightCorner { get; }
         public Vector2 BottomLeftCorner { get; }
 
-        public RectangleBuilding(float width, float height, float streeWidth, Vector2 leftCorner, StaticBodyFactory bodyFactory)
+        public RectangleBuilding(float width, float height, float streeWidth, Vector2 leftCorner, StaticBodyFactory bodyFactory, bool isSensor = false)
         {
             float widthOffsetToOrigin = streeWidth + width / 2; // add street width since streets surround the entire building 
             float heightOffsetToOrigin = streeWidth + height / 2; // add street width since streets surround the entire building 
 
             Vector2 buildingOrigin = Vector2.Add(leftCorner, new Vector2(widthOffsetToOrigin, heightOffsetToOrigin));
 
-            _buildingBody = bodyFactory.CreateRectangleBody(width, height, buildingOrigin);
+            _buildingBody = isSensor ? bodyFactory.CreateRectangleSensor(width, height, buildingOrigin) : bodyFactory.CreateRectangleBody(width, height, buildingOrigin);
 
             float widthOffSetToCorner = streeWidth * 2 + width; // add 2 street width since there is a street on each side of building
             float heightOffSetToCorner = streeWidth * 2 + height;
             TopRightCorner = Vector2.Add(leftCorner, new Vector2(widthOffSetToCorner, 0));
             BottomRightCorner = Vector2.Add(leftCorner, new Vector2(widthOffSetToCorner, heightOffSetToCorner));
             BottomLeftCorner = Vector2.Add(leftCorner, new Vector2(0, heightOffSetToCorner));
+
         }
 
         public void Draw()
