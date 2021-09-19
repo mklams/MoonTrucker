@@ -12,7 +12,7 @@ namespace MoonTrucker{
 
         private const float MAX_FORWARD_DRIVE_FORCE = 2f;
         private const float MAX_BACKWARD_DRIVE_FORCE = 1f;
-        private const float MAX_BRAKE_FORCE = 4f;
+        private const float MAX_BRAKE_FORCE = 3f;
         private const float MAX_FRICTION_FORCE = 1f;
         private const float MAX_ROTATION_ANGLE_RADS = MathF.PI/4;
         private const float FRICTION_FORCE = .2f;

@@ -13,7 +13,7 @@ namespace MoonTrucker{
         private const float HEIGHT_TIRE_MULT = .34f;
         private const float WIDTH_TIRE_MULT = .3f;
 
-        private const float TURN_RATE = 1f;
+        private const float TURN_RATE = .01f;
 
         private List<Tire> _tires;
         public MoonTruck(float width, 
@@ -67,11 +67,11 @@ namespace MoonTrucker{
         }
         protected override void handleLeftKey()
         {
-            _tires.ForEach(t => t.Turn(TURN_RATE));
+            _tires.ForEach(t => t.Turn(-TURN_RATE));
         }
         protected override void handleRightKey()
         {
-            _tires.ForEach(t => t.Turn(-TURN_RATE));
+            _tires.ForEach(t => t.Turn(TURN_RATE));
         }
         protected override void snapVelocityToZero()
         {

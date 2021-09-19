@@ -96,7 +96,7 @@ namespace MoonTrucker
             }
             this.snapVelocityToZero();
             this.applyFriction();
-            //this.applyTraction();
+            this.applyTraction();
         }
 
         protected abstract void handleUpKey();
