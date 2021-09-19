@@ -1,151 +1,119 @@
 using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
 using Genbox.VelcroPhysics.Dynamics;
-using Genbox.VelcroPhysics.Factories;
-using Genbox.VelcroPhysics.Utilities;
+using Microsoft.Xna.Framework;
 
-namespace MoonTrucker
-{
-    public class Tire
-    {
-        private float _maxForwardSpeed = 25;
-        private float _maxBackwardSpeed = -5;
-        private float _maxDriveForce = 40;
-        private float _maxLateralImpulse = 2.5f;
+namespace MoonTrucker{
 
-        private readonly float _screenWidth;
-        private readonly float _screenHeight;
-        private const float IMPULSE_FACTOR = 0.1f;
+    public enum Direction{
+        Forwards,
+        Backwards
+    }
+    public class Tire{
 
-        private Vector2 _position;
-        private float _angle = 0;
-
-        private Sprite _sprite { get; }
-
-        private Body _body { get; }
-
-        public Tire(Sprite vehicleSprite, World world, Vector2 position, float screenWidth, float screenHeight)
+        private const float MAX_FORWARD_DRIVE_FORCE = 2f;
+        private const float MAX_BACKWARD_DRIVE_FORCE = 1f;
+        private const float MAX_BRAKE_FORCE = 1f;
+        private const float MAX_FRICTION_FORCE = 1f;
+        private const float MAX_ROTATION_ANGLE_RADS = MathF.PI/4;
+        private const float FRICTION_FORCE = .02f;
+        
+        private Vector2 _offset;
+        private float _rotation = 0;
+        private bool _turningWheel;
+        private bool _driveWheel;
+        public Tire(Vector2 offset, bool canTurn, bool canDrive)
         {
-            _sprite = vehicleSprite;
-            _screenWidth = screenWidth;
-            _screenHeight = screenHeight;
-            _position = position;
-            _body = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(_sprite.Width), ConvertUnits.ToSimUnits(_sprite.Height), 1f, ConvertUnits.ToSimUnits(_position), _angle, BodyType.Dynamic);
-            _body.Restitution = 0.3f;
-            _body.Friction = 0.5f;
+            _turningWheel = canTurn;
+            _driveWheel = canDrive;
+            _offset = offset;
         }
 
-        public float GetHeight()
+        public void Turn(float radians)
         {
-            return _sprite.Height;
-        }
-
-        public float GetWidth()
-        {
-            return _sprite.Width;
-        }
-
-        private Vector2 getLateralVelocity()
-        {
-            Vector2 currentRightNormal = _body.GetWorldVector(new Vector2(1, 0));
-            return Vector2.Dot(currentRightNormal, _body.LinearVelocity) * currentRightNormal;
-        }
-
-        private Vector2 getForwardVelocity()
-        {
-            Vector2 currentRightNormal = _body.GetWorldVector(new Vector2(0, 1));
-            return Vector2.Dot(currentRightNormal, _body.LinearVelocity) * currentRightNormal;
-        }
-
-        private void updateFriction()
-        {
-            // lateral linear velocity
-            Vector2 impulse = _body.Mass * -getLateralVelocity();
-            if(impulse.Length() > _maxLateralImpulse)
+            if(!_turningWheel){ return; }
+            var newRotation = _rotation + radians;
+            if(MathF.Abs(newRotation) < MAX_ROTATION_ANGLE_RADS)
             {
-                impulse *= _maxLateralImpulse / impulse.Length();
-            }
-            _body.ApplyLinearImpulse(impulse, _body.WorldCenter);
-
-            // angular velocity
-            _body.ApplyAngularImpulse(IMPULSE_FACTOR * _body.Inertia * -_body.AngularVelocity);
-
-            // forward linear velocity
-            Vector2 currentForwardNormal = getForwardVelocity();
-            float currentForwardSpeed = Vector2.Normalize(currentForwardNormal).Length();
-            float dragForceMagnitude = -2 * currentForwardSpeed;
-            if(!float.IsNaN(dragForceMagnitude))
-            {
-                _body.ApplyForce(dragForceMagnitude * currentForwardNormal, _body.WorldCenter);
+                _rotation = newRotation;
             }
         }
 
-        public void Draw()
+        public void ApplyForwardDriveForce(Body vehicleBody)
         {
-            _sprite.Draw(ConvertUnits.ToDisplayUnits(_body.Position), _body.Rotation);
+            if(!_driveWheel) {return;}
+            Vector2 tirePosition = this.getTirePosition(vehicleBody);
+            Vector2 impulse = new Vector2(MAX_FORWARD_DRIVE_FORCE, 0);
+            impulse = VectorHelpers.Rotate(impulse, vehicleBody.Rotation);
+            if(_turningWheel)
+            {
+                impulse = VectorHelpers.Rotate(impulse, _rotation);
+            }
+            vehicleBody.ApplyLinearImpulse(impulse, tirePosition);
         }
 
-        public void updateDrive(KeyboardState keyboardState)
+        public void ApplyReverseDriveForce(Body vehicleBody)
         {
-            float desiredSpeed = 0f;
-            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+            if(!_driveWheel){return;}
+            Vector2 tirePosition = this.getTirePosition(vehicleBody);
+            Vector2 impulse = new Vector2(MAX_BACKWARD_DRIVE_FORCE, 0);
+            impulse = VectorHelpers.Rotate(impulse, vehicleBody.Rotation);
+            if(_turningWheel)
             {
-                desiredSpeed = _maxForwardSpeed;
+                impulse = VectorHelpers.Rotate(impulse, _rotation);
             }
-            else if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
-            {
-                desiredSpeed = _maxBackwardSpeed;
-            }
-            else
-            {
-                return;
-            }
-
-            Vector2 currentForwardNormal = _body.GetWorldVector(new Vector2(0, 1));
-            float currentSpeed = Vector2.Dot(getForwardVelocity(), currentForwardNormal);
-
-            float force = 0;
-            if (desiredSpeed > currentSpeed)
-            {
-                force = _maxDriveForce;
-            }
-            else if (desiredSpeed < currentSpeed)
-            {
-                force = -_maxDriveForce;
-            }
-            else
-            {
-                return;
-            }
-
-            _body.ApplyForce(force * currentForwardNormal, _body.WorldCenter);
+            vehicleBody.ApplyLinearImpulse(-impulse, tirePosition);
         }
 
-        private void updateTurn(KeyboardState keyboardState)
+        public void ApplyBrakeForce(Body vehicleBody)
         {
-            float desiredTorque = 0f;
-            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
-            {
-                desiredTorque = 15f;
-            }
-
-            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
-            {
-                desiredTorque = -15f;
-            }
-
-            _body.ApplyTorque(desiredTorque);
+            this.applyDragForce(vehicleBody, MAX_BRAKE_FORCE);
         }
 
-        public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)
+        private void applyDragForce(Body vehicleBody, float force)
         {
-            updateFriction();
-            updateDrive(keyboardState);
-            updateTurn(keyboardState);
+            Vector2 tirePosition = this.getTirePosition(vehicleBody);
+            Vector2 impulse = new Vector2(force, 0);
+            impulse = VectorHelpers.Rotate(impulse, vehicleBody.Rotation);
+            if(_turningWheel)
+            {
+                impulse = VectorHelpers.Rotate(impulse, _rotation);
+            }
+            if(VectorHelpers.IsMovingForward(vehicleBody))
+            {
+                impulse = -impulse;
+            }
+            vehicleBody.ApplyLinearImpulse(impulse, tirePosition);
+        }
+
+        public void ApplyFrictionForce(Body vehicleBody)
+        {
+            this.applyDragForce(vehicleBody, FRICTION_FORCE);
+        }
+
+        public void ApplyTractionForce(Body vehicleBody)
+        {
+ 
+            Vector2 tirePosition = this.getTirePosition(vehicleBody);
+            Vector2 unitTireDirec = new Vector2(1, 0);
+            unitTireDirec = VectorHelpers.Rotate(unitTireDirec, vehicleBody.Rotation);
+            if(_turningWheel)
+            {
+                unitTireDirec = VectorHelpers.Rotate(unitTireDirec, _rotation);
+            }
+            var angleBetween = VectorHelpers.AngleBetween(VectorHelpers.GetUnitDirectionVector(vehicleBody),vehicleBody.LinearVelocity);
+            var complement = (MathF.PI/2f)-angleBetween;
+            var magnitude = vehicleBody.LinearVelocity.Length()*MathF.Cos(complement);
+            var impulse = VectorHelpers.Rotate(unitTireDirec, -MathF.PI/2f)*magnitude;
+            if(VectorHelpers.IsTurningLeft(vehicleBody))
+            {
+                impulse = -impulse;
+            }
+            vehicleBody.ApplyLinearImpulse(impulse);
+        }
+
+        private Vector2 getTirePosition(Body vehicleBody)
+        {
+            return vehicleBody.Position + VectorHelpers.Rotate(_offset, vehicleBody.Rotation);
         }
     }
 }

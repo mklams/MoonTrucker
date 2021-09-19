@@ -37,7 +37,7 @@ namespace MoonTrucker
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
 
-            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Purple);
+            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
             _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
             Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(width))];
             for(int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(width)); i++){

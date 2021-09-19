@@ -14,7 +14,7 @@ namespace MoonTrucker
         private Texture2D _sprite { get; }
         private Texture2D _light  {get; }
 
-        private Body _vehicleBody { get; }
+        protected Body _vehicleBody { get; }
         private SpriteBatch _batch;
         private bool _isBraking = false; 
         public Vehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
@@ -41,6 +41,11 @@ namespace MoonTrucker
         public float GetWidth()
         {
             return _sprite.Width;
+        }
+
+        public Vector2 GetPosition()
+        {
+            return _vehicleBody.Position;
         }
 
         public void Draw()

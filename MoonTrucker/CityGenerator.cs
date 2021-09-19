@@ -11,7 +11,7 @@ namespace MoonTrucker
     {
         private float _worldWidth;
         private float _worldHeight;
-        private VehicleWithPhysics _mainVehicle;
+        private MoonTruck _mainVehicle;
         private StaticBodyFactory _bodyFactory;
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace MoonTrucker
         /// <param name="screenWidth">Screen width in pixels</param>
         /// <param name="screenHeight">Screen hieght in pixels</param>
         /// <param name="mainVehicle"></param>
-        public GeneratedCity(StaticBodyFactory bodyFactory, float screenWidth, float screenHeight, VehicleWithPhysics mainVehicle)
+        public GeneratedCity(StaticBodyFactory bodyFactory, float screenWidth, float screenHeight, MoonTruck mainVehicle)
         {
             _bodyFactory = bodyFactory;
             _worldWidth = ConvertUnits.ToSimUnits(screenWidth);
@@ -31,8 +31,8 @@ namespace MoonTrucker
 
         public List<IDrawable> GenerateSquareCity()
         {
-            var buildingLength = _mainVehicle.Height * 3f;
-            var roadLaneWidth = _mainVehicle.Height * 1.5f;
+            var buildingLength = _mainVehicle.GetHeight() * 3f;
+            var roadLaneWidth = _mainVehicle.GetHeight() * 1.5f;
 
             var city = createSquareCityBlock(new Vector2(1f,1f), buildingLength, roadLaneWidth); // offset by 1m due to wall
 
