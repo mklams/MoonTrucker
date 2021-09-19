@@ -11,9 +11,9 @@ namespace MoonTrucker
     public class GeneratedCity
     {
         private VehicleWithPhysics _mainVehicle;
-        private StaticBodyFactory _bodyFactory;
+        private PropFactory _bodyFactory;
 
-        public GeneratedCity(StaticBodyFactory bodyFactory, VehicleWithPhysics mainVehicle)
+        public GeneratedCity(PropFactory bodyFactory, VehicleWithPhysics mainVehicle)
         {
             _bodyFactory = bodyFactory;
             _mainVehicle = mainVehicle;
@@ -86,12 +86,12 @@ namespace MoonTrucker
     //TODO: Move this to it's own class
     public class SquareBuilding : IDrawable
     {
-        private RectangleBody _buildingBody;
+        private RectangleProp _buildingBody;
         public Vector2 TopRightCorner { get; }
         public Vector2 BottomRightCorner { get; }
         public Vector2 BottomLeftCorner { get; }
 
-        public SquareBuilding(float length, float streeWidth, Vector2 leftCorner, StaticBodyFactory bodyFactory)
+        public SquareBuilding(float length, float streeWidth, Vector2 leftCorner, PropFactory bodyFactory)
         {
             float offsetToOrigin = streeWidth + length / 2; // add street width since streets surround the entire building 
 
@@ -114,12 +114,12 @@ namespace MoonTrucker
     //TODO: Move this to it's own class
     public class RectangleBuilding : IDrawable
     {
-        private RectangleBody _buildingBody;
+        private RectangleProp _buildingBody;
         public Vector2 TopRightCorner { get; }
         public Vector2 BottomRightCorner { get; }
         public Vector2 BottomLeftCorner { get; }
 
-        public RectangleBuilding(float width, float height, float streeWidth, Vector2 leftCorner, StaticBodyFactory bodyFactory, bool isSensor = false)
+        public RectangleBuilding(float width, float height, float streeWidth, Vector2 leftCorner, PropFactory bodyFactory, bool isSensor = false)
         {
             float widthOffsetToOrigin = streeWidth + width / 2; // add street width since streets surround the entire building 
             float heightOffsetToOrigin = streeWidth + height / 2; // add street width since streets surround the entire building 

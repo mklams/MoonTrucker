@@ -24,7 +24,8 @@ namespace MoonTrucker
         private KeyboardState _oldKeyboardState;
         private readonly World _world;
         private TextureManager _textureManager;
-        private StaticBodyFactory _bodyFactory;
+        private PropFactory _propFactory;
+        private GameTarget _target;
         private Camera2D _camera;
         private ResolutionIndependentRenderer _independentRenderer;
 
@@ -37,9 +38,6 @@ namespace MoonTrucker
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             
-            _independentRenderer = new ResolutionIndependentRenderer(this);
-            _camera = new Camera2D(_independentRenderer);
-            
             
             _world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
 
@@ -51,6 +49,8 @@ namespace MoonTrucker
         protected override void Initialize()
         {
             setScreenDimensions();
+            _independentRenderer = new ResolutionIndependentRenderer(this);
+            _camera = new Camera2D(_independentRenderer);
             _camera.Zoom = 1f;
             _camera.Position = new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f);
             initializeResolutionIndependence(_screenWidthPx, _screenHeightPx);
@@ -62,13 +62,15 @@ namespace MoonTrucker
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
-            _bodyFactory = new StaticBodyFactory(_world, _textureManager, _spriteBatch);
+            _propFactory = new PropFactory(_world, _textureManager, _spriteBatch);
             
             var screenCenterInSim = ConvertUnits.ToSimUnits(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
             //create game objects
             _vehicle = new VehicleWithPhysics(2f, 5f, screenCenterInSim, _world, _textureManager, _spriteBatch, GraphicsDevice);
-            var cityGenerator = new GeneratedCity(_bodyFactory, _vehicle);
+            var cityGenerator = new GeneratedCity(_propFactory, _vehicle);
             _city = cityGenerator.GenerateSquareCity();
+
+            _target = new GameTarget(_vehicle.Width * 1.5f, Vector2.Add(screenCenterInSim, new Vector2(50, 0)), _propFactory);
         }
 
         private void initializeResolutionIndependence(int realScreenWidth, int realScreenHeight)
@@ -120,6 +122,7 @@ namespace MoonTrucker
             {
                 body.Draw();
             }
+            _target.Draw();
             _vehicle.Draw();
             _spriteBatch.End();
 
