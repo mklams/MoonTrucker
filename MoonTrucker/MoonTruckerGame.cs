@@ -58,19 +58,28 @@ namespace MoonTrucker
             base.Initialize();
         }
 
+        public void MoveTarget()
+        {
+            _target.Body.Body.Position = getScreenCenter();
+        }
+
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
             _propFactory = new PropFactory(_world, _textureManager, _spriteBatch);
             
-            var screenCenterInSim = ConvertUnits.ToSimUnits(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
             //create game objects
-            _vehicle = new VehicleWithPhysics(2f, 5f, screenCenterInSim, _world, _textureManager, _spriteBatch, GraphicsDevice);
+            _vehicle = new VehicleWithPhysics(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
             var cityGenerator = new GeneratedCity(_propFactory, _vehicle);
             _city = cityGenerator.GenerateSquareCity();
 
-            _target = new GameTarget(_vehicle.Width * 1.5f, Vector2.Add(screenCenterInSim, new Vector2(50, 0)), _propFactory);
+            _target = new GameTarget(_vehicle.Width * 1.5f, Vector2.Add(getScreenCenter(), new Vector2(50, 0)), _propFactory, this);
+        }
+
+        private Vector2 getScreenCenter()
+        {
+            return ConvertUnits.ToSimUnits(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
         }
 
         private void initializeResolutionIndependence(int realScreenWidth, int realScreenHeight)
