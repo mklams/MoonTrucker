@@ -17,7 +17,7 @@ namespace MoonTrucker
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private MoonTruck _vehicle;
+        private VehicleWithPhysics _vehicle;
         private List<IDrawable> _city;
         private int _screenWidthPx;
         private int _screenHeightPx;
@@ -66,7 +66,7 @@ namespace MoonTrucker
             
             var screenCenterInSim = ConvertUnits.ToSimUnits(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
             //create game objects
-            _vehicle = new MoonTruck(2f, 5f, screenCenterInSim, _world, _textureManager, _spriteBatch, GraphicsDevice);
+            _vehicle = new VehicleWithPhysics(2f, 5f, screenCenterInSim, _world, _textureManager, _spriteBatch, GraphicsDevice);
             var cityGenerator = new GeneratedCity(_bodyFactory, _vehicle);
             _city = cityGenerator.GenerateSquareCity();
         }

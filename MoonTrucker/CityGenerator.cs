@@ -10,10 +10,10 @@ namespace MoonTrucker
 {
     public class GeneratedCity
     {
-        private MoonTruck _mainVehicle;
+        private VehicleWithPhysics _mainVehicle;
         private StaticBodyFactory _bodyFactory;
 
-        public GeneratedCity(StaticBodyFactory bodyFactory, MoonTruck mainVehicle)
+        public GeneratedCity(StaticBodyFactory bodyFactory, VehicleWithPhysics mainVehicle)
         {
             _bodyFactory = bodyFactory;
             _mainVehicle = mainVehicle;
@@ -21,8 +21,8 @@ namespace MoonTrucker
 
         public List<IDrawable> GenerateSquareCity()
         {
-            var buildingLength = _mainVehicle.GetHeight() * 3f;
-            var roadLaneWidth = _mainVehicle.GetHeight() * 1.5f;
+            var buildingLength = _mainVehicle.Height * 3f;
+            var roadLaneWidth = _mainVehicle.Height * 1.5f;
 
             var city = createSquareCityBlock(new Vector2(0f,0f), buildingLength, roadLaneWidth);
             var nextPos = city.Last().TopRightCorner;

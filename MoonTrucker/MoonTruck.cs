@@ -32,13 +32,13 @@ namespace MoonTrucker{
         {
             _tires = new List<Tire>();
             //front right wheel
-            _tires.Add(new Tire(new Vector2(GetHeight()*HEIGHT_TIRE_MULT, GetWidth()*WIDTH_TIRE_MULT), canTurn: true, canDrive: true));
+            _tires.Add(new Tire(new Vector2(Height*HEIGHT_TIRE_MULT, Width*WIDTH_TIRE_MULT), canTurn: true, canDrive: true));
             //front left wheel
-            _tires.Add(new Tire(new Vector2(GetHeight()*HEIGHT_TIRE_MULT, -GetWidth()*WIDTH_TIRE_MULT), canTurn: true, canDrive: true));
+            _tires.Add(new Tire(new Vector2(Height*HEIGHT_TIRE_MULT, -Width*WIDTH_TIRE_MULT), canTurn: true, canDrive: true));
             //back right wheel
-            _tires.Add(new Tire(new Vector2(-GetHeight()*HEIGHT_TIRE_MULT, GetWidth()*WIDTH_TIRE_MULT), canTurn: false, canDrive: true));
+            _tires.Add(new Tire(new Vector2(-Height*HEIGHT_TIRE_MULT, Width*WIDTH_TIRE_MULT), canTurn: false, canDrive: true));
             //back left wheel
-            _tires.Add(new Tire(new Vector2(-GetHeight()*HEIGHT_TIRE_MULT, -GetWidth()*WIDTH_TIRE_MULT), canTurn: false, canDrive: true));
+            _tires.Add(new Tire(new Vector2(-Height*HEIGHT_TIRE_MULT, -Width*WIDTH_TIRE_MULT), canTurn: false, canDrive: true));
         }
 
         protected override void handleUpKey()

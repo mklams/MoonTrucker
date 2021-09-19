@@ -17,8 +17,14 @@ namespace MoonTrucker
         protected Body _vehicleBody { get; }
         private SpriteBatch _batch;
         private bool _isBraking = false; 
+
+        public float Height { get;  }
+        public float Width { get;  }
         public Vehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
         {
+            Height = height;
+            Width = width;
+
             _vehicleBody = BodyFactory.CreateRectangle(world, height, width, 1f,position, 0f, BodyType.Dynamic);
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
@@ -31,16 +37,6 @@ namespace MoonTrucker
             }
             _light.SetData(colors);
             _batch = batch;
-        }
-
-        public float GetHeight()
-        {
-            return _sprite.Height;
-        }
-
-        public float GetWidth()
-        {
-            return _sprite.Width;
         }
 
         public Vector2 GetPosition()
