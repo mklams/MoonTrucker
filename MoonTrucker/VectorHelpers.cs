@@ -50,4 +50,9 @@ public static class VectorHelpers{
     {
         return MathF.Acos(Vector2.Dot(a,b)/(a.Length()*b.Length()));
     }
+
+    public static bool IsNearStop(Body vehicleBody)
+    {
+        return (!VectorHelpers.IsStopped(vehicleBody) && vehicleBody.LinearVelocity.Length() < .4f);
+    }
 }

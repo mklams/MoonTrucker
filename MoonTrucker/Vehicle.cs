@@ -16,7 +16,7 @@ namespace MoonTrucker
 
         protected Body _vehicleBody { get; }
         private SpriteBatch _batch;
-        private bool _isBraking = false; 
+        protected bool _isBraking = false; 
 
         public float Height { get;  }
         public float Width { get;  }
@@ -96,7 +96,7 @@ namespace MoonTrucker
             }
             this.snapVelocityToZero();
             this.applyFriction();
-            this.applyTraction();
+            //this.applyTraction();
         }
 
         protected abstract void handleUpKey();

@@ -43,12 +43,13 @@ namespace MoonTrucker{
 
         protected override void handleUpKey()
         {
-            if(VectorHelpers.IsMovingForward(_vehicleBody))
+            if(VectorHelpers.IsMovingForward(_vehicleBody) || VectorHelpers.IsStopped(_vehicleBody))
             {
                 _tires.ForEach(t => t.ApplyForwardDriveForce(_vehicleBody));
             }
             else
             {
+                _isBraking = true;
                 _tires.ForEach(t => t.ApplyBrakeForce(_vehicleBody));
             }
         }
@@ -56,6 +57,7 @@ namespace MoonTrucker{
         {
             if(VectorHelpers.IsMovingForward(_vehicleBody))
             {
+                _isBraking = true;
                 _tires.ForEach(t => t.ApplyBrakeForce(_vehicleBody));
             }
             else
@@ -73,9 +75,8 @@ namespace MoonTrucker{
         }
         protected override void snapVelocityToZero()
         {
-            if(_vehicleBody.LinearVelocity.Length() < 1f){
-                _vehicleBody.LinearVelocity = Vector2.Zero;
-                _vehicleBody.Rotation = 0f;
+            if(!VectorHelpers.IsStopped(_vehicleBody) && _vehicleBody.LinearVelocity.Length() < .3f){
+                _vehicleBody.ResetDynamics();
             }
         }
         protected override void applyFriction()

@@ -12,10 +12,10 @@ namespace MoonTrucker{
 
         private const float MAX_FORWARD_DRIVE_FORCE = 2f;
         private const float MAX_BACKWARD_DRIVE_FORCE = 1f;
-        private const float MAX_BRAKE_FORCE = 1f;
+        private const float MAX_BRAKE_FORCE = 4f;
         private const float MAX_FRICTION_FORCE = 1f;
         private const float MAX_ROTATION_ANGLE_RADS = MathF.PI/4;
-        private const float FRICTION_FORCE = .02f;
+        private const float FRICTION_FORCE = .2f;
         
         private Vector2 _offset;
         private float _rotation = 0;
@@ -66,6 +66,12 @@ namespace MoonTrucker{
 
         public void ApplyBrakeForce(Body vehicleBody)
         {
+            if(VectorHelpers.IsStopped(vehicleBody)) {return;}
+            if(VectorHelpers.IsNearStop(vehicleBody))
+            {
+                vehicleBody.ResetDynamics();
+                return;
+            }
             this.applyDragForce(vehicleBody, MAX_BRAKE_FORCE);
         }
 
@@ -87,12 +93,13 @@ namespace MoonTrucker{
 
         public void ApplyFrictionForce(Body vehicleBody)
         {
+            if(VectorHelpers.IsStopped(vehicleBody)) {return;}
             this.applyDragForce(vehicleBody, FRICTION_FORCE);
         }
 
         public void ApplyTractionForce(Body vehicleBody)
         {
- 
+            if(VectorHelpers.IsStopped(vehicleBody)){return;}
             Vector2 tirePosition = this.getTirePosition(vehicleBody);
             Vector2 unitTireDirec = new Vector2(1, 0);
             unitTireDirec = VectorHelpers.Rotate(unitTireDirec, vehicleBody.Rotation);
