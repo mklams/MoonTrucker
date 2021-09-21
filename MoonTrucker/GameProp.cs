@@ -38,13 +38,13 @@ namespace MoonTrucker
 
         public CircleProp CreateCircleSensor(float radius, Vector2 origin, OnCollisionHandler onCollisionHandler = null, OnSeparationHandler onSeparationHandler = null)
         {
-            var body = new CircleProp(radius, origin, _world, _textureManager, _spriteBatch, true);
+            var prop = new CircleProp(radius, origin, _world, _textureManager, _spriteBatch, true);
 
             // TODO: Violates demeters law
-            body.Body.OnCollision = onCollisionHandler;
-            body.Body.OnSeparation = onSeparationHandler;
+            prop.Body.OnCollision = onCollisionHandler;
+            prop.Body.OnSeparation = onSeparationHandler;
 
-            return body;
+            return prop;
         }
     }
 

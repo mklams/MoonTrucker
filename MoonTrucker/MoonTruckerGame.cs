@@ -127,9 +127,9 @@ namespace MoonTrucker
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
                 null, _camera.GetViewTransformationMatrix());
             
-            foreach (IDrawable body in _city)
+            foreach (IDrawable prop in _city)
             {
-                body.Draw();
+                prop.Draw();
             }
             _target.Draw();
             _vehicle.Draw();
