@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MoonTrucker
 {
+    // TODO: This class is no longer needed
     public class GeneratedCity
     {
         private VehicleWithPhysics _mainVehicle;
@@ -17,6 +18,13 @@ namespace MoonTrucker
         {
             _bodyFactory = bodyFactory;
             _mainVehicle = mainVehicle;
+        }
+
+        public List<RectangleProp> GenerateCity()
+        {
+            var tileWidth = _mainVehicle.Height * 1.5f;
+            var map = new GameMap(tileWidth, _bodyFactory, new Vector2(0, 0));
+            return map.ParseMap();
         }
 
         public List<IDrawable> GenerateSquareCity()

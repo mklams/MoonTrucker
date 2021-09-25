@@ -18,7 +18,7 @@ namespace MoonTrucker
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private VehicleWithPhysics _vehicle;
-        private List<IDrawable> _city;
+        private List<RectangleProp> _city; // TODO: Support a more genetic type
         private int _screenWidthPx;
         private int _screenHeightPx;
         private KeyboardState _oldKeyboardState;
@@ -72,7 +72,7 @@ namespace MoonTrucker
             //create game objects
             _vehicle = new VehicleWithPhysics(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
             var cityGenerator = new GeneratedCity(_propFactory, _vehicle);
-            _city = cityGenerator.GenerateSquareCity();
+            _city = cityGenerator.GenerateCity();
 
             _target = new GameTarget(_vehicle.Width * 1.5f, Vector2.Add(getScreenCenter(), new Vector2(50, 0)), _propFactory, this);
         }
@@ -126,8 +126,8 @@ namespace MoonTrucker
             _independentRenderer.BeginDraw();
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
                 null, _camera.GetViewTransformationMatrix());
-            
-            foreach (IDrawable prop in _city)
+
+            foreach(RectangleProp prop in _city)
             {
                 prop.Draw();
             }

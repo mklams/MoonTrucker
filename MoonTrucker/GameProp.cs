@@ -1,4 +1,5 @@
-﻿using System;using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -45,6 +46,11 @@ namespace MoonTrucker
             prop.Body.OnSeparation = onSeparationHandler;
 
             return prop;
+        }
+
+        public static Vector2 GetOriginFromDimensions(Vector2 dim, Vector2 topLeftCorner)
+        {
+            return new Vector2(topLeftCorner.X + dim.X / 2f, topLeftCorner.Y + dim.Y / 2f);
         }
     }
 
