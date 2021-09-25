@@ -38,10 +38,9 @@ namespace MoonTrucker
             }
         }
 
-        // TODO: Use a more generic type than RectangleProp
-        public List<RectangleProp> ParseMap()
+        public List<IDrawable> ParseMap()
         {
-            var props = new List<RectangleProp>();
+            var props = new List<IDrawable>();
             for (int row = 0; row < _tileMap.Length; row++)
             {
                 for (int col = 0; col < _tileMap[row].Length; col++)
