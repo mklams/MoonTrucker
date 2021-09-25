@@ -10,10 +10,12 @@ namespace MoonTrucker{
     }
     public class Tire{
 
-        private const float MAX_FORWARD_DRIVE_FORCE = 2f;
-        private const float MAX_BACKWARD_DRIVE_FORCE = 1f;
-        private const float MAX_BRAKE_FORCE = 3f;
-        private const float MAX_FRICTION_FORCE = 1f;
+        private const float MAX_FORWARD_DRIVE_FORCE = 1f;
+        private const float MAX_FORWARD_SPEED = 10f;
+        private const float MAX_BACKWARD_SPEED = 6f;
+        private const float MAX_BACKWARD_DRIVE_FORCE = .5f;
+        private const float MAX_BRAKE_FORCE = 1.5f;
+        private const float MAX_FRICTION_FORCE = .5f;
         private const float MAX_ROTATION_ANGLE_RADS = MathF.PI/4;
         private const float FRICTION_FORCE = .2f;
         
@@ -95,27 +97,39 @@ namespace MoonTrucker{
         {
             if(VectorHelpers.IsStopped(vehicleBody)) {return;}
             this.applyDragForce(vehicleBody, FRICTION_FORCE);
+            vehicleBody.ApplyAngularImpulse( 0.1f * vehicleBody.Inertia * -vehicleBody.AngularVelocity );
         }
 
         public void ApplyTractionForce(Body vehicleBody)
         {
-            if(VectorHelpers.IsStopped(vehicleBody)){return;}
+            // if(VectorHelpers.IsStopped(vehicleBody)){return;}
+            // Vector2 tirePosition = this.getTirePosition(vehicleBody);
+            // Vector2 unitTireDirec = new Vector2(1, 0);
+            // unitTireDirec = VectorHelpers.Rotate(unitTireDirec, vehicleBody.Rotation);
+            // if(_turningWheel)
+            // {
+            //     unitTireDirec = VectorHelpers.Rotate(unitTireDirec, _rotation);
+            // }
+            // var angleBetween = VectorHelpers.AngleBetween(VectorHelpers.GetUnitDirectionVector(vehicleBody),vehicleBody.LinearVelocity);
+            // var complement = (MathF.PI/2f)-angleBetween;
+            // var magnitude = vehicleBody.LinearVelocity.Length()*MathF.Cos(complement);
+            // var impulse = VectorHelpers.Rotate(unitTireDirec, -MathF.PI/2f)*magnitude;
+            // if(!VectorHelpers.IsTurningLeft(vehicleBody))
+            // {
+            //     impulse = -impulse;
+            // }
+            // vehicleBody.ApplyLinearImpulse(impulse);
+
+             if(VectorHelpers.IsStopped(vehicleBody)){return;}
             Vector2 tirePosition = this.getTirePosition(vehicleBody);
-            Vector2 unitTireDirec = new Vector2(1, 0);
-            unitTireDirec = VectorHelpers.Rotate(unitTireDirec, vehicleBody.Rotation);
-            if(_turningWheel)
-            {
-                unitTireDirec = VectorHelpers.Rotate(unitTireDirec, _rotation);
-            }
-            var angleBetween = VectorHelpers.AngleBetween(VectorHelpers.GetUnitDirectionVector(vehicleBody),vehicleBody.LinearVelocity);
-            var complement = (MathF.PI/2f)-angleBetween;
-            var magnitude = vehicleBody.LinearVelocity.Length()*MathF.Cos(complement);
-            var impulse = VectorHelpers.Rotate(unitTireDirec, -MathF.PI/2f)*magnitude;
-            if(VectorHelpers.IsTurningLeft(vehicleBody))
-            {
-                impulse = -impulse;
-            }
-            vehicleBody.ApplyLinearImpulse(impulse);
+            Vector2 impulse = -this.getLateralVelocity(vehicleBody)*.25f;
+            vehicleBody.ApplyLinearImpulse(impulse, tirePosition);
+        }
+
+        private Vector2 getLateralVelocity(Body vehicleBody)
+        {
+            Vector2 rightNorm = vehicleBody.GetWorldVector(new Vector2(1,0));
+            return Vector2.Dot(rightNorm, vehicleBody.LinearVelocity) * rightNorm;
         }
 
         private Vector2 getTirePosition(Body vehicleBody)
