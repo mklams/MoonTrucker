@@ -94,7 +94,7 @@ namespace MoonTrucker
             {
                 this.handleRightKey();
             }
-            this.snapVelocityToZero();
+            //this.snapVelocityToZero();
             this.applyFriction();
             this.applyTraction();
         }
