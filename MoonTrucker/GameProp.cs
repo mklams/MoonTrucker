@@ -54,7 +54,12 @@ namespace MoonTrucker
         }
     }
 
-    public class RectangleProp
+    public interface IDrawable
+    {
+        public void Draw();
+    }
+
+    public class RectangleProp: IDrawable
     {
         public Body Body;
         private Texture2D _sprite;
@@ -93,7 +98,7 @@ namespace MoonTrucker
         }
     }
 
-    public class CircleProp
+    public class CircleProp: IDrawable
     {
         public readonly Body Body;
         private Texture2D _sprite;
