@@ -45,21 +45,33 @@ namespace MoonTrucker
             {
                 for (int col = 0; col < _tileMap[row].Length; col++)
                 {
-                    char propMapValue = _tileMap[row][col];
-                    // Tricky: backwards from how you think about coords in a 2d array
+                    var propMapValue = (TileType)_tileMap[row][col];
                     var curCoordinate = new MapCoordinate(row, col);
-                    if (propMapValue == 'B' && isTopLeftCorner(curCoordinate))
+                    if (propMapValue != TileType.Road && isTopLeftCorner(curCoordinate))
                     {
-                        var propDim = getPropDimensionsInSim(curCoordinate);
-                        var curPosInSim = getCordInSim(curCoordinate);
+                        Vector2 propDim = getPropDimensionsInSim(curCoordinate);
+                        Vector2 curPosInSim = getCordInSim(curCoordinate);
 
-                        var prop = _propFactory.CreateRectangleBody(propDim.X, propDim.Y, PropFactory.GetOriginFromDimensions(propDim, curPosInSim));
-                        props.Add(prop);
+                        var prop = CreatePropBodyForTile(propMapValue, propDim, PropFactory.GetOriginFromDimensions(propDim, curPosInSim));
+                        if (prop != null) { props.Add(prop); }
                     }
                 }
             }
 
             return props;
+        }
+
+        private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
+        {
+            switch(tile)
+            {
+                case TileType.Building:
+                    return _propFactory.CreateRectangleBody(propDim.X, propDim.Y, origin);
+                case TileType.Tunnel:
+                    return _propFactory.CreateRectangleSensor(propDim.X, propDim.Y, origin);
+                default:
+                    return null; // TODO: DON'T RETURN NULLL
+            }
         }
 
         private bool isTopLeftCorner(MapCoordinate coordinate)
@@ -121,6 +133,13 @@ namespace MoonTrucker
 
             return cord.ToVector2() * _tileWidt;
         }
+    }
+
+    public enum TileType
+    {
+        Building = 'B',
+        Road = '_',
+        Tunnel = 'T'
     }
 
     public class MapCoordinate

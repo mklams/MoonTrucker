@@ -73,7 +73,7 @@ namespace MoonTrucker
             _vehicle = new VehicleWithPhysics(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
             _city = generateCity();
 
-            _target = new GameTarget(_vehicle.Width * 1.5f, Vector2.Add(getScreenCenter(), new Vector2(50, 0)), _propFactory, this);
+            _target = new GameTarget(_vehicle.Width * 1.5f, Vector2.Add(getScreenCenter(), new Vector2(75, 0)), _propFactory, this);
         }
 
         // TODO: Move this somewhere else
