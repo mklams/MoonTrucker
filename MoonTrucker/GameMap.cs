@@ -47,11 +47,11 @@ namespace MoonTrucker
                 {
                     char propMapValue = _tileMap[row][col];
                     // Tricky: backwards from how you think about coords in a 2d array
-                    var curPos = new Point(col, row);
-                    if (propMapValue == 'B' && isTopLeftCorner(curPos))
+                    var curCoordinate = new MapCoordinate(row, col);
+                    if (propMapValue == 'B' && isTopLeftCorner(curCoordinate))
                     {
-                        var propDim = getPropDimensionsInSim(curPos);
-                        var curPosInSim = getCordInSim(curPos);
+                        var propDim = getPropDimensionsInSim(curCoordinate);
+                        var curPosInSim = getCordInSim(curCoordinate);
 
                         var prop = _propFactory.CreateRectangleBody(propDim.X, propDim.Y, PropFactory.GetOriginFromDimensions(propDim, curPosInSim));
                         props.Add(prop);
@@ -62,65 +62,83 @@ namespace MoonTrucker
             return props;
         }
 
-        private bool isTopLeftCorner(Point position)
+        private bool isTopLeftCorner(MapCoordinate coordinate)
         {
-            int colPos = position.X;
-            int rowPos = position.Y;
-            char propMapValue = _tileMap[rowPos][colPos];
+            char propMapValue = _tileMap[coordinate.Row][coordinate.Column];
 
-            return !doesTilePosMatchValue(propMapValue, new Point(rowPos - 1, colPos)) && !doesTilePosMatchValue(propMapValue, new Point(rowPos, colPos - 1));
+            return !doesTileAtCoordinateMatchValue(propMapValue, new MapCoordinate(coordinate.Row - 1, coordinate.Column))
+                    && !doesTileAtCoordinateMatchValue(propMapValue, new MapCoordinate(coordinate.Row, coordinate.Column - 1));
         }
 
-        private bool doesTilePosMatchValue(char value, Point position)
+        private bool doesTileAtCoordinateMatchValue(char value, MapCoordinate coordinate)
         {
-            if (position.X < 0 || position.Y < 0)
+            if (coordinate.Row < 0 || coordinate.Column < 0)
             {
                 return false;
             }
 
-            return _tileMap[position.X][position.Y] == value;
+            return _tileMap[coordinate.Row][coordinate.Column] == value;
         }
 
         // Get dimensions in array index
-        private Point getPropDimensions(Point startingPosition)
+        // TODO: Don't use point since this is a dimension
+        private Point getPropDimensions(MapCoordinate startingCoordinate)
         {
             int width = 0;
             int height = 0;
-            //Trick: col and x/y are fliped
-            int rowPos = startingPosition.Y;
-            int colPos = startingPosition.X;
-            char propMapValue = _tileMap[rowPos][colPos];
-            for (int curXPos = rowPos; curXPos < _tileMap.Length; curXPos++)
-            {
-                if (_tileMap[curXPos][colPos] != propMapValue)
-                {
-                    break;
-                }
-                width++;
-            }
 
-            for (int curYPos = colPos; curYPos < _tileMap[rowPos].Length; curYPos++)
+            char propMapValue = _tileMap[startingCoordinate.Row][startingCoordinate.Column];
+            for (int curRow = startingCoordinate.Row; curRow < _tileMap.Length; curRow++)
             {
-                if (_tileMap[rowPos][curYPos] != propMapValue)
+                if (_tileMap[curRow][startingCoordinate.Column] != propMapValue)
                 {
                     break;
                 }
                 height++;
             }
 
-            return new Point(height, width);
+            for (int curCol = startingCoordinate.Column; curCol < _tileMap[startingCoordinate.Row].Length; curCol++)
+            {
+                if (_tileMap[startingCoordinate.Row][curCol] != propMapValue)
+                {
+                    break;
+                }
+                width++;
+            }
+
+            return new Point(width, height);
         }
 
-        private Vector2 getPropDimensionsInSim(Point startingPosition)
+        private Vector2 getPropDimensionsInSim(MapCoordinate startingCoordinate)
         {
-            var dim = getPropDimensions(startingPosition);
+            var dim = getPropDimensions(startingCoordinate);
             var simDim = dim.ToVector2() * _tileWidt;
             return simDim;
         }
 
-        private Vector2 getCordInSim(Point cord)
+        private Vector2 getCordInSim(MapCoordinate cord)
         {
+
             return cord.ToVector2() * _tileWidt;
+        }
+    }
+
+    public class MapCoordinate
+    {
+        public int Row;
+        public int Column;
+
+        public MapCoordinate() { }
+        public MapCoordinate(int row, int column)
+        {
+            Row = row;
+            Column = column;
+        }
+
+        public Vector2 ToVector2()
+        {
+            // Flip row and column order to match X/Y 
+            return new Vector2(Column, Row);
         }
     }
 
