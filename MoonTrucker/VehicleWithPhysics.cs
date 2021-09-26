@@ -13,9 +13,10 @@ namespace MoonTrucker
     public class VehicleWithPhysics
     {
         private const float IMPULSE_FACTOR = 8f;
-        private const float MAX_SPEED = 40f;
+        private const float MAX_SPEED = 100f;
         private const float TRACT_FACT = 1f;
-        private const float TURN_FACTOR = 80f;
+        private const float TURN_FACTOR = 150f;
+        private const float MAX_TRACTION_FORCE = 5f;
         private float _angle = 0;
 
         private Texture2D _sprite { get; }
@@ -38,6 +39,8 @@ namespace MoonTrucker
             _vehicleBody = BodyFactory.CreateRectangle(world, height, width, 1f, position, _angle, BodyType.Dynamic);
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
+            _vehicleBody.Inertia = 100f;
+            _vehicleBody.Mass = 10f;
 
             _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
             _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
@@ -126,7 +129,7 @@ namespace MoonTrucker
 
         private void snapVelocityToZero()
         {
-            if (_vehicleBody.LinearVelocity.Length() < .1f)
+            if (_vehicleBody.LinearVelocity.Length() < .7f)
             {
                 _vehicleBody.LinearVelocity = Vector2.Zero;
                 _vehicleBody.AngularVelocity = 0f;
@@ -135,21 +138,24 @@ namespace MoonTrucker
 
         private void applyRotationalFriction()
         {
-            //_vehicleBody.AngularVelocity *= .98f;
-            _vehicleBody.LinearVelocity *= .98f;
-            _vehicleBody.ApplyAngularImpulse(-.2f * _vehicleBody.AngularVelocity);
+            _vehicleBody.AngularVelocity *= .99f;
+            // _vehicleBody.LinearVelocity *= .98f;
+            //_vehicleBody.ApplyAngularImpulse(-.2f * _vehicleBody.AngularVelocity);
+            _vehicleBody.ApplyLinearImpulse(-.1f * GetForwardVelocity());
 
-            Vector2 forwardVelocity = GetForwardVelocity();
-            float forwardSpeed = forwardVelocity.Length();
-            float dragMagnitude = forwardSpeed * -.2f;
-            //_vehicleBody.ApplyLinearImpulse(dragMagnitude * forwardVelocity);
         }
 
         private void applyTraction()
         {
             if (_vehicleBody.LinearVelocity.Length() != 0f)
             {
-                _vehicleBody.ApplyLinearImpulse(-GetLateralVelocity() * TRACT_FACT);
+                var lateralVelocity = GetLateralVelocity();
+                if (lateralVelocity.Length() > MAX_TRACTION_FORCE)
+                {
+                    lateralVelocity.Normalize();
+                    lateralVelocity *= MAX_TRACTION_FORCE;
+                }
+                _vehicleBody.ApplyLinearImpulse(-lateralVelocity * TRACT_FACT);
             }
         }
 
