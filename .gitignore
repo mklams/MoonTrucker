@@ -52,3 +52,7 @@ MoonTrucker/bin/.DS_Store
 .gitignore
 .gitignore
 MoonTrucker/Content/Fonts/.DS_Store
+MoonTrucker/.DS_Store
+MoonTrucker/bin/Debug/.DS_Store
+.gitignore
+MoonTrucker/Content/.DS_Store
