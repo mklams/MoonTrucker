@@ -19,6 +19,7 @@ namespace MoonTrucker
         private SpriteBatch _spriteBatch;
         private VehicleWithPhysics _vehicle;
         private List<IDrawable> _city;
+        private GameMap _map;
         private int _screenWidthPx;
         private int _screenHeightPx;
         private KeyboardState _oldKeyboardState;
@@ -60,7 +61,7 @@ namespace MoonTrucker
 
         public void MoveTarget()
         {
-            _target.Body.Body.Position = getScreenCenter();
+            _target.Body.Body.Position = _map.GetRandomTargetLocation();
         }
 
         protected override void LoadContent()
@@ -80,8 +81,8 @@ namespace MoonTrucker
         public List<IDrawable> generateCity()
         {
             var tileWidth = _vehicle.Height * 1.5f;
-            var map = new GameMap(tileWidth, _propFactory, new Vector2(0, 0));
-            return map.ParseMap();
+            _map = new GameMap(tileWidth, _propFactory, new Vector2(0, 0));
+            return _map.ParseMap();
         }
 
         private Vector2 getScreenCenter()

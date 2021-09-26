@@ -31,6 +31,7 @@ namespace MoonTrucker
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {
+                // TODO: Remove an chars that are not in the TileType enum
                 _tileMap = reader.ReadToEnd()
                                  .Split("\n")
                                  .Select(line => line.ToCharArray())
@@ -63,6 +64,28 @@ namespace MoonTrucker
             }
 
             return props;
+        }
+
+        public Vector2 GetRandomTargetLocation()
+        {
+            Vector2 location = new Vector2(0,0);
+            bool foundLocation = false;
+            Random randomGen = new Random();
+            while(!foundLocation)
+            {
+                int randomRow = randomGen.Next(_tileMap.Length);
+                int randomCol = randomGen.Next(_tileMap[randomRow].Length);
+
+                var tile = (TileType)_tileMap[randomRow][randomCol];
+
+                if(tile == TileType.Road)
+                {
+                    foundLocation = true;
+                    location = getCordInSim(new MapCoordinate(randomRow, randomCol));
+                }
+            }
+
+            return location;
         }
 
         private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
