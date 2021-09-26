@@ -4,7 +4,7 @@ using Genbox.VelcroPhysics.Collision.Handlers;
 using Genbox.VelcroPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 
-namespace MoonTrucker
+namespace MoonTrucker.GameWorld
 {
     public class GameTarget: IDrawable
     {

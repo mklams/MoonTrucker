@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Utilities;
 using System.Collections.Generic;
+using MoonTrucker.GameWorld;
 
 namespace MoonTrucker
 {

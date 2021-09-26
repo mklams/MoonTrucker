@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 
-namespace MoonTrucker
+namespace MoonTrucker.GameWorld
 {
     public class GameMap: IDrawable
     {
@@ -37,7 +37,7 @@ namespace MoonTrucker
         private char[][] loadMapFromFile()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "MoonTrucker.World.Map.txt";
+            var resourceName = "MoonTrucker.GameWorld.Map.txt";
             char[][] tileMap;
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
@@ -182,24 +182,4 @@ namespace MoonTrucker
         Road = '_',
         Tunnel = 'T'
     }
-
-    public class MapCoordinate
-    {
-        public int Row;
-        public int Column;
-
-        public MapCoordinate() { }
-        public MapCoordinate(int row, int column)
-        {
-            Row = row;
-            Column = column;
-        }
-
-        public Vector2 ToVector2()
-        {
-            // Flip row and column order to match X/Y 
-            return new Vector2(Column, Row);
-        }
-    }
-
 }
