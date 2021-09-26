@@ -46,6 +46,10 @@ namespace MoonTrucker
                 for (int col = 0; col < _tileMap[row].Length; col++)
                 {
                     var propMapValue = (TileType)_tileMap[row][col];
+                    if ((char)propMapValue == '\r')
+                    {
+                        continue;
+                    }
                     var curCoordinate = new MapCoordinate(row, col);
                     if (propMapValue != TileType.Road && isTopLeftCorner(curCoordinate))
                     {
@@ -63,7 +67,7 @@ namespace MoonTrucker
 
         private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
         {
-            switch(tile)
+            switch (tile)
             {
                 case TileType.Building:
                     return _propFactory.CreateRectangleBody(propDim.X, propDim.Y, origin);
