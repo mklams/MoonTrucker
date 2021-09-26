@@ -3,10 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 using Genbox.VelcroPhysics.Dynamics;
-using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Utilities;
-using Genbox.VelcroPhysics.Collision.Shapes;
-using Genbox.VelcroPhysics.Shared;
 using System.Collections.Generic;
 
 namespace MoonTrucker
@@ -18,7 +15,6 @@ namespace MoonTrucker
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private VehicleWithPhysics _vehicle;
-        private List<IDrawable> _city;
         private GameMap _map;
         private int _screenWidthPx;
         private int _screenHeightPx;
@@ -72,17 +68,16 @@ namespace MoonTrucker
             
             //create game objects
             _vehicle = new VehicleWithPhysics(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
-            _city = generateCity();
+            _map = generateMap();
 
-            _target = new GameTarget(_vehicle.Width * 1.5f, Vector2.Add(getScreenCenter(), new Vector2(75, 0)), _propFactory, this);
+            _target = new GameTarget(_vehicle.Width, Vector2.Add(getScreenCenter(), new Vector2(75, 0)), _propFactory, this);
         }
 
         // TODO: Move this somewhere else
-        public List<IDrawable> generateCity()
+        public GameMap generateMap()
         {
             var tileWidth = _vehicle.Height * 1.5f;
-            _map = new GameMap(tileWidth, _propFactory, new Vector2(0, 0));
-            return _map.ParseMap();
+            return new GameMap(tileWidth, _propFactory, new Vector2(0, 0));
         }
 
         private Vector2 getScreenCenter()
@@ -135,10 +130,7 @@ namespace MoonTrucker
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
                 null, _camera.GetViewTransformationMatrix());
 
-            foreach(RectangleProp prop in _city)
-            {
-                prop.Draw();
-            }
+            _map.Draw();
             _target.Draw();
             _vehicle.Draw();
             _spriteBatch.End();

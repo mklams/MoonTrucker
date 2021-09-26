@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace MoonTrucker
 {
-    public class GameTarget
+    public class GameTarget: IDrawable
     {
         public readonly CircleProp Body;
 

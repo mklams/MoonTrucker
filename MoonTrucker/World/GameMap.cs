@@ -7,39 +7,53 @@ using Microsoft.Xna.Framework;
 
 namespace MoonTrucker
 {
-    public class GameMap
+    public class GameMap: IDrawable
     {
         private char[][] _tileMap;
+        private List<IDrawable> _mapProps;
         private float _tileWidt;
         private PropFactory _propFactory;
         private Vector2 _topLeftCorner;
 
         public GameMap(float tileWidth, PropFactory propFactory, Vector2 topLeftCorner)
         {
-            loadMapFromFile();
             _tileWidt = tileWidth;
             _propFactory = propFactory;
             _topLeftCorner = topLeftCorner;
+            _tileMap = loadMapFromFile();
+            _mapProps = parseMap();
+            
+        }
+
+        public void Draw()
+        {
+            foreach(IDrawable prop in _mapProps)
+            {
+                prop.Draw();
+            }
         }
 
         // TODO: This is a service. It needs to be in it's own class and injected in
-        private void loadMapFromFile()
+        private char[][] loadMapFromFile()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "MoonTrucker.Map.txt";
+            var resourceName = "MoonTrucker.World.Map.txt";
+            char[][] tileMap;
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {
                 // TODO: Remove an chars that are not in the TileType enum
-                _tileMap = reader.ReadToEnd()
+                tileMap = reader.ReadToEnd()
                                  .Split("\n")
                                  .Select(line => line.ToCharArray())
                                  .ToArray();
             }
+
+            return tileMap;
         }
 
-        public List<IDrawable> ParseMap()
+        private List<IDrawable> parseMap()
         {
             var props = new List<IDrawable>();
             for (int row = 0; row < _tileMap.Length; row++)
