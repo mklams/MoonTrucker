@@ -13,6 +13,13 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Fonts/NoSurrender.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/NoSurrender.spritefont
+
 #begin GameAssets/Black_viper.png
 /importer:TextureImporter
 /processor:TextureProcessor

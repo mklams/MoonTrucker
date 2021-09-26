@@ -13,6 +13,7 @@ namespace MoonTrucker
     {
         private bool _fullScreen = false;
 
+        private SpriteFont _font;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private VehicleWithPhysics _vehicle;
@@ -56,13 +57,10 @@ namespace MoonTrucker
             base.Initialize();
         }
 
-        public void MoveTarget()
-        {
-            _target.Body.Body.Position = _map.GetRandomTargetLocation();
-        }
-
         protected override void LoadContent()
         {
+            _font = Content.Load<SpriteFont>("Fonts/NoSurrender");
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
             _propFactory = new PropFactory(_world, _textureManager, _spriteBatch);
@@ -70,11 +68,9 @@ namespace MoonTrucker
             //create game objects
             _vehicle = new VehicleWithPhysics(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
             _map = generateMap();
-
-            _target = new GameTarget(_vehicle.Width, Vector2.Add(getScreenCenter(), new Vector2(75, 0)), _propFactory, this);
+            _target = new GameTarget(_vehicle.Width, Vector2.Add(getScreenCenter(), new Vector2(75, 0)), _propFactory, _map);
         }
 
-        // TODO: Move this somewhere else
         public GameMap generateMap()
         {
             var tileWidth = _vehicle.Height * 1.5f;
@@ -130,13 +126,26 @@ namespace MoonTrucker
             _independentRenderer.BeginDraw();
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
                 null, _camera.GetViewTransformationMatrix());
-
             _map.Draw();
             _target.Draw();
             _vehicle.Draw();
             _spriteBatch.End();
 
+
+            // Draw score outside of first sprite batch so that it's not affected by the camera
+            _spriteBatch.Begin();
+            drawScore();
+            _spriteBatch.End();
+
             base.Draw(gameTime);
+        }
+
+        // TODO: Move this to it's own class. 
+        private void drawScore()
+        {
+            var scorePosition= _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
+
+            _spriteBatch.DrawString(_font, $"Score: {_target.HitTotal}", scorePosition, Color.Red);
         }
     }
 }

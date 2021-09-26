@@ -8,21 +8,23 @@ namespace MoonTrucker.GameWorld
 {
     public class GameTarget: IDrawable
     {
-        public readonly CircleProp Body;
+        private CircleProp _body;
+        public int HitTotal = 0;
 
-        public GameTarget(float radius, Vector2 position, PropFactory bodyFactory, MoonTruckerGame game)
+        public GameTarget(float radius, Vector2 position, PropFactory bodyFactory, GameMap map)
         {
             // FUTURE: If more things need to run actions on collision use the observer pattern
             OnCollisionHandler onHitAction = (Fixture fixtureA, Fixture fixtureB, Contact contact) => {
-                game.MoveTarget();
+                _body.Body.Position = map.GetRandomTargetLocation();
+                HitTotal++;
             };
 
-            Body = bodyFactory.CreateCircleSensor(radius, position, onHitAction);
+            _body = bodyFactory.CreateCircleSensor(radius, position, onHitAction);
         }
 
         public void Draw()
         {
-            Body.Draw();
+            _body.Draw();
         }
     }
 }
