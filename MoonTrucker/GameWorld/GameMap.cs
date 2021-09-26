@@ -80,6 +80,10 @@ namespace MoonTrucker.GameWorld
             return props;
         }
 
+        /// <summary>
+        /// Returns a radnom location to place a target. 
+        /// </summary>
+        /// <returns>The center position of the tile to place the target on</returns>
         public Vector2 GetRandomTargetLocation()
         {
             Vector2 location = new Vector2(0, 0);
@@ -99,7 +103,7 @@ namespace MoonTrucker.GameWorld
                 }
             }
 
-            return location;
+            return Vector2.Add(location, new Vector2(_tileWidt /2f, _tileWidt /2f));
         }
 
         private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
