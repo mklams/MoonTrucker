@@ -13,35 +13,37 @@ namespace MoonTrucker
     public class VehicleWithPhysics
     {
         private const float IMPULSE_FACTOR = 8f;
-        private const float TRACT_FACT = .3f;
-        private const float TURN_FACTOR = 100f;
+        private const float MAX_SPEED = 40f;
+        private const float TRACT_FACT = 1f;
+        private const float TURN_FACTOR = 80f;
         private float _angle = 0;
 
         private Texture2D _sprite { get; }
-        private Texture2D _light  {get; }
+        private Texture2D _light { get; }
 
         private Body _vehicleBody { get; }
         private SpriteBatch _batch;
         private bool _isBraking = false;
         private bool _inDrive = false;
 
-        public float Height { get;  }
-        public float Width { get;  }
+        public float Height { get; }
+        public float Width { get; }
 
         public VehicleWithPhysics(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
         {
-            
+
             Height = height;
             Width = width;
 
-            _vehicleBody = BodyFactory.CreateRectangle(world, height, width, 1f,position, _angle, BodyType.Dynamic);
+            _vehicleBody = BodyFactory.CreateRectangle(world, height, width, 1f, position, _angle, BodyType.Dynamic);
             _vehicleBody.Restitution = 0.3f;
             _vehicleBody.Friction = 0.5f;
 
             _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
             _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
             Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(width))];
-            for(int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(width)); i++){
+            for (int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(width)); i++)
+            {
                 colors[i] = Color.White;
             }
             _light.SetData(colors);
@@ -53,7 +55,7 @@ namespace MoonTrucker
             var forwardVector = new Vector2(MathF.Cos(_vehicleBody.Rotation), MathF.Sin(_vehicleBody.Rotation));
             var velVector = this.copyVector(_vehicleBody.LinearVelocity);
             velVector.Normalize();
-            return Vector2.Dot( forwardVector, velVector) > 0;
+            return Vector2.Dot(forwardVector, velVector) > 0;
         }
 
         public void Draw()
@@ -68,9 +70,10 @@ namespace MoonTrucker
             return _vehicleBody.Position;
         }
 
-        private void drawTailLights(Vector2 carOrigin){
+        private void drawTailLights(Vector2 carOrigin)
+        {
             Color tailLightColor;
-            if(_vehicleBody.LinearVelocity.Length() == 0f)//stopped
+            if (_vehicleBody.LinearVelocity.Length() == 0f)//stopped
             {
                 tailLightColor = Color.DarkRed;
             }
@@ -80,7 +83,7 @@ namespace MoonTrucker
                 {
                     tailLightColor = Color.DarkRed;
                 }
-                
+
                 else if (_isBraking)
                 {
                     tailLightColor = Color.Red;
@@ -123,39 +126,58 @@ namespace MoonTrucker
 
         private void snapVelocityToZero()
         {
-            if(_vehicleBody.LinearVelocity.Length() < .1f){
+            if (_vehicleBody.LinearVelocity.Length() < .1f)
+            {
                 _vehicleBody.LinearVelocity = Vector2.Zero;
                 _vehicleBody.AngularVelocity = 0f;
             }
         }
 
-        private void applyRotationalFriction(){
-            _vehicleBody.AngularVelocity *= .98f;
-            //_vehicleBody.LinearVelocity *= .98f;
+        private void applyRotationalFriction()
+        {
+            //_vehicleBody.AngularVelocity *= .98f;
+            _vehicleBody.LinearVelocity *= .98f;
+            _vehicleBody.ApplyAngularImpulse(-.2f * _vehicleBody.AngularVelocity);
+
+            Vector2 forwardVelocity = GetForwardVelocity();
+            float forwardSpeed = forwardVelocity.Length();
+            float dragMagnitude = forwardSpeed * -.2f;
+            //_vehicleBody.ApplyLinearImpulse(dragMagnitude * forwardVelocity);
         }
 
         private void applyTraction()
         {
-            if(_vehicleBody.LinearVelocity.Length() != 0f)
+            if (_vehicleBody.LinearVelocity.Length() != 0f)
             {
-                _vehicleBody.ApplyLinearImpulse(-_vehicleBody.LinearVelocity * TRACT_FACT);                
+                _vehicleBody.ApplyLinearImpulse(-GetLateralVelocity() * TRACT_FACT);
             }
+        }
+
+        private Vector2 GetForwardVelocity()
+        {
+            Vector2 forwardNormal = _vehicleBody.GetWorldVector(new Vector2(1, 0));
+            return Vector2.Dot(forwardNormal, _vehicleBody.LinearVelocity) * forwardNormal;
+        }
+        private Vector2 GetLateralVelocity()
+        {
+            Vector2 rightNormal = _vehicleBody.GetWorldVector(new Vector2(0, -1));
+            return Vector2.Dot(rightNormal, _vehicleBody.LinearVelocity) * rightNormal;
         }
 
         private void handleLeftKey()
         {
-            if(_vehicleBody.LinearVelocity.Length() != 0f)
+            if (_vehicleBody.LinearVelocity.Length() != 0f)
             {
-                var posNeg = this.isMovingForward()? -1 : 1;
+                var posNeg = this.isMovingForward() ? -1 : 1;
                 _vehicleBody.ApplyTorque(posNeg * TURN_FACTOR);
             }
         }
 
         private void handleRightKey()
         {
-            if(_vehicleBody.LinearVelocity.Length() != 0f)
+            if (_vehicleBody.LinearVelocity.Length() != 0f)
             {
-                var posNeg = this.isMovingForward()? 1 : -1;
+                var posNeg = this.isMovingForward() ? 1 : -1;
                 _vehicleBody.ApplyTorque(posNeg * TURN_FACTOR);
             }
         }
@@ -164,8 +186,9 @@ namespace MoonTrucker
         {
             _inDrive = true;
             Vector2 impulse;
-            if(_vehicleBody.LinearVelocity.Length() == 0f || (this.isMovingForward()))//stopped or accelerating
+            if (_vehicleBody.LinearVelocity.Length() == 0f || (this.isMovingForward()))//stopped or accelerating
             {
+                if (_vehicleBody.LinearVelocity.Length() > MAX_SPEED) { return; }
                 impulse = this.getUnitDirectionVector();
             }
             else//decelerate
@@ -175,15 +198,16 @@ namespace MoonTrucker
                 impulse.Normalize();
                 impulse *= -1;
             }
-            _vehicleBody.ApplyLinearImpulse(impulse*IMPULSE_FACTOR);
+            _vehicleBody.ApplyLinearImpulse(impulse * IMPULSE_FACTOR);
         }
 
         private void handleDownKey()
         {
             _inDrive = false;
             Vector2 impulse;
-            if(_vehicleBody.LinearVelocity.Length() == 0f || !this.isMovingForward())//stopped
+            if (_vehicleBody.LinearVelocity.Length() == 0f || !this.isMovingForward())//stopped
             {
+                if (_vehicleBody.LinearVelocity.Length() > MAX_SPEED) { return; }
                 impulse = this.getUnitDirectionVector();
                 impulse *= -1;
             }
@@ -194,14 +218,14 @@ namespace MoonTrucker
                 impulse.Normalize();
                 impulse *= -1;
             }
-            _vehicleBody.ApplyLinearImpulse(impulse*IMPULSE_FACTOR);
+            _vehicleBody.ApplyLinearImpulse(impulse * IMPULSE_FACTOR);
         }
 
         private Vector2 copyVector(Vector2 vector)
         {
-            float vx,vy;
+            float vx, vy;
             vector.Deconstruct(out vx, out vy);
-            return new Vector2(vx,vy);
+            return new Vector2(vx, vy);
         }
 
         private Vector2 getUnitDirectionVector()
