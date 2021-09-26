@@ -5,40 +5,55 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 
-namespace MoonTrucker
+namespace MoonTrucker.GameWorld
 {
-    public class GameMap
+    public class GameMap: IDrawable
     {
         private char[][] _tileMap;
+        private List<IDrawable> _mapProps;
         private float _tileWidt;
         private PropFactory _propFactory;
         private Vector2 _topLeftCorner;
 
         public GameMap(float tileWidth, PropFactory propFactory, Vector2 topLeftCorner)
         {
-            loadMapFromFile();
             _tileWidt = tileWidth;
             _propFactory = propFactory;
             _topLeftCorner = topLeftCorner;
+            _tileMap = loadMapFromFile();
+            _mapProps = parseMap();
+            
+        }
+
+        public void Draw()
+        {
+            foreach(IDrawable prop in _mapProps)
+            {
+                prop.Draw();
+            }
         }
 
         // TODO: This is a service. It needs to be in it's own class and injected in
-        private void loadMapFromFile()
+        private char[][] loadMapFromFile()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "MoonTrucker.Map.txt";
+            var resourceName = "MoonTrucker.GameWorld.Map.txt";
+            char[][] tileMap;
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {
-                _tileMap = reader.ReadToEnd()
+                // TODO: Remove an chars that are not in the TileType enum
+                tileMap = reader.ReadToEnd()
                                  .Split("\n")
                                  .Select(line => line.ToCharArray())
                                  .ToArray();
             }
+
+            return tileMap;
         }
 
-        public List<IDrawable> ParseMap()
+        private List<IDrawable> parseMap()
         {
             var props = new List<IDrawable>();
             for (int row = 0; row < _tileMap.Length; row++)
@@ -63,6 +78,28 @@ namespace MoonTrucker
             }
 
             return props;
+        }
+
+        public Vector2 GetRandomTargetLocation()
+        {
+            Vector2 location = new Vector2(0,0);
+            bool foundLocation = false;
+            Random randomGen = new Random();
+            while(!foundLocation)
+            {
+                int randomRow = randomGen.Next(_tileMap.Length);
+                int randomCol = randomGen.Next(_tileMap[randomRow].Length);
+
+                var tile = (TileType)_tileMap[randomRow][randomCol];
+
+                if(tile == TileType.Road)
+                {
+                    foundLocation = true;
+                    location = getCordInSim(new MapCoordinate(randomRow, randomCol));
+                }
+            }
+
+            return location;
         }
 
         private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
@@ -145,24 +182,4 @@ namespace MoonTrucker
         Road = '_',
         Tunnel = 'T'
     }
-
-    public class MapCoordinate
-    {
-        public int Row;
-        public int Column;
-
-        public MapCoordinate() { }
-        public MapCoordinate(int row, int column)
-        {
-            Row = row;
-            Column = column;
-        }
-
-        public Vector2 ToVector2()
-        {
-            // Flip row and column order to match X/Y 
-            return new Vector2(Column, Row);
-        }
-    }
-
 }

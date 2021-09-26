@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Factories;
@@ -11,7 +10,7 @@ using Genbox.VelcroPhysics.Shared;
 using Genbox.VelcroPhysics.Collision.ContactSystem;
 using Genbox.VelcroPhysics.Collision.Handlers;
 
-namespace MoonTrucker
+namespace MoonTrucker.GameWorld
 {
 
     public class PropFactory
@@ -52,11 +51,6 @@ namespace MoonTrucker
         {
             return new Vector2(topLeftCorner.X + dim.X / 2f, topLeftCorner.Y + dim.Y / 2f);
         }
-    }
-
-    public interface IDrawable
-    {
-        public void Draw();
     }
 
     public class RectangleProp: IDrawable

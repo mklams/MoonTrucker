@@ -13,12 +13,13 @@
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
     <None Remove="Content\GameAssets\" />
-    <None Remove="Map.txt" />
+    <None Remove="World\" />
+    <None Remove="World\Map.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
     <EmbeddedResource Include="Icon.bmp" />
-    <EmbeddedResource Include="Map.txt" />
+    <EmbeddedResource Include="World\Map.txt" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
@@ -33,5 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\GameAssets\" />
+    <Folder Include="World\" />
   </ItemGroup>
 </Project>
