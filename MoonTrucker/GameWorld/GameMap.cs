@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace MoonTrucker.GameWorld
 {
-    public class GameMap: IDrawable
+    public class GameMap : IDrawable
     {
         private char[][] _tileMap;
         private List<IDrawable> _mapProps;
@@ -22,22 +22,22 @@ namespace MoonTrucker.GameWorld
             _topLeftCorner = topLeftCorner;
             _tileMap = loadMapFromFile();
             _mapProps = parseMap();
-            
+
         }
 
         public void Draw()
         {
-            foreach(IDrawable prop in _mapProps)
+            foreach (IDrawable prop in _mapProps)
             {
                 prop.Draw();
             }
         }
 
         // TODO: This is a service. It needs to be in it's own class and injected in
-        private char[][] loadMapFromFile()
+        private char[][] loadMapFromFile(bool shouldUseVehicleTestbench = false)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "MoonTrucker.GameWorld.Map.txt";
+            var resourceName = shouldUseVehicleTestbench ? "MoonTrucker.GameWorld.TestBench.txt" : "MoonTrucker.GameWorld.Map.txt";
             char[][] tileMap;
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
@@ -82,17 +82,17 @@ namespace MoonTrucker.GameWorld
 
         public Vector2 GetRandomTargetLocation()
         {
-            Vector2 location = new Vector2(0,0);
+            Vector2 location = new Vector2(0, 0);
             bool foundLocation = false;
             Random randomGen = new Random();
-            while(!foundLocation)
+            while (!foundLocation)
             {
                 int randomRow = randomGen.Next(_tileMap.Length);
                 int randomCol = randomGen.Next(_tileMap[randomRow].Length);
 
                 var tile = (TileType)_tileMap[randomRow][randomCol];
 
-                if(tile == TileType.Road)
+                if (tile == TileType.Road)
                 {
                     foundLocation = true;
                     location = getCordInSim(new MapCoordinate(randomRow, randomCol));
