@@ -53,7 +53,7 @@ namespace MoonTrucker.GameWorld
         }
     }
 
-    public class RectangleProp: IDrawable
+    public class RectangleProp : IDrawable
     {
         public Body Body;
         private Texture2D _sprite;
@@ -64,20 +64,22 @@ namespace MoonTrucker.GameWorld
         {
             Body = BodyFactory.CreateRectangle(world, width, height, 1f, origin);
             Body.BodyType = BodyType.Static;
-            Body.Restitution = 1f;
+            Body.Restitution = 0.1f;//your buildings were bouncy with Restitution=1.
             Body.Friction = 1f;
             Body.IsSensor = isSensor;
             _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aquamarine);
             _batch = batch;
 
-            Body.OnCollision = (Fixture fixtureA, Fixture fixtureB, Contact contact) => {
+            Body.OnCollision = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
+            {
                 if (isSensor)
                 {
                     _color = Color.Tomato;
                 }
             };
 
-            Body.OnSeparation = (Fixture fixtureA, Fixture fixtureB, Contact contact) => {
+            Body.OnSeparation = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
+            {
                 if (isSensor)
                 {
                     _color = Color.White;
@@ -88,11 +90,11 @@ namespace MoonTrucker.GameWorld
         public void Draw()
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position),null, _color, Body.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _color, Body.Rotation, origin, 1f, SpriteEffects.None, 0f);
         }
     }
 
-    public class CircleProp: IDrawable
+    public class CircleProp : IDrawable
     {
         public readonly Body Body;
         private Texture2D _sprite;

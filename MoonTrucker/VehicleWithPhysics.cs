@@ -12,11 +12,11 @@ namespace MoonTrucker
 {
     public class VehicleWithPhysics
     {
-        private const float IMPULSE_FACTOR = 8f;
-        private const float MAX_SPEED = 100f;
+        private const float IMPULSE_FACTOR = 1.5f;
+        private const float MAX_SPEED = 70f;
         private const float TRACT_FACT = 1f;
-        private const float TURN_FACTOR = 150f;
-        private const float MAX_TRACTION_FORCE = 5f;
+        private const float TURN_FACTOR = 15f;
+        private const float MAX_TRACTION_FORCE = 3f;
         private float _angle = 0;
 
         private Texture2D _sprite { get; }
@@ -37,10 +37,16 @@ namespace MoonTrucker
             Width = width;
 
             _vehicleBody = BodyFactory.CreateRectangle(world, height, width, 1f, position, _angle, BodyType.Dynamic);
-            _vehicleBody.Restitution = 0.3f;
-            _vehicleBody.Friction = 0.5f;
-            _vehicleBody.Inertia = 100f;
-            _vehicleBody.Mass = 10f;
+
+            //from https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html
+            _vehicleBody.LinearDamping = 0f; //makes car appear "floaty"
+            _vehicleBody.AngularDamping = .01f;
+
+
+            _vehicleBody.Restitution = 0.3f; //how bouncy (not bouncy)0-1(super bouncy) 
+            _vehicleBody.Friction = 0.5f;    //friction between other bodies (none) 0 - 1 (frictiony)
+            _vehicleBody.Inertia = 25f;
+            _vehicleBody.Mass = 1f;
 
             _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
             _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
@@ -122,7 +128,7 @@ namespace MoonTrucker
                 this.handleRightKey();
             }
             this.snapVelocityToZero();
-            this.applyRotationalFriction();
+            this.applyFriction();
             this.applyTraction();
 
         }
@@ -136,12 +142,10 @@ namespace MoonTrucker
             }
         }
 
-        private void applyRotationalFriction()
+        private void applyFriction()
         {
-            _vehicleBody.AngularVelocity *= .99f;
-            // _vehicleBody.LinearVelocity *= .98f;
-            //_vehicleBody.ApplyAngularImpulse(-.2f * _vehicleBody.AngularVelocity);
-            _vehicleBody.ApplyLinearImpulse(-.1f * GetForwardVelocity());
+            _vehicleBody.ApplyAngularImpulse(-.05f * _vehicleBody.AngularVelocity * _vehicleBody.Inertia);
+            _vehicleBody.ApplyLinearImpulse(GetDirectionalFrictionForce());
 
         }
 
@@ -155,7 +159,7 @@ namespace MoonTrucker
                     lateralVelocity.Normalize();
                     lateralVelocity *= MAX_TRACTION_FORCE;
                 }
-                _vehicleBody.ApplyLinearImpulse(-lateralVelocity * TRACT_FACT);
+                _vehicleBody.ApplyLinearImpulse(-lateralVelocity * _vehicleBody.Mass);
             }
         }
 
@@ -170,12 +174,31 @@ namespace MoonTrucker
             return Vector2.Dot(rightNormal, _vehicleBody.LinearVelocity) * rightNormal;
         }
 
+        private Vector2 GetDirectionalFrictionForce()
+        {
+            Vector2 directionalNormal;
+            float frictionMultiplier;
+            if (VectorHelpers.IsMovingForward(_vehicleBody))
+            {
+                frictionMultiplier = -.01f;
+                directionalNormal = _vehicleBody.GetWorldVector(new Vector2(1, 0));
+            }
+            else
+            {
+                frictionMultiplier = -.02f;
+                directionalNormal = _vehicleBody.GetWorldVector(new Vector2(-1, 0));
+            }
+            return Vector2.Dot(directionalNormal, _vehicleBody.LinearVelocity) * directionalNormal * frictionMultiplier;
+        }
+
         private void handleLeftKey()
         {
             if (_vehicleBody.LinearVelocity.Length() != 0f)
             {
                 var posNeg = this.isMovingForward() ? -1 : 1;
-                _vehicleBody.ApplyTorque(posNeg * TURN_FACTOR);
+                float barelyMovingMultiplier = 1f;
+                if (_vehicleBody.LinearVelocity.Length() < 10f) { barelyMovingMultiplier = .01f; }
+                _vehicleBody.ApplyTorque(posNeg * _vehicleBody.Inertia * TURN_FACTOR * barelyMovingMultiplier);
             }
         }
 
@@ -184,7 +207,9 @@ namespace MoonTrucker
             if (_vehicleBody.LinearVelocity.Length() != 0f)
             {
                 var posNeg = this.isMovingForward() ? 1 : -1;
-                _vehicleBody.ApplyTorque(posNeg * TURN_FACTOR);
+                float barelyMovingMultiplier = 1f;
+                if (_vehicleBody.LinearVelocity.Length() < 10f) { barelyMovingMultiplier = .01f; }
+                _vehicleBody.ApplyTorque(posNeg * _vehicleBody.Inertia * TURN_FACTOR * barelyMovingMultiplier);
             }
         }
 
@@ -204,7 +229,7 @@ namespace MoonTrucker
                 impulse.Normalize();
                 impulse *= -1;
             }
-            _vehicleBody.ApplyLinearImpulse(impulse * IMPULSE_FACTOR);
+            _vehicleBody.ApplyLinearImpulse(impulse * _vehicleBody.Mass * IMPULSE_FACTOR);
         }
 
         private void handleDownKey()
@@ -224,7 +249,7 @@ namespace MoonTrucker
                 impulse.Normalize();
                 impulse *= -1;
             }
-            _vehicleBody.ApplyLinearImpulse(impulse * IMPULSE_FACTOR);
+            _vehicleBody.ApplyLinearImpulse(impulse * _vehicleBody.Mass * IMPULSE_FACTOR);
         }
 
         private Vector2 copyVector(Vector2 vector)
