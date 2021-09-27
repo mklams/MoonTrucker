@@ -56,3 +56,11 @@ MoonTrucker/.DS_Store
 MoonTrucker/bin/Debug/.DS_Store
 .gitignore
 MoonTrucker/Content/.DS_Store
+MoonTrucker/Content/obj/DesktopGL/Content/Fonts/NoSurrender.mgcontent
+MoonTrucker/Content/obj/DesktopGL/Content/Fonts/Basic.mgcontent
+MoonTrucker/Content/bin/DesktopGL/Content/Fonts/NoSurrender.xnb
+MoonTrucker/Content/bin/DesktopGL/Content/Fonts/Basic.xnb
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/Fonts/NoSurrender.xnb
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/Fonts/Basic.xnb
+MoonTrucker/bin/Debug/netcoreapp3.1/.DS_Store
+.DS_Store
