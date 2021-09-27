@@ -77,7 +77,7 @@ namespace MoonTrucker
             //create game objects
             _vehicle = new VehicleWithPhysics(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
             _map = generateMap();
-            _target = new GameTarget(_vehicle.Width, Vector2.Add(getScreenCenter(), new Vector2(75, 0)), _propFactory, _map);
+            _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory, _map);
         }
 
         public GameMap generateMap()
