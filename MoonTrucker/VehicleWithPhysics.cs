@@ -21,7 +21,7 @@ namespace MoonTrucker
 
         private const float MAX_BOOST_SPEED = 150f;
         private const float BOOST_FACTOR = 80f;
-        private const int BOOST_COOLDOWN = 3; //sec
+        private const double BOOST_COOLDOWN = .7; //sec
         private float _angle = 0;
 
         private Texture2D _sprite { get; }
@@ -32,7 +32,7 @@ namespace MoonTrucker
         private bool _isBraking = false;
         private bool _inDrive = false;
 
-        private double _lastBoost = -3.0;
+        private double _lastBoost = -BOOST_COOLDOWN;
 
         public float Height { get; }
         public float Width { get; }
@@ -72,6 +72,16 @@ namespace MoonTrucker
             var velVector = this.copyVector(_vehicleBody.LinearVelocity);
             velVector.Normalize();
             return Vector2.Dot(forwardVector, velVector) > 0;
+        }
+
+        public float GetAbsSpeed()
+        {
+            return GetDirectionalVelocity().Length();
+        }
+
+        public float GetMaxSpeed()
+        {
+            return MAX_SPEED;
         }
 
         public void Draw()
