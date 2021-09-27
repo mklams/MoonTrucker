@@ -1,0 +1,32 @@
+﻿<Properties StartupConfiguration="{9AB5A241-7872-485A-8998-5B82AC530939}|Default">
+  <MonoDevelop.Ide.ItemProperties.MoonTrucker PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="MoonTrucker/GameWorld/GameProp.cs">
+    <Files>
+      <File FileName="MoonTrucker/MoonTruckerGame.cs" Line="127" Column="1" />
+      <File FileName="MoonTrucker/Camera2D.cs" Line="81" Column="45" />
+      <File FileName="MoonTrucker/GameWorld/MapCoordinate.cs" Line="1" Column="1" />
+      <File FileName="MoonTrucker/GameWorld/GameMap.cs" Line="86" Column="76" />
+      <File FileName="MoonTrucker/GameWorld/Map.txt" Line="12" Column="17" />
+      <File FileName="MoonTrucker/GameWorld/GameProp.cs" Line="65" Column="36" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="MoonTrucker" expanded="True">
+            <Node name="MoonTrucker" expanded="True">
+              <Node name="GameWorld" expanded="True">
+                <Node name="GameProp.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
