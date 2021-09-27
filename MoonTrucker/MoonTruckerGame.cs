@@ -6,6 +6,7 @@ using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Utilities;
 using System.Collections.Generic;
 using MoonTrucker.GameWorld;
+using System;
 
 namespace MoonTrucker
 {
@@ -59,7 +60,15 @@ namespace MoonTrucker
 
         protected override void LoadContent()
         {
-            _font = Content.Load<SpriteFont>("Fonts/NoSurrender");
+            try
+            {
+                _font = Content.Load<SpriteFont>("Fonts/NoSurrender");
+            }
+            catch(Exception)
+            {
+                _font = Content.Load<SpriteFont>("Fonts/Basic");
+            }
+            
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
