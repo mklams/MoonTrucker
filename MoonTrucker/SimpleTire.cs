@@ -1,28 +1,49 @@
 using Genbox.VelcroPhysics.Collision.Shapes;
 using Genbox.VelcroPhysics.Definitions;
 using Genbox.VelcroPhysics.Dynamics;
+using Genbox.VelcroPhysics.Factories;
+using Genbox.VelcroPhysics.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MoonTrucker
 {
     public class SimpleTire
     {
+        private const float MAX_TRACTION_FORCE = 3f;
         private Body _body;
         private World _world;
-        public SimpleTire(World world)
+        private TextureManager _textureManager;
+        private SpriteBatch _batch;
+        private Texture2D _sprite;
+
+        public SimpleTire(Vector2 position, World world, TextureManager manager, SpriteBatch batch)
         {
+            _body = BodyFactory.CreateRectangle(world, 1f, .2f, 1f, position, 0, BodyType.Dynamic);
+            _body.LinearDamping = 0f; //makes car appear "floaty"
+            _body.AngularDamping = .01f;
+
+            _body.Restitution = 0.3f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
+            _body.Friction = 0f;    //friction between other bodies (none) 0 - 1 (frictiony)
+            _body.Inertia = 2f;
+            _body.Mass = .05f;
+
             _world = world;
-
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.Type = BodyType.Dynamic;
-            _body = world.CreateBody(bodyDef);
-
-            PolygonShape polygonShape = new PolygonShape(1f);
-            polygonShape.SetAsBox(.2f, 1f);
-            _body.CreateFixture(polygonShape);
-
+            _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, Color.Transparent, Color.Red);
+            _batch = batch;
             _body.UserData = this;
 
+        }
+
+        public Body GetBody()
+        {
+            return _body;
+        }
+
+        public void Draw()
+        {
+            var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_body.Position), null, Color.White, _body.Rotation, origin, 1f, SpriteEffects.None, 0f);
         }
 
         public void OnDestroy()
@@ -30,31 +51,41 @@ namespace MoonTrucker
             _world.DestroyBody(_body);
         }
 
-        public Vector2 GetLateralVelocity()
+        public void UpdateFriction()
         {
-            Vector2 rightNormal = _body.GetWorldVector(new Vector2(1, 0));
-            return Vector2.Dot(rightNormal, _body.LinearVelocity) * rightNormal;
-        }
+            //Traction
+            Vector2 impulse = _body.Mass * -VectorHelpers.GetLateralVelocity(_body);
+            if (impulse.Length() > MAX_TRACTION_FORCE)
+            {
+                impulse.Normalize();
+                impulse = impulse * MAX_TRACTION_FORCE;
+            }
+            _body.ApplyLinearImpulse(impulse);
 
-        public Vector2 GetForwardVelocity()
-        {
-            Vector2 forwardNormal = _body.GetWorldVector(new Vector2(0, 1));
-            return Vector2.Dot(forwardNormal, _body.LinearVelocity) * forwardNormal;
-        }
-
-        private void updateFriction()
-        {
-            Vector2 impulse = _body.Mass * -GetLateralVelocity();
-            _body.ApplyLinearImpulse(impulse, _body.WorldCenter);
+            //Rotations inertia loss
             _body.ApplyAngularImpulse(0.1f * _body.Inertia * _body.AngularVelocity);
 
-            Vector2 forwardVelocity = GetForwardVelocity();
+            //Linear friction loss
+            Vector2 forwardVelocity = VectorHelpers.GetForwardVelocity(_body);
             float forwardSpeed = forwardVelocity.Length();
             float dragMagnitude = forwardSpeed * -.2f;
-            _body.ApplyLinearImpulse(dragMagnitude * forwardVelocity, _body.WorldCenter);
+            _body.ApplyLinearImpulse(dragMagnitude * forwardVelocity);
 
         }
 
+        public void applyFowardDriveForce(float magnitude)
+        {
+            _body.ApplyLinearImpulse(magnitude * VectorHelpers.GetForwardNormal(_body));
+        }
 
+        public void applyReverseDriveForce(float magnitude)
+        {
+            _body.ApplyLinearImpulse(magnitude * VectorHelpers.GetBackwardsNormal(_body));
+        }
+
+        public void ApplyTorque(float torque)
+        {
+            _body.ApplyTorque(torque);
+        }
     }
 }

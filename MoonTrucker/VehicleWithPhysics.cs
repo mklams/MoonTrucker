@@ -12,10 +12,8 @@ namespace MoonTrucker
 {
     public class VehicleWithPhysics
     {
-        //private const float IMPULSE_FACTOR = 1.5f;
         private const float MAX_TORQUE = 10f;
         private const float MAX_SPEED = 60f;
-        private const float TRACT_FACT = 1f;
         private const float TURN_FACTOR = 15f;
         private const float MAX_TRACTION_FORCE = 3f;
 
@@ -72,16 +70,6 @@ namespace MoonTrucker
             var velVector = this.copyVector(_vehicleBody.LinearVelocity);
             velVector.Normalize();
             return Vector2.Dot(forwardVector, velVector) > 0;
-        }
-
-        public float GetAbsSpeed()
-        {
-            return GetDirectionalVelocity().Length();
-        }
-
-        public float GetMaxSpeed()
-        {
-            return MAX_SPEED;
         }
 
         public void Draw()
@@ -339,11 +327,6 @@ namespace MoonTrucker
             float vx, vy;
             vector.Deconstruct(out vx, out vy);
             return new Vector2(vx, vy);
-        }
-
-        private Vector2 getUnitDirectionVector()
-        {
-            return new Vector2(MathF.Cos(_vehicleBody.Rotation), MathF.Sin(_vehicleBody.Rotation));
         }
     }
 }

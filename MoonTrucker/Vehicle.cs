@@ -1,7 +1,6 @@
 ﻿using System;
 using Genbox.VelcroPhysics.Dynamics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Genbox.VelcroPhysics.Factories;
@@ -12,27 +11,42 @@ namespace MoonTrucker
     public abstract class Vehicle
     {
         private Texture2D _sprite { get; }
-        private Texture2D _light  {get; }
+        private Texture2D _light { get; }
 
-        protected Body _vehicleBody { get; }
-        private SpriteBatch _batch;
-        protected bool _isBraking = false; 
+        protected Body _body { get; }
+        protected SpriteBatch _batch;
+        protected bool _isBraking = false;
+        protected bool _inDrive = false;
 
-        public float Height { get;  }
-        public float Width { get;  }
+        protected World _world;
+        protected TextureManager _textureManager;
+
+        public float Height { get; }
+        public float Width { get; }
         public Vehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
         {
             Height = height;
             Width = width;
 
-            _vehicleBody = BodyFactory.CreateRectangle(world, height, width, 1f,position, 0f, BodyType.Dynamic);
-            _vehicleBody.Restitution = 0.3f;
-            _vehicleBody.Friction = 0.5f;
+            _world = world;
+            _textureManager = manager;
+            _body = BodyFactory.CreateRectangle(world, height, width, 1f, position, 0, BodyType.Dynamic);
 
-            _sprite = manager.TextureFromShape(_vehicleBody.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
+            //from https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html
+            _body.LinearDamping = 0f; //makes car appear "floaty" if > 0
+            _body.AngularDamping = .01f;
+
+
+            _body.Restitution = 0.3f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
+            _body.Friction = 0.5f;    //friction between other bodies (none) 0 - 1 (frictiony)
+            _body.Inertia = 25f;
+            _body.Mass = 1f;
+
+            _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
             _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
             Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(width))];
-            for(int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(width)); i++){
+            for (int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(width)); i++)
+            {
                 colors[i] = Color.White;
             }
             _light.SetData(colors);
@@ -41,35 +55,39 @@ namespace MoonTrucker
 
         public Vector2 GetPosition()
         {
-            return _vehicleBody.Position;
+            return _body.Position;
         }
 
-        public void Draw()
+        public virtual void Draw()
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, Color.White, _vehicleBody.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_body.Position), null, Color.White, _body.Rotation, origin, 1f, SpriteEffects.None, 0f);
             this.drawTailLights(origin);
         }
 
-        private void drawTailLights(Vector2 carOrigin){
+        private void drawTailLights(Vector2 carOrigin)
+        {
             Color tailLightColor;
-            if(VectorHelpers.IsStopped(_vehicleBody))
+            if (VectorHelpers.IsStopped(_body))
             {
                 tailLightColor = Color.DarkRed;
             }
             else //in motion
             {
-                if(_isBraking){
+                if (_isBraking)
+                {
                     tailLightColor = Color.Red;
                 }
-                else if(VectorHelpers.IsMovingForward(_vehicleBody)){
+                else if (_inDrive)
+                {
                     tailLightColor = Color.DarkRed;
                 }
-                else{
+                else
+                {
                     tailLightColor = Color.White;
                 }
             }
-            _batch.Draw(_light, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, tailLightColor, _vehicleBody.Rotation, carOrigin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_light, ConvertUnits.ToDisplayUnits(_body.Position), null, tailLightColor, _body.Rotation, carOrigin, 1f, SpriteEffects.None, 0f);
 
         }
 
@@ -78,34 +96,39 @@ namespace MoonTrucker
             _isBraking = false;
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                this.handleUpKey();
+                this.handleUpKey(gameTime);
             }
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
-                this.handleDownKey();
+                this.handleDownKey(gameTime);
             }
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
-                this.handleLeftKey();
+                this.handleLeftKey(gameTime);
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-                this.handleRightKey();
+                this.handleRightKey(gameTime);
             }
-            //this.snapVelocityToZero();
+            if (keyboardState.IsKeyDown(Keys.Space))
+            {
+                this.handleSpaceBar(gameTime);
+            }
+            this.snapVelocityToZero();
             this.applyFriction();
-            this.applyTraction();
         }
 
-        protected abstract void handleUpKey();
-        protected abstract void handleDownKey();
-        protected abstract void handleLeftKey();
-        protected abstract void handleRightKey();
+        protected abstract void handleUpKey(GameTime gameTime);
+        protected abstract void handleDownKey(GameTime gameTime);
+        protected abstract void handleLeftKey(GameTime gameTime);
+        protected abstract void handleRightKey(GameTime gameTime);
         protected abstract void snapVelocityToZero();
         protected abstract void applyFriction();
-        protected abstract void applyTraction();
+
+        protected abstract void handleSpaceBar(GameTime gameTime);
+
 
     }
 }
