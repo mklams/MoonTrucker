@@ -17,7 +17,7 @@ namespace MoonTrucker
         private SpriteFont _font;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private VehicleWithPhysics _vehicle;
+        private SimpleVehicle _vehicle;
         private GameMap _map;
         private int _screenWidthPx;
         private int _screenHeightPx;
@@ -37,8 +37,8 @@ namespace MoonTrucker
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            
-            
+
+
             _world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
 
             // Velcro Physics expects objects to be scaled to MKS (meters, kilos, seconds)
@@ -54,7 +54,7 @@ namespace MoonTrucker
             _camera.Zoom = 1f;
             _camera.Position = new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f);
             initializeResolutionIndependence(_screenWidthPx, _screenHeightPx);
-            
+
             base.Initialize();
         }
 
@@ -64,18 +64,18 @@ namespace MoonTrucker
             {
                 _font = Content.Load<SpriteFont>("Fonts/NoSurrender");
             }
-            catch(Exception)
+            catch (Exception)
             {
                 _font = Content.Load<SpriteFont>("Fonts/Basic");
             }
-            
+
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
             _propFactory = new PropFactory(_world, _textureManager, _spriteBatch);
-            
+
             //create game objects
-            _vehicle = new VehicleWithPhysics(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
+            _vehicle = new SimpleVehicle(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
             _map = generateMap();
             _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory, _map);
         }
@@ -105,7 +105,7 @@ namespace MoonTrucker
         private void setScreenDimensions()
         {
             _screenWidthPx = _fullScreen ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : 1600;
-            _screenHeightPx = _fullScreen ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height: 900; 
+            _screenHeightPx = _fullScreen ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height : 900;
 
             _graphics.PreferredBackBufferWidth = _screenWidthPx;
             _graphics.PreferredBackBufferHeight = _screenHeightPx;
@@ -116,7 +116,7 @@ namespace MoonTrucker
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
+
             KeyboardState newKeyboardState = Keyboard.GetState();
 
             _vehicle.UpdateVehicle(newKeyboardState, gameTime);
@@ -152,7 +152,7 @@ namespace MoonTrucker
         // TODO: Move this to it's own class. 
         private void drawScore()
         {
-            var scorePosition= _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
+            var scorePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
 
             _spriteBatch.DrawString(_font, $"Score: {_target.HitTotal}", scorePosition, Color.Red);
         }
