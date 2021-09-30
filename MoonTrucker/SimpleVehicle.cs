@@ -24,7 +24,7 @@ namespace MoonTrucker
         private const float BOOST_FACTOR = 80f;
         private const double BOOST_COOLDOWN = .7; //sec
         private const float TURN_FACTOR = .1f;
-        private const float MAX_SPEED = 60f;
+        private const float MAX_SPEED = 80f;
         private const float BRAKING_FORCE = .5f;
 
         private const float MAX_TURN_ANGLE = MathF.PI / 6f;//30 degrees in radians
@@ -75,8 +75,8 @@ namespace MoonTrucker
             if (_body.LinearVelocity.Length() == 0f || (!VectorHelpers.IsMovingForward(_body)))//stopped or accelerating backwards
             {
                 if (VectorHelpers.GetDirectionalVelocity(_body).Length() > MAX_SPEED) { return; }
-                _tires[(int)Tires.FrontLeft].applyReverseDriveForce(_body.Mass * getImpulseFactor() * .5f);//Mult by .5 so force mag is distributed across fwd tires
-                _tires[(int)Tires.FrontRight].applyReverseDriveForce(_body.Mass * getImpulseFactor() * .5f);
+                _tires[(int)Tires.FrontLeft].applyReverseDriveForce(_body.Mass * getImpulseFactor());//Mult by .5 so force mag is distributed across fwd tires
+                _tires[(int)Tires.FrontRight].applyReverseDriveForce(_body.Mass * getImpulseFactor());
             }
             else//decelerate
             {
@@ -115,8 +115,8 @@ namespace MoonTrucker
             if (_body.LinearVelocity.Length() == 0f || (VectorHelpers.IsMovingForward(_body)))//stopped or accelerating
             {
                 if (VectorHelpers.GetDirectionalVelocity(_body).Length() > MAX_SPEED) { return; }
-                _tires[(int)Tires.FrontLeft].applyForwardDriveForce(_body.Mass * getImpulseFactor() * .5f);//Mult by .5 so force mag is distributed across fwd tires
-                _tires[(int)Tires.FrontRight].applyForwardDriveForce(_body.Mass * getImpulseFactor() * .5f);
+                _tires[(int)Tires.FrontLeft].applyForwardDriveForce(_body.Mass * getImpulseFactor());
+                _tires[(int)Tires.FrontRight].applyForwardDriveForce(_body.Mass * getImpulseFactor());
             }
             else//decelerate
             {
