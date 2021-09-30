@@ -17,6 +17,7 @@ namespace MoonTrucker
         protected SpriteBatch _batch;
         protected bool _isBraking = false;
         protected bool _inDrive = false;
+        protected bool _isTurning = false;
 
         protected World _world;
         protected TextureManager _textureManager;
@@ -94,6 +95,7 @@ namespace MoonTrucker
         public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)
         {
             _isBraking = false;
+            _isTurning = false;
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 this.handleUpKey(gameTime);
@@ -105,11 +107,13 @@ namespace MoonTrucker
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
+                _isTurning = true;
                 this.handleLeftKey(gameTime);
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
+                _isTurning = true;
                 this.handleRightKey(gameTime);
             }
             if (keyboardState.IsKeyDown(Keys.Space))
@@ -118,7 +122,9 @@ namespace MoonTrucker
             }
             this.snapVelocityToZero();
             this.applyFriction();
+            this.restorativeTurn(gameTime);
         }
+        protected abstract void restorativeTurn(GameTime gameTime);
 
         protected abstract void handleUpKey(GameTime gameTime);
         protected abstract void handleDownKey(GameTime gameTime);

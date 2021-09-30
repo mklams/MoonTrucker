@@ -22,6 +22,7 @@ namespace MoonTrucker
             _body = BodyFactory.CreateRectangle(world, 1f, .2f, 1f, position, 0, BodyType.Dynamic);
             _body.LinearDamping = 0f; //makes car appear "floaty"
             _body.AngularDamping = .01f;
+            _textureManager = manager;
 
             _body.Restitution = 0.3f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
             _body.Friction = 0f;    //friction between other bodies (none) 0 - 1 (frictiony)
@@ -63,17 +64,17 @@ namespace MoonTrucker
             _body.ApplyLinearImpulse(impulse);
 
             //Rotations inertia loss
-            _body.ApplyAngularImpulse(0.1f * _body.Inertia * _body.AngularVelocity);
+            _body.ApplyAngularImpulse(-0.1f * _body.Inertia * _body.AngularVelocity);
 
             //Linear friction loss
             Vector2 forwardVelocity = VectorHelpers.GetForwardVelocity(_body);
             float forwardSpeed = forwardVelocity.Length();
-            float dragMagnitude = forwardSpeed * -.2f;
-            _body.ApplyLinearImpulse(dragMagnitude * forwardVelocity);
+            float dragMagnitude = forwardSpeed * .002f;
+            _body.ApplyLinearImpulse(dragMagnitude * VectorHelpers.GetBackwardsNormal(_body));
 
         }
 
-        public void applyFowardDriveForce(float magnitude)
+        public void applyForwardDriveForce(float magnitude)
         {
             _body.ApplyLinearImpulse(magnitude * VectorHelpers.GetForwardNormal(_body));
         }

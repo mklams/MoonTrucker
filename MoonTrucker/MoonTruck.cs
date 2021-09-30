@@ -93,5 +93,10 @@ namespace MoonTrucker
             throw new System.NotImplementedException();
         }
 
+        protected override void restorativeTurn(GameTime gameTime)
+        {
+            throw new System.NotImplementedException();
+        }
+
     }
 }

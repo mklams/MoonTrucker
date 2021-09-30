@@ -25,7 +25,9 @@ namespace MoonTrucker
         private const double BOOST_COOLDOWN = .7; //sec
         private const float TURN_FACTOR = .1f;
         private const float MAX_SPEED = 60f;
-        private const float BRAKING_FORCE = 5f;
+        private const float BRAKING_FORCE = .5f;
+
+        private const float MAX_TURN_ANGLE = MathF.PI / 6f;//30 degrees in radians
         public SimpleVehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
             : base(width, height, position, world, manager, batch, graphicsDevice)
         {
@@ -38,6 +40,28 @@ namespace MoonTrucker
             base.Draw();
             _tires.ForEach(tire => tire.Draw());
 
+        }
+
+        protected override void restorativeTurn(GameTime gameTime)
+        {
+            if (!_isTurning && (VectorHelpers.GetForwardVelocity(_body).Length() > 5f))
+            {
+                float newAngle;
+                if (MathF.Abs(frontLeftJoint.JointAngle) < 1f)
+                {
+                    newAngle = 0f;
+                }
+                else if (frontLeftJoint.JointAngle < 0)
+                {
+                    newAngle = frontLeftJoint.JointAngle + TURN_FACTOR;
+                }
+                else
+                {
+                    newAngle = frontLeftJoint.JointAngle - TURN_FACTOR;
+                }
+                frontLeftJoint.SetLimits(newAngle, newAngle);
+                frontRightJoint.SetLimits(newAngle, newAngle);
+            }
         }
 
         protected override void applyFriction()
@@ -57,7 +81,7 @@ namespace MoonTrucker
             else//decelerate
             {
                 _isBraking = true;
-                _tires.ForEach(tire => tire.applyFowardDriveForce(BRAKING_FORCE));
+                _tires.ForEach(tire => tire.applyReverseDriveForce(_body.Mass * BRAKING_FORCE));
             }
         }
 
@@ -65,18 +89,24 @@ namespace MoonTrucker
         {
             // _tires[(int)Tires.FrontLeft].ApplyTorque(-TURN_FACTOR);
             // _tires[(int)Tires.FrontRight].ApplyTorque(-TURN_FACTOR);
-            var newAngle = frontLeftJoint.JointAngle - TURN_FACTOR;
-            frontLeftJoint.SetLimits(newAngle, newAngle);
-            frontRightJoint.SetLimits(newAngle, newAngle);
+            if (frontLeftJoint.JointAngle > -MAX_TURN_ANGLE)
+            {
+                var newAngle = frontLeftJoint.JointAngle - TURN_FACTOR;
+                frontLeftJoint.SetLimits(newAngle, newAngle);
+                frontRightJoint.SetLimits(newAngle, newAngle);
+            }
         }
 
         protected override void handleRightKey(GameTime gameTime)
         {
             // _tires[(int)Tires.FrontLeft].ApplyTorque(TURN_FACTOR);
             // _tires[(int)Tires.FrontRight].ApplyTorque(TURN_FACTOR);
-            var newAngle = frontLeftJoint.JointAngle + TURN_FACTOR;
-            frontLeftJoint.SetLimits(newAngle, newAngle);
-            frontRightJoint.SetLimits(newAngle, newAngle);
+            if (frontLeftJoint.JointAngle < MAX_TURN_ANGLE)
+            {
+                var newAngle = frontLeftJoint.JointAngle + TURN_FACTOR;
+                frontLeftJoint.SetLimits(newAngle, newAngle);
+                frontRightJoint.SetLimits(newAngle, newAngle);
+            }
         }
 
         protected override void handleUpKey(GameTime gameTime)
@@ -85,13 +115,13 @@ namespace MoonTrucker
             if (_body.LinearVelocity.Length() == 0f || (VectorHelpers.IsMovingForward(_body)))//stopped or accelerating
             {
                 if (VectorHelpers.GetDirectionalVelocity(_body).Length() > MAX_SPEED) { return; }
-                _tires[(int)Tires.FrontLeft].applyFowardDriveForce(_body.Mass * getImpulseFactor() * .5f);//Mult by .5 so force mag is distributed across fwd tires
-                _tires[(int)Tires.FrontRight].applyFowardDriveForce(_body.Mass * getImpulseFactor() * .5f);
+                _tires[(int)Tires.FrontLeft].applyForwardDriveForce(_body.Mass * getImpulseFactor() * .5f);//Mult by .5 so force mag is distributed across fwd tires
+                _tires[(int)Tires.FrontRight].applyForwardDriveForce(_body.Mass * getImpulseFactor() * .5f);
             }
             else//decelerate
             {
                 _isBraking = true;
-                _tires.ForEach(tire => tire.applyReverseDriveForce(BRAKING_FORCE));
+                _tires.ForEach(tire => tire.applyForwardDriveForce(_body.Mass * BRAKING_FORCE));
             }
         }
 
