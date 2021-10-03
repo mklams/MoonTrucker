@@ -55,7 +55,7 @@ namespace MoonTrucker
             _camera.Zoom = 1f;
             _camera.Position = new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f);
             initializeResolutionIndependence(_screenWidthPx, _screenHeightPx);
-            _timer = new Timer(TimeSpan.FromMilliseconds(20000));
+            _timer = new Timer(TimeSpan.FromSeconds(20));
 
             base.Initialize();
         }
@@ -79,7 +79,9 @@ namespace MoonTrucker
             //create game objects
             _vehicle = new SimpleVehicle(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
             _map = generateMap();
-            _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory, _map);
+            _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory);
+            _map.Subscribe(_target);
+            _timer.Subscribe(_target);
         }
 
         public GameMap generateMap()
