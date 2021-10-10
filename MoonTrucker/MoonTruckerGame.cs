@@ -199,7 +199,7 @@ namespace MoonTrucker
 
         private void drawTimer()
         {
-            var timeLeft = _timer.GetTime().Seconds;
+            var timeLeft = ((int)_timer.GetTime().TotalSeconds);
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 0));
 
             _spriteBatch.DrawString(_font, $"Countdown: {timeLeft}", timePosition, Color.Red);
