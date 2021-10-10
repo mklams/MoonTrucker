@@ -180,7 +180,19 @@ namespace MoonTrucker
             var vehiclePosition = _vehicle.GetPosition();
             var direction = new Vector2(targetPosition.X - vehiclePosition.X, targetPosition.Y - vehiclePosition.Y);
             direction.Normalize();
-            var angle = MathF.Acos(direction.X);
+            float angle;
+            try
+            {
+                angle = MathF.Atan(direction.Y / direction.X);
+            }
+            catch
+            {
+                angle = direction.Y > 0 ? (MathF.PI * 3f) / 2f : MathF.PI / 2;
+            }
+            if (targetPosition.X < vehiclePosition.X)
+            {
+                angle += MathF.PI;
+            }
 
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
