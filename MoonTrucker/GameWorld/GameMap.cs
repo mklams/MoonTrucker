@@ -7,13 +7,17 @@ using Microsoft.Xna.Framework;
 
 namespace MoonTrucker.GameWorld
 {
-    public class GameMap : IDrawable
+    // TODO: Move tile logic to own class
+    // TODO: Should this or the main game be observing GameTarget?
+
+    public class GameMap : IDrawable, IObserver<GameTarget>
     {
         private char[][] _tileMap;
         private List<IDrawable> _mapProps;
         private float _tileWidt;
         private PropFactory _propFactory;
         private Vector2 _topLeftCorner;
+        private IDisposable _cancellation;
 
         public GameMap(float tileWidth, PropFactory propFactory, Vector2 topLeftCorner)
         {
@@ -22,7 +26,6 @@ namespace MoonTrucker.GameWorld
             _topLeftCorner = topLeftCorner;
             _tileMap = loadMapFromFile();
             _mapProps = parseMap();
-
         }
 
         public void Draw()
@@ -178,6 +181,34 @@ namespace MoonTrucker.GameWorld
 
             return cord.ToVector2() * _tileWidt;
         }
+
+        #region IObserver<GameTarget> Implementation
+        public virtual void Subscribe(GameTarget target)
+        {
+            _cancellation = target.Subscribe(this);
+        }
+
+        public virtual void Unsubscribe()
+        {
+            _cancellation.Dispose();
+        }
+
+        public void OnCompleted()
+        {
+            // TODO: Remove Target
+        }
+
+        public void OnError(Exception error)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnNext(GameTarget target)
+        {
+            target.SetPosition(GetRandomTargetLocation());
+        }
+
+        #endregion
     }
 
     public enum TileType

@@ -28,6 +28,7 @@ namespace MoonTrucker
         private GameTarget _target;
         private Camera2D _camera;
         private ResolutionIndependentRenderer _independentRenderer;
+        private Timer _timer;
 
         private const int _resolutionWidthPx = 1920;
         private const int _resolutionHeightPx = 1080;
@@ -54,6 +55,7 @@ namespace MoonTrucker
             _camera.Zoom = 1f;
             _camera.Position = new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f);
             initializeResolutionIndependence(_screenWidthPx, _screenHeightPx);
+            _timer = new Timer(TimeSpan.FromSeconds(20));
 
             base.Initialize();
         }
@@ -77,7 +79,9 @@ namespace MoonTrucker
             //create game objects
             _vehicle = new SimpleVehicle(2f, 5f, getScreenCenter(), _world, _textureManager, _spriteBatch, GraphicsDevice);
             _map = generateMap();
-            _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory, _map);
+            _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory);
+            _map.Subscribe(_target);
+            _timer.Subscribe(_target);
         }
 
         public GameMap generateMap()
@@ -127,6 +131,8 @@ namespace MoonTrucker
 
             _camera.Position = ConvertUnits.ToDisplayUnits(_vehicle.GetPosition());
 
+            _timer.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -144,6 +150,7 @@ namespace MoonTrucker
             // Draw score outside of first sprite batch so that it's not affected by the camera
             _spriteBatch.Begin();
             drawScore();
+            drawTimer();
             _spriteBatch.End();
 
             base.Draw(gameTime);
@@ -155,6 +162,14 @@ namespace MoonTrucker
             var scorePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
 
             _spriteBatch.DrawString(_font, $"Score: {_target.HitTotal}", scorePosition, Color.Red);
+        }
+
+        private void drawTimer()
+        {
+            var timeLeft = _timer.GetTime().Seconds;
+            var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 0));
+
+            _spriteBatch.DrawString(_font, $"Countdown: {timeLeft}", timePosition, Color.Red);
         }
     }
 }
