@@ -152,6 +152,7 @@ namespace MoonTrucker
         {
             _timer.AddTime(TimeSpan.FromSeconds(20));
             _target.SetPosition(_map.GetRandomTargetLocation());
+            _target.ResetHitTotal();
             _gameOver = false;
         }
 

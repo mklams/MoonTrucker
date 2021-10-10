@@ -33,6 +33,11 @@ namespace MoonTrucker.GameWorld
             _body.Draw();
         }
 
+        public void ResetHitTotal()
+        {
+            HitTotal = 0;
+        }
+
         public void SetPosition(Vector2 position)
         {
             _body.Body.Position = position;
