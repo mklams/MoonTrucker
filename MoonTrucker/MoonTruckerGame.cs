@@ -196,7 +196,7 @@ namespace MoonTrucker
 
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
-            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.1f, .1f), SpriteEffects.None, 1f);
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
         }
     }
 }
