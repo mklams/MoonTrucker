@@ -10,7 +10,7 @@ namespace MoonTrucker
 {
     public class SimpleTire
     {
-        private const float MAX_TRACTION_FORCE = 3f;
+        private const float MAX_TRACTION_FORCE = 2f;
         private Body _body;
         private World _world;
         private TextureManager _textureManager;

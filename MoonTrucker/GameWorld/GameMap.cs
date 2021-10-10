@@ -83,6 +83,13 @@ namespace MoonTrucker.GameWorld
             return props;
         }
 
+        private List<IDrawable> parseMapBetter()
+        {
+            var props = new List<IDrawable>();
+
+            return props;
+        }
+
         /// <summary>
         /// Returns a radnom location to place a target. 
         /// </summary>

@@ -15,6 +15,7 @@ namespace MoonTrucker
         private bool _fullScreen = false;
 
         private SpriteFont _font;
+        private Texture2D _arrow;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SimpleVehicle _vehicle;
@@ -30,7 +31,7 @@ namespace MoonTrucker
         private ResolutionIndependentRenderer _independentRenderer;
         private Timer _timer;
         private bool _gameOver = false;
-        private const int TotalGameTime = 5;
+        private const int TotalGameTime = 10;
 
         private const int _resolutionWidthPx = 1920;
         private const int _resolutionHeightPx = 1080;
@@ -73,6 +74,7 @@ namespace MoonTrucker
                 _font = Content.Load<SpriteFont>("Fonts/Basic");
             }
 
+            _arrow = Content.Load<Texture2D>("GameAssets/Arrow");
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
@@ -174,10 +176,14 @@ namespace MoonTrucker
             _spriteBatch.Begin();
             drawScore();
             drawTimer();
+
             if(_gameOver)
             {
                 drawGameOver();
             }
+
+            drawArrow();
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
@@ -187,7 +193,6 @@ namespace MoonTrucker
         private void drawScore()
         {
             var scorePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
-
             _spriteBatch.DrawString(_font, $"Score: {_target.HitTotal}", scorePosition, Color.Red);
         }
 
@@ -206,6 +211,30 @@ namespace MoonTrucker
             var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1/3f));
 
             _spriteBatch.DrawString(_font,"Game Over", messagePosition, Color.Red);
+        }
+        private void drawArrow()
+        {
+            var targetPosition = _target.GetPosition();
+            var vehiclePosition = _vehicle.GetPosition();
+            var direction = new Vector2(targetPosition.X - vehiclePosition.X, targetPosition.Y - vehiclePosition.Y);
+            direction.Normalize();
+            float angle;
+            try
+            {
+                angle = MathF.Atan(direction.Y / direction.X);
+            }
+            catch
+            {
+                angle = direction.Y > 0 ? (MathF.PI * 3f) / 2f : MathF.PI / 2;
+            }
+            if (targetPosition.X < vehiclePosition.X)
+            {
+                angle += MathF.PI;
+            }
+
+            var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
+            var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
         }
     }
 }
