@@ -29,6 +29,8 @@ namespace MoonTrucker
         private Camera2D _camera;
         private ResolutionIndependentRenderer _independentRenderer;
         private Timer _timer;
+        private bool _gameOver = false;
+        private const int TotalGameTime = 5;
 
         private const int _resolutionWidthPx = 1920;
         private const int _resolutionHeightPx = 1080;
@@ -55,7 +57,7 @@ namespace MoonTrucker
             _camera.Zoom = 1f;
             _camera.Position = new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f);
             initializeResolutionIndependence(_screenWidthPx, _screenHeightPx);
-            _timer = new Timer(TimeSpan.FromSeconds(20));
+            _timer = new Timer(TimeSpan.FromSeconds(TotalGameTime));
 
             base.Initialize();
         }
@@ -86,7 +88,7 @@ namespace MoonTrucker
 
         public GameMap generateMap()
         {
-            var tileWidth = _vehicle.Height * 1.5f;
+            var tileWidth = _vehicle.Height * 2f;
             return new GameMap(tileWidth, _propFactory, new Vector2(0, 0));
         }
 
@@ -123,17 +125,38 @@ namespace MoonTrucker
 
             KeyboardState newKeyboardState = Keyboard.GetState();
 
-            _vehicle.UpdateVehicle(newKeyboardState, gameTime);
-
+            if(!_gameOver)
+            {
+                updateActiveProps(gameTime, newKeyboardState);
+            }
+            else
+            {
+                if(newKeyboardState.IsKeyDown(Keys.Enter))
+                {
+                    restartGame();
+                }
+            }
+            
             _oldKeyboardState = newKeyboardState;
 
             _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
 
             _camera.Position = ConvertUnits.ToDisplayUnits(_vehicle.GetPosition());
 
-            _timer.Update(gameTime);
-
             base.Update(gameTime);
+        }
+
+        private void restartGame()
+        {
+            _timer.AddTime(TimeSpan.FromSeconds(20));
+            _target.SetPosition(_map.GetRandomTargetLocation());
+            _gameOver = false;
+        }
+
+        private void updateActiveProps(GameTime gameTime, KeyboardState keyboardState)
+        {
+            _vehicle.UpdateVehicle(keyboardState, gameTime);
+            _gameOver = !_timer.Update(gameTime); // game ends when timmer is up
         }
 
         protected override void Draw(GameTime gameTime)
@@ -151,6 +174,10 @@ namespace MoonTrucker
             _spriteBatch.Begin();
             drawScore();
             drawTimer();
+            if(_gameOver)
+            {
+                drawGameOver();
+            }
             _spriteBatch.End();
 
             base.Draw(gameTime);
@@ -170,6 +197,15 @@ namespace MoonTrucker
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 0));
 
             _spriteBatch.DrawString(_font, $"Countdown: {timeLeft}", timePosition, Color.Red);
+        }
+
+        private void drawGameOver()
+        {
+            //var messagePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
+            // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.4f
+            var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1/3f));
+
+            _spriteBatch.DrawString(_font,"Game Over", messagePosition, Color.Red);
         }
     }
 }
