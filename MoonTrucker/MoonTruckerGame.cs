@@ -15,6 +15,7 @@ namespace MoonTrucker
         private bool _fullScreen = false;
 
         private SpriteFont _font;
+        private Texture2D _arrow;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SimpleVehicle _vehicle;
@@ -71,6 +72,7 @@ namespace MoonTrucker
                 _font = Content.Load<SpriteFont>("Fonts/Basic");
             }
 
+            //_arrow = Content.Load<Texture2D>("GameAssets/Arrow");
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
@@ -151,6 +153,7 @@ namespace MoonTrucker
             _spriteBatch.Begin();
             drawScore();
             drawTimer();
+            //drawArrow();
             _spriteBatch.End();
 
             base.Draw(gameTime);
@@ -160,7 +163,6 @@ namespace MoonTrucker
         private void drawScore()
         {
             var scorePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
-
             _spriteBatch.DrawString(_font, $"Score: {_target.HitTotal}", scorePosition, Color.Red);
         }
 
@@ -170,6 +172,19 @@ namespace MoonTrucker
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 0));
 
             _spriteBatch.DrawString(_font, $"Countdown: {timeLeft}", timePosition, Color.Red);
+        }
+
+        private void drawArrow()
+        {
+            var targetPosition = _target.GetPosition();
+            var vehiclePosition = _vehicle.GetPosition();
+            var direction = new Vector2(targetPosition.X - vehiclePosition.X, targetPosition.Y - vehiclePosition.Y);
+            direction.Normalize();
+            var angle = MathF.Acos(direction.X);
+
+            var arrowPosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 20));
+            var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.Black, angle, arrowCenter, new Vector2(.2f, .2f), SpriteEffects.None, 1f);
         }
     }
 }

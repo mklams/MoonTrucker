@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace MoonTrucker.GameWorld
 {
-    public class GameTarget: IDrawable, IObservable<GameTarget>
+    public class GameTarget : IDrawable, IObservable<GameTarget>
     {
         private CircleProp _body;
         public int HitTotal = 0;
@@ -16,8 +16,9 @@ namespace MoonTrucker.GameWorld
 
         public GameTarget(float radius, Vector2 position, PropFactory bodyFactory)
         {
-            OnCollisionHandler onHitAction = (Fixture fixtureA, Fixture fixtureB, Contact contact) => {
-                foreach(var obserer in _observers)
+            OnCollisionHandler onHitAction = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
+            {
+                foreach (var obserer in _observers)
                 {
                     obserer.OnNext(this);
                 }
@@ -35,6 +36,11 @@ namespace MoonTrucker.GameWorld
         public void SetPosition(Vector2 position)
         {
             _body.Body.Position = position;
+        }
+
+        public Vector2 GetPosition()
+        {
+            return _body.Body.Position;
         }
 
         public IDisposable Subscribe(IObserver<GameTarget> observer)
