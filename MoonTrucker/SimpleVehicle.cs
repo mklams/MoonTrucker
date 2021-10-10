@@ -24,7 +24,7 @@ namespace MoonTrucker
         private const float BOOST_FACTOR = 80f;
         private const double BOOST_COOLDOWN = .7; //sec
         private const float TURN_FACTOR = .03f;
-        private const float MAX_SPEED = 80f;
+        private const float MAX_SPEED = 100f;
         private const float BRAKING_FORCE = .5f;
 
         private const float MAX_TURN_ANGLE = MathF.PI / 6f;//30 degrees in radians
@@ -47,17 +47,17 @@ namespace MoonTrucker
             if (!_isTurning && (VectorHelpers.GetForwardVelocity(_body).Length() > 5f))
             {
                 float newAngle;
-                if (MathF.Abs(frontLeftJoint.JointAngle) < 1f)
+                if (MathF.Abs(frontLeftJoint.JointAngle) < .2)
                 {
                     newAngle = 0f;
                 }
                 else if (frontLeftJoint.JointAngle < 0)
                 {
-                    newAngle = frontLeftJoint.JointAngle + TURN_FACTOR;
+                    newAngle = frontLeftJoint.JointAngle + (2 * TURN_FACTOR);
                 }
                 else
                 {
-                    newAngle = frontLeftJoint.JointAngle - TURN_FACTOR;
+                    newAngle = frontLeftJoint.JointAngle - (2 * TURN_FACTOR);
                 }
                 frontLeftJoint.SetLimits(newAngle, newAngle);
                 frontRightJoint.SetLimits(newAngle, newAngle);
@@ -75,8 +75,10 @@ namespace MoonTrucker
             if (_body.LinearVelocity.Length() == 0f || (!VectorHelpers.IsMovingForward(_body)))//stopped or accelerating backwards
             {
                 if (VectorHelpers.GetDirectionalVelocity(_body).Length() > MAX_SPEED) { return; }
-                _tires[(int)Tires.FrontLeft].applyReverseDriveForce(_body.Mass * getImpulseFactor());//Mult by .5 so force mag is distributed across fwd tires
-                _tires[(int)Tires.FrontRight].applyReverseDriveForce(_body.Mass * getImpulseFactor());
+                // _tires[(int)Tires.FrontLeft].applyReverseDriveForce(_body.Mass * .8f);//getImpulseFactor());
+                // _tires[(int)Tires.FrontRight].applyReverseDriveForce(_body.Mass * .8f);//getImpulseFactor());
+
+                _tires.ForEach(tire => tire.applyReverseDriveForce(_body.Mass * .4f));
             }
             else//decelerate
             {
@@ -115,8 +117,9 @@ namespace MoonTrucker
             if (_body.LinearVelocity.Length() == 0f || (VectorHelpers.IsMovingForward(_body)))//stopped or accelerating
             {
                 if (VectorHelpers.GetDirectionalVelocity(_body).Length() > MAX_SPEED) { return; }
-                _tires[(int)Tires.FrontLeft].applyForwardDriveForce(_body.Mass * getImpulseFactor());
-                _tires[(int)Tires.FrontRight].applyForwardDriveForce(_body.Mass * getImpulseFactor());
+                // _tires[(int)Tires.FrontLeft].applyForwardDriveForce(_body.Mass * .8f);
+                // _tires[(int)Tires.FrontRight].applyForwardDriveForce(_body.Mass * .8f);
+                _tires.ForEach(tire => tire.applyForwardDriveForce(_body.Mass * .4f));
             }
             else//decelerate
             {
@@ -138,7 +141,7 @@ namespace MoonTrucker
 
         protected override void snapVelocityToZero()
         {
-            if (_body.LinearVelocity.Length() < .7f)
+            if (_body.LinearVelocity.Length() < 1f)
             {
                 _body.LinearVelocity = Vector2.Zero;
                 _body.AngularVelocity = 0f;
@@ -201,32 +204,32 @@ namespace MoonTrucker
             var speed = direction.Length();
             if (!VectorHelpers.IsStopped(_body) && !VectorHelpers.IsMovingForward(_body))
             {
-                return 0.8f;
+                return 0.1f;
             }
             float speedPercentile = (speed / MAX_SPEED) * 100;
             if (speedPercentile < 25f)
             {
-                return 1.5f;
+                return .15f;
             }
             else if (speedPercentile < ((35f / 80f) * 100))
             {
-                return 1.3f;
+                return .13f;
             }
             else if (speedPercentile < 50f)
             {
-                return 1.2f;
+                return .12f;
             }
             else if (speedPercentile < 67.5f)
             {
-                return 1.1f;
+                return .11f;
             }
             else if (speedPercentile < 75)
             {
-                return 1f;
+                return .1f;
             }
             else
             {
-                return .9f;
+                return .1f;
             }
         }
     }
