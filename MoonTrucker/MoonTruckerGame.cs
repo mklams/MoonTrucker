@@ -72,7 +72,7 @@ namespace MoonTrucker
                 _font = Content.Load<SpriteFont>("Fonts/Basic");
             }
 
-            //_arrow = Content.Load<Texture2D>("GameAssets/Arrow");
+            _arrow = Content.Load<Texture2D>("GameAssets/Arrow");
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
@@ -153,7 +153,7 @@ namespace MoonTrucker
             _spriteBatch.Begin();
             drawScore();
             drawTimer();
-            //drawArrow();
+            drawArrow();
             _spriteBatch.End();
 
             base.Draw(gameTime);
@@ -182,9 +182,9 @@ namespace MoonTrucker
             direction.Normalize();
             var angle = MathF.Acos(direction.X);
 
-            var arrowPosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 20));
+            var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
-            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.Black, angle, arrowCenter, new Vector2(.2f, .2f), SpriteEffects.None, 1f);
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.1f, .1f), SpriteEffects.None, 1f);
         }
     }
 }
