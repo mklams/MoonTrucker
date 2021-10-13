@@ -127,18 +127,18 @@ namespace MoonTrucker
 
             KeyboardState newKeyboardState = Keyboard.GetState();
 
-            if(!_gameOver)
+            if (!_gameOver)
             {
                 updateActiveProps(gameTime, newKeyboardState);
             }
             else
             {
-                if(newKeyboardState.IsKeyDown(Keys.Enter))
+                if (newKeyboardState.IsKeyDown(Keys.Enter))
                 {
                     restartGame();
                 }
             }
-            
+
             _oldKeyboardState = newKeyboardState;
 
             _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
@@ -178,7 +178,7 @@ namespace MoonTrucker
             drawScore();
             drawTimer();
 
-            if(_gameOver)
+            if (_gameOver)
             {
                 drawGameOver();
             }
@@ -209,9 +209,9 @@ namespace MoonTrucker
         {
             //var messagePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
             // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.4f
-            var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1/3f));
+            var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 3f));
 
-            _spriteBatch.DrawString(_font,"Game Over", messagePosition, Color.Red);
+            _spriteBatch.DrawString(_font, "Game Over", messagePosition, Color.Red);
         }
         private void drawArrow()
         {
@@ -235,7 +235,7 @@ namespace MoonTrucker
 
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
-            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.25f, .25f), SpriteEffects.None, 1f);
         }
     }
 }
