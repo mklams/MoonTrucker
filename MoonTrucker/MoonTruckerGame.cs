@@ -7,6 +7,8 @@ using Genbox.VelcroPhysics.Utilities;
 using System.Collections.Generic;
 using MoonTrucker.GameWorld;
 using System;
+using MoonTrucker.Vehicle;
+using MoonTrucker.Core;
 
 namespace MoonTrucker
 {

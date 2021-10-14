@@ -7,8 +7,9 @@ using Microsoft.Xna.Framework.Input;
 using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Utilities;
+using MoonTrucker.Core;
 
-namespace MoonTrucker
+namespace MoonTrucker.Vehicle
 {
     public class VehicleWithPhysics
     {

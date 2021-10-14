@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace MoonTrucker
+namespace MoonTrucker.Vehicle
 {
-    public class SpinningIceVehicle
+    public class VehicleWithMomentumPolar
     {
         private readonly float _screenWidth;
         private readonly float _screenHeight;
@@ -21,11 +21,11 @@ namespace MoonTrucker
         private Sprite _sprite { get; set; }
         private bool _forward;
         private bool _stopped;
-        private const float MAX_SPEED = 10f;
+        private const float MAX_SPEED = 3f;
         private const float MIN_SPEED = .5f;
-        private const float DEGREES_TO_ROTATE = 5f;
+        private const float DEGREES_TO_ROTATE = 2f;
 
-        public SpinningIceVehicle(Sprite sprite, Vector2 pos, float screenWidth, float screenHeight)
+        public VehicleWithMomentumPolar(Sprite sprite, Vector2 pos, float screenWidth, float screenHeight)
         {
             _position = pos;
             _speed = 0f;
@@ -38,7 +38,7 @@ namespace MoonTrucker
 
         public void Draw()
         {
-            _sprite.Draw(_position, MathHelper.ToRadians(_angle));
+            _sprite.Draw(_position, _angle);
         }
 
         public void UpdateVehicle(KeyboardState keyboardState, GameTime gameTime)

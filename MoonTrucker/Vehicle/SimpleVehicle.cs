@@ -5,8 +5,9 @@ using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Dynamics.Joints;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoonTrucker.Core;
 
-namespace MoonTrucker
+namespace MoonTrucker.Vehicle
 {
     enum Tires
     {

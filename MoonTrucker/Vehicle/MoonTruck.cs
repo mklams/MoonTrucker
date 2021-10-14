@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using Genbox.VelcroPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoonTrucker.Core;
 
-
-namespace MoonTrucker
+namespace MoonTrucker.Vehicle
 {
 
     public class MoonTruck : Vehicle

@@ -16,6 +16,8 @@
     <None Remove="GameWorld\" />
     <None Remove="GameWorld\Map.txt" />
     <None Remove="GameWorld\TestBench.txt" />
+    <None Remove="Core\" />
+    <None Remove="Vehicle\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
@@ -36,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\GameAssets\" />
-    <Folder Include="World\" />
+    <Folder Include="Core\" />
+    <Folder Include="Vehicle\" />
   </ItemGroup>
 </Project>

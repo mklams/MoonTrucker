@@ -2,7 +2,8 @@ using System;
 using Genbox.VelcroPhysics.Dynamics;
 using Microsoft.Xna.Framework;
 
-namespace MoonTrucker{
+namespace MoonTrucker.Vehicle
+{
 
     public enum Direction{
         Forwards,

@@ -5,8 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Utilities;
+using MoonTrucker.Core;
 
-namespace MoonTrucker
+namespace MoonTrucker.Vehicle
 {
     public abstract class Vehicle
     {

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace MoonTrucker
+namespace MoonTrucker.Vehicle
 {
     public class VehicleWithMomentum
     {

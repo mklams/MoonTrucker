@@ -5,8 +5,9 @@ using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MoonTrucker.Core;
 
-namespace MoonTrucker
+namespace MoonTrucker.Vehicle
 {
     public class SimpleTire
     {

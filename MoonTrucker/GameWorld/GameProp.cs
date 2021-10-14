@@ -9,6 +9,7 @@ using Genbox.VelcroPhysics.Collision.Shapes;
 using Genbox.VelcroPhysics.Shared;
 using Genbox.VelcroPhysics.Collision.ContactSystem;
 using Genbox.VelcroPhysics.Collision.Handlers;
+using MoonTrucker.Core;
 
 namespace MoonTrucker.GameWorld
 {
