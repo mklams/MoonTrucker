@@ -18,9 +18,9 @@ namespace MoonTrucker.GameWorld
         {
             OnCollisionHandler onHitAction = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
             {
-                foreach (var obserer in _observers)
+                foreach (var observer in _observers)
                 {
-                    obserer.OnNext(this);
+                    observer.OnNext(this);
                 }
                 HitTotal++;
             };

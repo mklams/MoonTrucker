@@ -32,8 +32,9 @@ namespace MoonTrucker
         private Camera2D _camera;
         private ResolutionIndependentRenderer _independentRenderer;
         private Timer _timer;
-        private bool _gameOver = false;
-        private const int TotalGameTime = 10;
+        private GameState _gameState = GameState.StartMenu;
+        private const int TotalGameTime = 15;
+        private StartMenu _startMenu;
 
         private const int _resolutionWidthPx = 1920;
         private const int _resolutionHeightPx = 1080;
@@ -61,6 +62,7 @@ namespace MoonTrucker
             _camera.Position = new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f);
             initializeResolutionIndependence(_screenWidthPx, _screenHeightPx);
             _timer = new Timer(TimeSpan.FromSeconds(TotalGameTime));
+            
 
             base.Initialize();
         }
@@ -88,6 +90,7 @@ namespace MoonTrucker
             _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory);
             _map.Subscribe(_target);
             _timer.Subscribe(_target);
+            _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch);
         }
 
         public GameMap generateMap()
@@ -129,11 +132,18 @@ namespace MoonTrucker
 
             KeyboardState newKeyboardState = Keyboard.GetState();
 
-            if (!_gameOver)
+            if (_gameState == GameState.Playing)
             {
                 updateActiveProps(gameTime, newKeyboardState);
             }
-            else
+            else if(_gameState == GameState.GameOver)
+            {
+                if (newKeyboardState.IsKeyDown(Keys.Enter))
+                {
+                    restartGame();
+                }
+            }
+            else if(_gameState == GameState.StartMenu)
             {
                 if (newKeyboardState.IsKeyDown(Keys.Enter))
                 {
@@ -152,44 +162,65 @@ namespace MoonTrucker
 
         private void restartGame()
         {
-            _timer.AddTime(TimeSpan.FromSeconds(20));
+            _timer.AddTime(TimeSpan.FromSeconds(TotalGameTime));
             _target.SetPosition(_map.GetRandomTargetLocation());
             _target.ResetHitTotal();
-            _gameOver = false;
+            _gameState = GameState.Playing;
         }
 
         private void updateActiveProps(GameTime gameTime, KeyboardState keyboardState)
         {
             _vehicle.UpdateVehicle(keyboardState, gameTime);
-            _gameOver = !_timer.Update(gameTime); // game ends when timmer is up
+            if(!_timer.Update(gameTime))
+            {
+                // game ends when timmer is up
+                _gameState = GameState.GameOver;
+            }
         }
 
         protected override void Draw(GameTime gameTime)
         {
             _independentRenderer.BeginDraw();
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
-                null, _camera.GetViewTransformationMatrix());
-            _map.Draw();
-            _target.Draw();
-            _vehicle.Draw();
-            _spriteBatch.End();
-
+            drawCameraProps();
 
             // Draw score outside of first sprite batch so that it's not affected by the camera
             _spriteBatch.Begin();
-            drawScore();
-            drawTimer();
+            if (_gameState == GameState.StartMenu)
+            {
+                _startMenu.Draw();
+            }
+            else
+            {
+                drawHUD();
+            }
 
-            if (_gameOver)
+            if (_gameState == GameState.GameOver)
             {
                 drawGameOver();
             }
-
-            drawArrow();
-
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void drawCameraProps()
+        {
+            if(_gameState != GameState.StartMenu)
+            {
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
+              null, _camera.GetViewTransformationMatrix());
+                _map.Draw();
+                _target.Draw();
+                _vehicle.Draw();
+                _spriteBatch.End();
+            }
+        }
+
+        private void drawHUD()
+        {
+            drawScore();
+            drawTimer();
+            drawArrow();
         }
 
         // TODO: Move this to it's own class. 
