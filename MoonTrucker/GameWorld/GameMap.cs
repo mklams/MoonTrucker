@@ -46,7 +46,7 @@ namespace MoonTrucker.GameWorld
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {
-                // TODO: Remove an chars that are not in the TileType enum
+                // TODO: Remove any chars that are not in the TileType enum
                 tileMap = reader.ReadToEnd()
                                  .Split("\n")
                                  .Select(line => line.ToCharArray())

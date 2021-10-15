@@ -17,7 +17,6 @@ namespace MoonTrucker
         private bool _fullScreen = false;
 
         private SpriteFont _font;
-        private Texture2D _arrow;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SimpleVehicle _vehicle;
@@ -79,8 +78,6 @@ namespace MoonTrucker
                 _font = Content.Load<SpriteFont>("Fonts/Basic");
             }
 
-            _arrow = Content.Load<Texture2D>("GameAssets/Arrow");
-
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
             _propFactory = new PropFactory(_world, _textureManager, _spriteBatch);
@@ -92,7 +89,7 @@ namespace MoonTrucker
             _map.Subscribe(_target);
             _timer.Subscribe(_target);
             _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch);
-            _gameHUD = new HUD(_spriteBatch, _font, _target, _timer, _arrow, _screenWidthPx, _screenHeightPx, _independentRenderer, _vehicle);
+            _gameHUD = new HUD(_spriteBatch, _font, _target, _timer, _textureManager, _screenWidthPx, _screenHeightPx, _independentRenderer, _vehicle);
         }
 
         public GameMap generateMap()

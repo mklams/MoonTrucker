@@ -18,13 +18,13 @@ namespace MoonTrucker.GameWorld
         private ResolutionIndependentRenderer _independentRenderer;
         private SimpleVehicle _vehicle;
 
-        public HUD(SpriteBatch spriteBatch, SpriteFont font, GameTarget target, Timer timer, Texture2D arrow, float screenWidthPx, float screenHeightPx, ResolutionIndependentRenderer renderer, SimpleVehicle vehicle )
+        public HUD(SpriteBatch spriteBatch, SpriteFont font, GameTarget target, Timer timer, TextureManager textureManager, float screenWidthPx, float screenHeightPx, ResolutionIndependentRenderer renderer, SimpleVehicle vehicle )
         {
             _spriteBatch = spriteBatch;
             _font = font;
             _target = target;
             _timer = timer;
-            _arrow = arrow;
+            _arrow = textureManager.GetTexture("Arrow");
             _screenWidthPx = screenWidthPx;
             _screenHeightPx = screenHeightPx;
             _independentRenderer = renderer;
