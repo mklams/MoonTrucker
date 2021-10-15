@@ -18,7 +18,7 @@ namespace MoonTrucker.GameWorld
         private ResolutionIndependentRenderer _independentRenderer;
         private SimpleVehicle _vehicle;
 
-        public HUD(SpriteBatch spriteBatch, SpriteFont font, GameTarget target, Timer timer, TextureManager textureManager, float screenWidthPx, float screenHeightPx, ResolutionIndependentRenderer renderer, SimpleVehicle vehicle )
+        public HUD(SpriteBatch spriteBatch, SpriteFont font, GameTarget target, Timer timer, TextureManager textureManager, float screenWidthPx, float screenHeightPx, ResolutionIndependentRenderer renderer, SimpleVehicle vehicle)
         {
             _spriteBatch = spriteBatch;
             _font = font;
@@ -37,7 +37,7 @@ namespace MoonTrucker.GameWorld
             drawScore();
             drawTimer();
             drawArrow();
-            if(state == GameState.GameOver)
+            if (state == GameState.GameOver)
             {
                 drawGameOver();
             }
@@ -87,7 +87,7 @@ namespace MoonTrucker.GameWorld
 
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
-            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.25f, .25f), SpriteEffects.None, 1f);
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
         }
     }
 }
