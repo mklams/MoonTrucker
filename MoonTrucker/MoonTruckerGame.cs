@@ -35,6 +35,7 @@ namespace MoonTrucker
         private GameState _gameState = GameState.StartMenu;
         private const int TotalGameTime = 15;
         private StartMenu _startMenu;
+        private HUD _gameHUD;
 
         private const int _resolutionWidthPx = 1920;
         private const int _resolutionHeightPx = 1080;
@@ -91,6 +92,7 @@ namespace MoonTrucker
             _map.Subscribe(_target);
             _timer.Subscribe(_target);
             _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch);
+            _gameHUD = new HUD(_spriteBatch, _font, _target, _timer, _arrow, _screenWidthPx, _screenHeightPx, _independentRenderer, _vehicle);
         }
 
         public GameMap generateMap()
@@ -191,12 +193,7 @@ namespace MoonTrucker
             }
             else
             {
-                drawHUD();
-            }
-
-            if (_gameState == GameState.GameOver)
-            {
-                drawGameOver();
+                _gameHUD.Draw(_gameState);
             }
             _spriteBatch.End();
 
@@ -214,61 +211,6 @@ namespace MoonTrucker
                 _vehicle.Draw();
                 _spriteBatch.End();
             }
-        }
-
-        private void drawHUD()
-        {
-            drawScore();
-            drawTimer();
-            drawArrow();
-        }
-
-        // TODO: Move this to it's own class. 
-        private void drawScore()
-        {
-            var scorePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
-            _spriteBatch.DrawString(_font, $"Score: {_target.HitTotal}", scorePosition, Color.Red);
-        }
-
-        private void drawTimer()
-        {
-            var timeLeft = ((int)_timer.GetTime().TotalSeconds);
-            var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 0));
-
-            _spriteBatch.DrawString(_font, $"Countdown: {timeLeft}", timePosition, Color.Red);
-        }
-
-        private void drawGameOver()
-        {
-            //var messagePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
-            // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.4f
-            var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 3f));
-
-            _spriteBatch.DrawString(_font, "Game Over", messagePosition, Color.Red);
-        }
-        private void drawArrow()
-        {
-            var targetPosition = _target.GetPosition();
-            var vehiclePosition = _vehicle.GetPosition();
-            var direction = new Vector2(targetPosition.X - vehiclePosition.X, targetPosition.Y - vehiclePosition.Y);
-            direction.Normalize();
-            float angle;
-            try
-            {
-                angle = MathF.Atan(direction.Y / direction.X);
-            }
-            catch
-            {
-                angle = direction.Y > 0 ? (MathF.PI * 3f) / 2f : MathF.PI / 2;
-            }
-            if (targetPosition.X < vehiclePosition.X)
-            {
-                angle += MathF.PI;
-            }
-
-            var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
-            var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
-            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.25f, .25f), SpriteEffects.None, 1f);
         }
     }
 }
