@@ -89,7 +89,7 @@ namespace MoonTrucker
             _map.Subscribe(_target);
             _timer.Subscribe(_target);
             _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch);
-            _gameHUD = new HUD(_spriteBatch, _font, _target, _timer, _textureManager, _screenWidthPx, _screenHeightPx, _independentRenderer, _vehicle);
+            _gameHUD = new HUD(_spriteBatch, _font, _target, _timer, _textureManager, _screenWidthPx, _screenHeightPx, _independentRenderer, _vehicle, Content);
         }
 
         public GameMap generateMap()
