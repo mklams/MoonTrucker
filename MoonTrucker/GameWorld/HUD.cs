@@ -25,8 +25,8 @@ namespace MoonTrucker.GameWorld
             _font = font;
             _target = target;
             _timer = timer;
-            //_arrow = textureManager.GetTexture("Arrow");
-            _arrow = content.Load<Texture2D>("GameAssets/Arrow");
+            _arrow = textureManager.GetTexture("Arrow");
+            //_arrow = content.Load<Texture2D>("GameAssets/Arrow");
             _screenWidthPx = screenWidthPx;
             _screenHeightPx = screenHeightPx;
             _independentRenderer = renderer;

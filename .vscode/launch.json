@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/MoonTrucker/bin/Debug/netcoreapp3.1/MoonTrucker.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/MoonTrucker/",
+            "cwd": "${workspaceFolder}/MoonTrucker/bin/Debug/netcoreapp3.1/",
             "stopAtEntry": false,
             "console": "internalConsole"
         }
