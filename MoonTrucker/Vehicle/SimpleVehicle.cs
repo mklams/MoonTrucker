@@ -28,7 +28,7 @@ namespace MoonTrucker.Vehicle
         private const float MAX_SPEED = 50f;
         private const float BRAKING_FORCE = .5f;
 
-        private const float MAX_TURN_ANGLE = MathF.PI / 7f;//30 degrees in radians
+        private const float MAX_TURN_ANGLE = MathF.PI / 6f;//30 degrees in radians
         public SimpleVehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
             : base(width, height, position, world, manager, batch, graphicsDevice)
         {
