@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MoonTrucker.Core;
 using MoonTrucker.Vehicle;
@@ -18,13 +19,14 @@ namespace MoonTrucker.GameWorld
         private ResolutionIndependentRenderer _independentRenderer;
         private SimpleVehicle _vehicle;
 
-        public HUD(SpriteBatch spriteBatch, SpriteFont font, GameTarget target, Timer timer, TextureManager textureManager, float screenWidthPx, float screenHeightPx, ResolutionIndependentRenderer renderer, SimpleVehicle vehicle)
+        public HUD(SpriteBatch spriteBatch, SpriteFont font, GameTarget target, Timer timer, TextureManager textureManager, float screenWidthPx, float screenHeightPx, ResolutionIndependentRenderer renderer, SimpleVehicle vehicle, ContentManager content )
         {
             _spriteBatch = spriteBatch;
             _font = font;
             _target = target;
             _timer = timer;
             _arrow = textureManager.GetTexture("Arrow");
+            //_arrow = content.Load<Texture2D>("GameAssets/Arrow");
             _screenWidthPx = screenWidthPx;
             _screenHeightPx = screenHeightPx;
             _independentRenderer = renderer;
