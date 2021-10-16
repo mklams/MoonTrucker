@@ -66,7 +66,7 @@ namespace MoonTrucker.GameWorld
             Body = BodyFactory.CreateRectangle(world, width, height, 1f, origin);
             Body.BodyType = BodyType.Static;
             Body.Restitution = 0.1f;//your buildings were bouncy with Restitution=1.
-            Body.Friction = 1f;
+            Body.Friction = .5f;
             Body.IsSensor = isSensor;
             _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aquamarine);
             _batch = batch;
