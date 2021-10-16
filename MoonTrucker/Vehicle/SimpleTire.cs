@@ -30,7 +30,7 @@ namespace MoonTrucker.Vehicle
             _body.Restitution = 0.3f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
             _body.Friction = 0f;    //friction between other bodies (none) 0 - 1 (frictiony)
             _body.Inertia = 0f;
-            _body.Mass = .05f;
+            _body.Mass = .07f;
 
             _world = world;
             _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, Color.Transparent, Color.Red);
