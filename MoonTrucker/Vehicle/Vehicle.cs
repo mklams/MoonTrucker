@@ -40,7 +40,7 @@ namespace MoonTrucker.Vehicle
 
 
             _body.Restitution = 0.3f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
-            _body.Friction = 0.5f;    //friction between other bodies (none) 0 - 1 (frictiony)
+            _body.Friction = 0.2f;    //friction between other bodies (none) 0 - 1 (frictiony)
             _body.Inertia = 3f;
             _body.Mass = 1f;
 

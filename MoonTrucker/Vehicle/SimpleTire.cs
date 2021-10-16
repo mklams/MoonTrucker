@@ -12,6 +12,8 @@ namespace MoonTrucker.Vehicle
     public class SimpleTire
     {
         private const float MAX_TRACTION_FORCE = 2f;
+        private const float _width = 1f;
+        private const float _height = .2f;
         private Body _body;
         private World _world;
         private TextureManager _textureManager;
@@ -20,14 +22,14 @@ namespace MoonTrucker.Vehicle
 
         public SimpleTire(Vector2 position, World world, TextureManager manager, SpriteBatch batch)
         {
-            _body = BodyFactory.CreateRectangle(world, 1f, .2f, 1f, position, 0, BodyType.Dynamic);
+            _body = BodyFactory.CreateRectangle(world, _width, _height, 1f, position, 0, BodyType.Dynamic);
             _body.LinearDamping = 0f; //makes car appear "floaty"
             _body.AngularDamping = .01f;
             _textureManager = manager;
 
             _body.Restitution = 0.3f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
             _body.Friction = 0f;    //friction between other bodies (none) 0 - 1 (frictiony)
-            _body.Inertia = 2f;
+            _body.Inertia = 0f;
             _body.Mass = .05f;
 
             _world = world;
@@ -40,6 +42,16 @@ namespace MoonTrucker.Vehicle
         public Body GetBody()
         {
             return _body;
+        }
+
+        public float GetWidth()
+        {
+            return _width;
+        }
+
+        public float GetHeight()
+        {
+            return _height;
         }
 
         public void Draw()

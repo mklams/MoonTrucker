@@ -24,11 +24,11 @@ namespace MoonTrucker.Vehicle
         private const float MAX_BOOST_SPEED = 150f;
         private const float BOOST_FACTOR = 80f;
         private const double BOOST_COOLDOWN = .7; //sec
-        private const float TURN_FACTOR = .05f;
-        private const float MAX_SPEED = 100f;
+        private const float TURN_FACTOR = .015f;
+        private const float MAX_SPEED = 50f;
         private const float BRAKING_FORCE = .5f;
 
-        private const float MAX_TURN_ANGLE = MathF.PI / 6f;//30 degrees in radians
+        private const float MAX_TURN_ANGLE = MathF.PI / 7f;//30 degrees in radians
         public SimpleVehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
             : base(width, height, position, world, manager, batch, graphicsDevice)
         {
@@ -45,23 +45,10 @@ namespace MoonTrucker.Vehicle
 
         protected override void restorativeTurn(GameTime gameTime)
         {
-            if (!_isTurning && (VectorHelpers.GetForwardVelocity(_body).Length() > 5f))
+            if (!_isTurning)
             {
-                float newAngle;
-                if (MathF.Abs(frontLeftJoint.JointAngle) < .2)
-                {
-                    newAngle = 0f;
-                }
-                else if (frontLeftJoint.JointAngle < 0)
-                {
-                    newAngle = frontLeftJoint.JointAngle + (2 * TURN_FACTOR);
-                }
-                else
-                {
-                    newAngle = frontLeftJoint.JointAngle - (2 * TURN_FACTOR);
-                }
-                frontLeftJoint.SetLimits(newAngle, newAngle);
-                frontRightJoint.SetLimits(newAngle, newAngle);
+                frontLeftJoint.SetLimits(0f, 0f);
+                frontRightJoint.SetLimits(0f, 0f);
             }
         }
 
