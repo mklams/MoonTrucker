@@ -14,18 +14,22 @@ namespace MoonTrucker.GameWorld
     {
         private char[][] _tileMap;
         private List<IDrawable> _mapProps;
-        private float _tileWidt;
+        private float _tileWidth;
         private PropFactory _propFactory;
         private Vector2 _topLeftCorner;
         private IDisposable _cancellation;
 
+        private float _mapHeight => _tileMap.Length * _tileWidth;
+        private float _mapWidth => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
+
         public GameMap(float tileWidth, PropFactory propFactory, Vector2 topLeftCorner)
         {
-            _tileWidt = tileWidth;
+            _tileWidth = tileWidth;
             _propFactory = propFactory;
             _topLeftCorner = topLeftCorner;
             _tileMap = loadMapFromFile();
             _mapProps = parseMap();
+            _mapProps.AddRange(createWalls());
         }
 
         public void Draw()
@@ -83,11 +87,23 @@ namespace MoonTrucker.GameWorld
             return props;
         }
 
-        private List<IDrawable> parseMapBetter()
+        private List<IDrawable> createWalls()
         {
-            var props = new List<IDrawable>();
+            const float wallWidth = 2f;
+            List<IDrawable> walls = new List<IDrawable>();
+            var topWall = _propFactory.CreateRectangleBody(_mapWidth, wallWidth, new Vector2(_mapWidth / 2f, wallWidth / 2f));
+            walls.Add(topWall);
 
-            return props;
+            var leftWall = _propFactory.CreateRectangleBody(wallWidth, _mapHeight, new Vector2(wallWidth / 2f, _mapHeight / 2f));
+            walls.Add(leftWall);
+
+            var rightWall = _propFactory.CreateRectangleBody(wallWidth, _mapHeight, new Vector2(_mapWidth - (wallWidth / 2f), _mapHeight / 2f));
+            walls.Add(rightWall);
+
+            var bottomWall = _propFactory.CreateRectangleBody(_mapWidth, wallWidth, new Vector2(_mapWidth / 2f, _mapHeight - (wallWidth/2f)));
+            walls.Add(bottomWall);
+
+            return walls;
         }
 
         /// <summary>
@@ -113,7 +129,7 @@ namespace MoonTrucker.GameWorld
                 }
             }
 
-            return Vector2.Add(location, new Vector2(_tileWidt /2f, _tileWidt /2f));
+            return Vector2.Add(location, new Vector2(_tileWidth /2f, _tileWidth /2f));
         }
 
         private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
@@ -179,14 +195,14 @@ namespace MoonTrucker.GameWorld
         private Vector2 getPropDimensionsInSim(MapCoordinate startingCoordinate)
         {
             var dim = getPropDimensions(startingCoordinate);
-            var simDim = dim.ToVector2() * _tileWidt;
+            var simDim = dim.ToVector2() * _tileWidth;
             return simDim;
         }
 
         private Vector2 getCordInSim(MapCoordinate cord)
         {
 
-            return cord.ToVector2() * _tileWidt;
+            return cord.ToVector2() * _tileWidth;
         }
 
         #region IObserver<GameTarget> Implementation
