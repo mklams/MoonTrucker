@@ -50,14 +50,24 @@ namespace MoonTrucker.GameWorld
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
             {
-                // TODO: Remove any chars that are not in the TileType enum
-                tileMap = reader.ReadToEnd()
+                string tileString = sanitizeMapString(reader.ReadToEnd());
+                tileMap = tileString
                                  .Split("\n")
                                  .Select(line => line.ToCharArray())
                                  .ToArray();
             }
 
             return tileMap;
+        }
+
+        /// <summary>
+        /// Removes all chars that aren't present in TileType enum or are \n delimiters.
+        /// </summary>
+        /// <param name="tileString"></param>
+        /// <returns>The sanitized string.</returns>
+        private string sanitizeMapString(string tileString)
+        {
+            return new string(tileString.Where(c => (c == '\n') || Enum.IsDefined(typeof(TileType), (int)c)).Select(c => c).ToArray());
         }
 
         private List<IDrawable> parseMap()
@@ -100,7 +110,7 @@ namespace MoonTrucker.GameWorld
             var rightWall = _propFactory.CreateRectangleBody(wallWidth, _mapHeight, new Vector2(_mapWidth - (wallWidth / 2f), _mapHeight / 2f));
             walls.Add(rightWall);
 
-            var bottomWall = _propFactory.CreateRectangleBody(_mapWidth, wallWidth, new Vector2(_mapWidth / 2f, _mapHeight - (wallWidth/2f)));
+            var bottomWall = _propFactory.CreateRectangleBody(_mapWidth, wallWidth, new Vector2(_mapWidth / 2f, _mapHeight - (wallWidth / 2f)));
             walls.Add(bottomWall);
 
             return walls;
@@ -129,7 +139,7 @@ namespace MoonTrucker.GameWorld
                 }
             }
 
-            return Vector2.Add(location, new Vector2(_tileWidth /2f, _tileWidth /2f));
+            return Vector2.Add(location, new Vector2(_tileWidth / 2f, _tileWidth / 2f));
         }
 
         private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
