@@ -58,7 +58,8 @@ namespace MoonTrucker.GameWorld
                         _highScoreName = "";
                     }
 
-                    if (InputHelper.TryConvertKeyboardInput(newKeyboardState, oldKeyboardState, out char initial))
+                    // abritrary 21 character limit for name
+                    if (InputHelper.TryConvertKeyboardInput(newKeyboardState, oldKeyboardState, out char initial) && _highScoreName.Length < 21)
                     {
                         _highScoreName += initial;
                     }
