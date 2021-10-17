@@ -68,7 +68,7 @@ namespace MoonTrucker
 
         private Vector2 getScreenCenter()
         {
-            return ConvertUnits.ToSimUnits(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
+            return new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f);
         }
 
         private void initializeResolutionIndependence(int realScreenWidth, int realScreenHeight)

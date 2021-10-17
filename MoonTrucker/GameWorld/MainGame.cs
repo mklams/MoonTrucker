@@ -21,15 +21,18 @@ namespace MoonTrucker.GameWorld
         private PropFactory _propFactory;
         private Camera2D _camera;
         private SpriteBatch _spriteBatch;
+        private Vector2 _screenCenter;
 
-        public MainGame(Vector2 screenCenter, TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer)
+        public MainGame(Vector2 screenCenterPx, TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer)
         {
             _spriteBatch = spriteBatch;
+           
             _world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
 
             // Velcro Physics expects objects to be scaled to MKS (meters, kilos, seconds)
             // 1 meters equals 14 pixels here
             ConvertUnits.SetDisplayUnitToSimUnitRatio(14f);
+            _screenCenter = ConvertUnits.ToSimUnits(screenCenterPx);
 
             _camera = new Camera2D(renderer);
             _camera.Zoom = 1f;
@@ -38,7 +41,7 @@ namespace MoonTrucker.GameWorld
             _propFactory = new PropFactory(_world, manager, spriteBatch);
 
             _timer = new Timer(TimeSpan.FromSeconds(TOTAL_GAME_TIME));
-            _vehicle = new SimpleVehicle(2f, 5f, screenCenter, _world, manager, spriteBatch);
+            _vehicle = new SimpleVehicle(2f, 5f, _screenCenter, _world, manager, spriteBatch);
             _camera.Position = _vehicle.GetPosition();
             _map = generateMap();
 
@@ -93,6 +96,7 @@ namespace MoonTrucker.GameWorld
             _timer.SetTime(TimeSpan.FromSeconds(TOTAL_GAME_TIME));
             _target.SetPosition(_map.GetRandomTargetLocation());
             _target.ResetHitTotal();
+            // TODO: Reset vehicle position to center screen
         }
 
         public bool IsGameOver()
