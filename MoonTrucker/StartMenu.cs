@@ -6,7 +6,7 @@ using MoonTrucker.GameWorld;
 
 namespace MoonTrucker
 {
-    public class StartMenu: GameWorld.IDrawable
+    public class StartMenu
     {
         private SpriteBatch _spriteBatch;
         private float _screenWidthPx;
@@ -21,11 +21,21 @@ namespace MoonTrucker
             _spriteBatch = spriteBatch;
         }
 
-        public void Draw()
+        public void Draw(HighScores scores)
         {
             // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.4f
-            var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 3f));
+            var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 4f));
             _spriteBatch.DrawString(_font, "Street Racer", messagePosition, Color.Red);
+
+            int spacing = _font.LineSpacing + 2;
+            messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 3f));
+            _spriteBatch.DrawString(_font, "High Scores", messagePosition, Color.Red);
+            foreach (Score score in scores.GetTopScores())
+            {
+                messagePosition.Y += spacing;
+                _spriteBatch.DrawString(_font, $"{score.Name}    {score.HitTotal}", messagePosition, Color.Red);
+            }
+
         }
 
         public void Update()

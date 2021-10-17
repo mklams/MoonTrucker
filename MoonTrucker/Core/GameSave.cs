@@ -37,7 +37,7 @@ namespace MoonTrucker.Core
         public List<Score> GetTopScores(int topNumber = TOTAL_HIGH_SCORES)
         {
             return (from score in Scores
-                    orderby score.HitTotal
+                    orderby score.HitTotal descending
                     select score).Take(topNumber).ToList();
         }
 

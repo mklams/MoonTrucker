@@ -152,7 +152,7 @@ namespace MoonTrucker
             _spriteBatch.Begin();
             if (_gameState == GameState.StartMenu)
             {
-                _startMenu.Draw();
+                _startMenu.Draw(_gameHUD.GetHighScores());
             }
             else
             {

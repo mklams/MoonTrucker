@@ -11,7 +11,7 @@ namespace MoonTrucker.GameWorld
 {
     public class MainGame
     {
-        private const int TOTAL_GAME_TIME = 5;
+        private const int TOTAL_GAME_TIME = 10;
 
         private GameTarget _target;
         private SimpleVehicle _vehicle;

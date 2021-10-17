@@ -37,6 +37,11 @@ namespace MoonTrucker.GameWorld
             _independentRenderer = renderer;
         }
 
+        public HighScores GetHighScores()
+        {
+            return _highScores;
+        }
+
         public void Update(GameState gameState, KeyboardState newKeyboardState, KeyboardState oldKeyboardState)
         {
             if(gameState == GameState.GameOver)
