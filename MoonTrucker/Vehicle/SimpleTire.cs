@@ -27,10 +27,10 @@ namespace MoonTrucker.Vehicle
             _body.AngularDamping = .01f;
             _textureManager = manager;
 
-            _body.Restitution = 0.3f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
+            _body.Restitution = 0.0f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
             _body.Friction = 0f;    //friction between other bodies (none) 0 - 1 (frictiony)
             _body.Inertia = 0f;
-            _body.Mass = .07f;
+            _body.Mass = .2f;
 
             _world = world;
             _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, Color.Transparent, Color.Red);
@@ -77,7 +77,7 @@ namespace MoonTrucker.Vehicle
             _body.ApplyLinearImpulse(impulse);
 
             //Rotations inertia loss
-            _body.ApplyAngularImpulse(-0.1f * _body.Inertia * _body.AngularVelocity);
+            _body.ApplyAngularImpulse(-0.1f * _body.AngularVelocity);
 
             //Linear friction loss
             Vector2 forwardVelocity = VectorHelpers.GetForwardVelocity(_body);
