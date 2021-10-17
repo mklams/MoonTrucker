@@ -28,8 +28,7 @@ namespace MoonTrucker
         private MainGame _mainGame;
         private StartMenu _startMenu;
         private HUD _gameHUD;
-        private GameSave _gameSave;
-        private HighScores _highScores;        
+               
 
         public MoonTruckerGame()
         {
@@ -42,13 +41,7 @@ namespace MoonTrucker
         {
             setScreenDimensions();
             _independentRenderer = new ResolutionIndependentRenderer(this);
-            
             initializeResolutionIndependence(_screenWidthPx, _screenHeightPx);
-            
-            _gameSave = new GameSave();
-            _highScores = new HighScores(_gameSave.Load());
-            
-
             base.Initialize();
         }
 
@@ -71,7 +64,6 @@ namespace MoonTrucker
             _mainGame = new MainGame(getScreenCenter(), _textureManager, _spriteBatch, _independentRenderer);
             _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch);
             _gameHUD = new HUD(_mainGame, _spriteBatch, _font, _textureManager, _screenWidthPx, _screenHeightPx, _independentRenderer);
-            _gameSave.Load();
         }
 
         private Vector2 getScreenCenter()
@@ -104,7 +96,7 @@ namespace MoonTrucker
                 Exit();
 
             KeyboardState newKeyboardState = Keyboard.GetState();
-           
+            var restartGame = false;
 
             if (_gameState == GameState.Playing)
             {
@@ -119,19 +111,24 @@ namespace MoonTrucker
                 
                 if (newKeyboardState.IsKeyDown(Keys.Enter))
                 {
-                    resetGame();
+                    restartGame = true;
                 }
             }
             else if(_gameState == GameState.StartMenu)
             {
                 if (newKeyboardState.IsKeyDown(Keys.Enter))
                 {
-                    resetGame();
+                    restartGame = true;
                 }
             }
 
-            _gameHUD.Update(_gameState, _gameSave, newKeyboardState);
+            _gameHUD.Update(_gameState, newKeyboardState, _oldKeyboardState);
 
+            // Let HUD update before restarting
+            if(restartGame)
+            {
+                resetGame();
+            }
             _oldKeyboardState = newKeyboardState;      
 
             base.Update(gameTime);
@@ -141,12 +138,6 @@ namespace MoonTrucker
         {
             _mainGame.RestartGame();
             _gameState = GameState.Playing;
-        }
-
-        private void updateActiveProps(GameTime gameTime, KeyboardState keyboardState)
-        {
-            _highScores.AddScore(new Score(_mainGame.GetScore(), "Mark"));
-            _gameSave.Save(_highScores.GetTopScores(10));
         }
 
         protected override void Draw(GameTime gameTime)

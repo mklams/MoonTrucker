@@ -17,12 +17,17 @@ namespace MoonTrucker.GameWorld
         private float _screenHeightPx;
         private ResolutionIndependentRenderer _independentRenderer;
         private MainGame _game;
+        private GameSave _gameSave; 
+        private HighScores _highScores;
 
         //TODO: Break out getting high score initials to own class
-        private string _highScoreName;
+        private string _highScoreName = "";
 
         public HUD(MainGame game, SpriteBatch spriteBatch, SpriteFont font, TextureManager textureManager, float screenWidthPx, float screenHeightPx, ResolutionIndependentRenderer renderer)
         {
+            _gameSave = new GameSave(); // TODO: Should HUD own this or MoonTruckerGame
+            _highScores = new HighScores(_gameSave.Load());
+
             _game = game;
             _spriteBatch = spriteBatch;
             _font = font;
@@ -32,16 +37,35 @@ namespace MoonTrucker.GameWorld
             _independentRenderer = renderer;
         }
 
-        public void Update(GameState gameState, GameSave game, KeyboardState newKeyboardState)
+        public void Update(GameState gameState, KeyboardState newKeyboardState, KeyboardState oldKeyboardState)
         {
             if(gameState == GameState.GameOver)
             {
                 // When game is over, if user has a top 10 score let them entre initials
-                
+                if (IsHighScoreGame())
+                {
+
+                    if(_highScoreName.Length > 0 && newKeyboardState.IsKeyDown(Keys.Enter))
+                    {
+                        _highScores.AddScore(new Score(_game.GetScore(), _highScoreName));
+                        _gameSave.Save(_highScores.GetTopScores());
+
+                        _highScoreName = "";
+                    }
+
+                    if (InputHelper.TryConvertKeyboardInput(newKeyboardState, oldKeyboardState, out char initial))
+                    {
+                        _highScoreName += initial;
+                    }
+                }
 
             }
         }
 
+        private bool IsHighScoreGame()
+        {
+            return _highScores.IsATopScore(_game.GetScore());
+        }
 
         public void Draw(GameState state)
         {
@@ -51,6 +75,7 @@ namespace MoonTrucker.GameWorld
             if (state == GameState.GameOver)
             {
                 drawGameOver();
+                drawHighScore();
             }
         }
 
@@ -69,12 +94,22 @@ namespace MoonTrucker.GameWorld
 
         private void drawGameOver()
         {
-            //var messagePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f));
             // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.4f
             var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 3f));
 
             _spriteBatch.DrawString(_font, "Game Over", messagePosition, Color.Red);
         }
+
+        private void drawHighScore()
+        {
+            if(IsHighScoreGame())
+            {
+                // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.3f
+                var messagePosition = new Vector2(_screenWidthPx * 0.3f, _screenHeightPx * (1 / 2f));
+                _spriteBatch.DrawString(_font, $"New High Score! Enter your name: {_highScoreName}", messagePosition, Color.Red);
+            }
+        }
+
         private void drawArrow()
         {
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
