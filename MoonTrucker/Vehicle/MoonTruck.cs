@@ -23,9 +23,8 @@ namespace MoonTrucker.Vehicle
             Vector2 position,
             World world,
             TextureManager manager,
-            SpriteBatch batch,
-            GraphicsDevice graphicsDevice)
-        : base(width, height, position, world, manager, batch, graphicsDevice)
+            SpriteBatch batch)
+        : base(width, height, position, world, manager, batch)
         {
             this._initializeTires();
         }

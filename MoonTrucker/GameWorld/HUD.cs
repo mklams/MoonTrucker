@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MoonTrucker.Core;
 using MoonTrucker.Vehicle;
 
@@ -11,26 +12,34 @@ namespace MoonTrucker.GameWorld
     {
         private SpriteBatch _spriteBatch;
         private SpriteFont _font;
-        private GameTarget _target;
-        private Timer _timer;
         private Texture2D _arrow;
         private float _screenWidthPx;
         private float _screenHeightPx;
         private ResolutionIndependentRenderer _independentRenderer;
-        private SimpleVehicle _vehicle;
+        private MainGame _game;
 
-        public HUD(SpriteBatch spriteBatch, SpriteFont font, GameTarget target, Timer timer, TextureManager textureManager, float screenWidthPx, float screenHeightPx, ResolutionIndependentRenderer renderer, SimpleVehicle vehicle, ContentManager content )
+        //TODO: Break out getting high score initials to own class
+        private string _highScoreName;
+
+        public HUD(MainGame game, SpriteBatch spriteBatch, SpriteFont font, TextureManager textureManager, float screenWidthPx, float screenHeightPx, ResolutionIndependentRenderer renderer)
         {
+            _game = game;
             _spriteBatch = spriteBatch;
             _font = font;
-            _target = target;
-            _timer = timer;
             _arrow = textureManager.GetTexture("Arrow");
-            //_arrow = content.Load<Texture2D>("GameAssets/Arrow");
             _screenWidthPx = screenWidthPx;
             _screenHeightPx = screenHeightPx;
             _independentRenderer = renderer;
-            _vehicle = vehicle;
+        }
+
+        public void Update(GameState gameState, GameSave game, KeyboardState newKeyboardState)
+        {
+            if(gameState == GameState.GameOver)
+            {
+                // When game is over, if user has a top 10 score let them entre initials
+                
+
+            }
         }
 
 
@@ -48,15 +57,14 @@ namespace MoonTrucker.GameWorld
         private void drawScore()
         {
             var scorePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
-            _spriteBatch.DrawString(_font, $"Score: {_target.HitTotal}", scorePosition, Color.Red);
+            _spriteBatch.DrawString(_font, $"Score: {_game.GetScore()}", scorePosition, Color.Red);
         }
 
         private void drawTimer()
         {
-            var timeLeft = ((int)_timer.GetTime().TotalSeconds);
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 0));
 
-            _spriteBatch.DrawString(_font, $"Countdown: {timeLeft}", timePosition, Color.Red);
+            _spriteBatch.DrawString(_font, $"Countdown: {_game.GetTimeLeft()}", timePosition, Color.Red);
         }
 
         private void drawGameOver()
@@ -69,27 +77,9 @@ namespace MoonTrucker.GameWorld
         }
         private void drawArrow()
         {
-            var targetPosition = _target.GetPosition();
-            var vehiclePosition = _vehicle.GetPosition();
-            var direction = new Vector2(targetPosition.X - vehiclePosition.X, targetPosition.Y - vehiclePosition.Y);
-            direction.Normalize();
-            float angle;
-            try
-            {
-                angle = MathF.Atan(direction.Y / direction.X);
-            }
-            catch
-            {
-                angle = direction.Y > 0 ? (MathF.PI * 3f) / 2f : MathF.PI / 2;
-            }
-            if (targetPosition.X < vehiclePosition.X)
-            {
-                angle += MathF.PI;
-            }
-
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
-            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, angle, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, _game.GetAngleFromVehicleToTarget(), arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
         }
     }
 }

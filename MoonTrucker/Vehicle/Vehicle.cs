@@ -25,7 +25,7 @@ namespace MoonTrucker.Vehicle
 
         public float Height { get; }
         public float Width { get; }
-        public Vehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch, GraphicsDevice graphicsDevice)
+        public Vehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch)
         {
             Height = height;
             Width = width;
@@ -45,7 +45,7 @@ namespace MoonTrucker.Vehicle
             _body.Mass = 1f;
 
             _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
-            _light = new Texture2D(graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
+            _light = new Texture2D(manager.graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
             Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(width))];
             for (int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(width)); i++)
             {

@@ -16,11 +16,11 @@ namespace MoonTrucker.GameWorld
 
     public class PropFactory
     {
-        private World _world;
+        private Genbox.VelcroPhysics.Dynamics.World _world;
         private SpriteBatch _spriteBatch;
         private TextureManager _textureManager;
 
-        public PropFactory(World world, TextureManager manager, SpriteBatch batch)
+        public PropFactory(Genbox.VelcroPhysics.Dynamics.World world, TextureManager manager, SpriteBatch batch)
         {
             _world = world;
             _textureManager = manager;
@@ -61,7 +61,7 @@ namespace MoonTrucker.GameWorld
         private SpriteBatch _batch;
         private Color _color = Color.White;
         // TODO: Abstract away the parameters wolrd, manager, batch
-        public RectangleProp(float width, float height, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
+        public RectangleProp(float width, float height, Vector2 origin, Genbox.VelcroPhysics.Dynamics.World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
         {
             Body = BodyFactory.CreateRectangle(world, width, height, 1f, origin);
             Body.BodyType = BodyType.Static;
@@ -101,7 +101,7 @@ namespace MoonTrucker.GameWorld
         private Texture2D _sprite;
         private SpriteBatch _batch;
         // TODO: Abstract away the parameters wolrd, manager, batch
-        public CircleProp(float radius, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
+        public CircleProp(float radius, Vector2 origin, Genbox.VelcroPhysics.Dynamics.World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
         {
             Body = BodyFactory.CreateCircle(world, radius, 1f, origin);
             Body.BodyType = BodyType.Static;

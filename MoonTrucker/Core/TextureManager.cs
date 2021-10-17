@@ -15,13 +15,13 @@ namespace MoonTrucker.Core
     public class TextureManager : IDisposable
     {
         private const int _circleSegments = 32;
-        private readonly GraphicsDevice _graphicsDevice;
+        public readonly GraphicsDevice graphicsDevice;
         private readonly BasicEffect _effect;
         private readonly Dictionary<string, Texture2D> _textureList = new Dictionary<string, Texture2D>();
 
         public TextureManager(ContentManager content, GraphicsDevice graphicsDevice)
         {
-            _graphicsDevice = graphicsDevice;
+            this.graphicsDevice = graphicsDevice;
 
             // First create a blank texture
             _textureList["Blank"] = new Texture2D(graphicsDevice, 1, 1, false, SurfaceFormat.Color);
@@ -44,7 +44,7 @@ namespace MoonTrucker.Core
             }
 
             // Add basic effect for texture generation
-            _effect = new BasicEffect(_graphicsDevice);
+            _effect = new BasicEffect(this.graphicsDevice);
         }
 
         public Texture2D GetTexture(string textureName)
@@ -294,13 +294,13 @@ namespace MoonTrucker.Core
         private Texture2D RenderTexture(int width, int height, Texture2D pattern, Color patternColor, List<VertexPositionColorTexture[]> verticesFill, VertexPositionColor[] verticesOutline)
         {
             Matrix halfPixelOffset = Matrix.CreateTranslation(-0.5f, -0.5f, 0f);
-            PresentationParameters pp = _graphicsDevice.PresentationParameters;
-            RenderTarget2D texture = new RenderTarget2D(_graphicsDevice, width + 2, height + 2, false, SurfaceFormat.Color, DepthFormat.None, pp.MultiSampleCount, RenderTargetUsage.DiscardContents);
-            _graphicsDevice.RasterizerState = RasterizerState.CullNone;
-            _graphicsDevice.SamplerStates[0] = SamplerState.AnisotropicWrap;
+            PresentationParameters pp = graphicsDevice.PresentationParameters;
+            RenderTarget2D texture = new RenderTarget2D(graphicsDevice, width + 2, height + 2, false, SurfaceFormat.Color, DepthFormat.None, pp.MultiSampleCount, RenderTargetUsage.DiscardContents);
+            graphicsDevice.RasterizerState = RasterizerState.CullNone;
+            graphicsDevice.SamplerStates[0] = SamplerState.AnisotropicWrap;
 
-            _graphicsDevice.SetRenderTarget(texture);
-            _graphicsDevice.Clear(Color.Transparent);
+            graphicsDevice.SetRenderTarget(texture);
+            graphicsDevice.Clear(Color.Transparent);
             _effect.Projection = Matrix.CreateOrthographic(width + 2f, -height - 2f, 0f, 1f);
             _effect.View = halfPixelOffset;
 
@@ -313,7 +313,7 @@ namespace MoonTrucker.Core
 
             for (int i = 0; i < verticesFill.Count; i++)
             {
-                _graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, verticesFill[i], 0, verticesFill[i].Length / 3);
+                graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, verticesFill[i], 0, verticesFill[i].Length / 3);
             }
 
             if (pattern != null)
@@ -327,7 +327,7 @@ namespace MoonTrucker.Core
                         verticesFill[i][j].Color = patternColor;
                     }
 
-                    _graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, verticesFill[i], 0, verticesFill[i].Length / 3);
+                    graphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, verticesFill[i], 0, verticesFill[i].Length / 3);
                 }
             }
 
@@ -336,10 +336,10 @@ namespace MoonTrucker.Core
             {
                 _effect.TextureEnabled = false;
                 _effect.CurrentTechnique.Passes[0].Apply();
-                _graphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, verticesOutline, 0, verticesOutline.Length / 2);
+                graphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, verticesOutline, 0, verticesOutline.Length / 2);
             }
 
-            _graphicsDevice.SetRenderTarget(null);
+            graphicsDevice.SetRenderTarget(null);
             return texture;
         }
 

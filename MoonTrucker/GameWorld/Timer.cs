@@ -24,16 +24,14 @@ namespace MoonTrucker.GameWorld
             return isTimeNegative ? TimeSpan.Zero : _timeSpan;
         }
 
-        public bool Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             _timeSpan -= gameTime.ElapsedGameTime;
+        }
 
-            if (_timeSpan < TimeSpan.Zero)
-            {
-                return false;
-            }
-
-            return true;
+        public bool IsTimerUp()
+        {
+            return _timeSpan < TimeSpan.Zero;
         }
 
         #region IObserver<GameTarget> Implementation
