@@ -5,10 +5,10 @@ namespace MoonTrucker.Core
 {
     public class InputHelper
     {
-        public InputHelper()
+        public static bool WasKeyPressed(Keys key, KeyboardState keyboard, KeyboardState oldKeyboard)
         {
+            return !oldKeyboard.IsKeyDown(key) && keyboard.IsKeyDown(key);
         }
-
         /// <summary>
         /// Tries to convert keyboard input to characters and prevents repeatedly returning the 
         /// same character if a key was pressed last frame, but not yet unpressed this frame.

@@ -88,9 +88,9 @@ namespace MoonTrucker.GameWorld
             return angle;
         }
 
-        public void RestartGame()
-        {
-            _timer.AddTime(TimeSpan.FromSeconds(TOTAL_GAME_TIME));
+        public void StartGame()
+        { 
+            _timer.SetTime(TimeSpan.FromSeconds(TOTAL_GAME_TIME));
             _target.SetPosition(_map.GetRandomTargetLocation());
             _target.ResetHitTotal();
         }

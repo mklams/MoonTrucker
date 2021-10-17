@@ -13,6 +13,11 @@ namespace MoonTrucker.GameWorld
             _timeSpan = timeSpan;
         }
 
+        public void SetTime(TimeSpan time)
+        {
+            _timeSpan = (time > TimeSpan.Zero) ? time : TimeSpan.Zero;
+        }
+
         public void AddTime(TimeSpan time)
         {
             _timeSpan += time;

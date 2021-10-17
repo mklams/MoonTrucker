@@ -96,8 +96,8 @@ namespace MoonTrucker
                 Exit();
 
             KeyboardState newKeyboardState = Keyboard.GetState();
-            var restartGame = false;
-
+            var wasEnteredPressed = InputHelper.WasKeyPressed(Keys.Enter, newKeyboardState, _oldKeyboardState);
+            _gameHUD.Update(_gameState, newKeyboardState, _oldKeyboardState); // HUD must update before any other actions that could change state
             if (_gameState == GameState.Playing)
             {
                 _mainGame.Update(gameTime, newKeyboardState);
@@ -109,34 +109,27 @@ namespace MoonTrucker
             else if(_gameState == GameState.GameOver)
             {
                 
-                if (newKeyboardState.IsKeyDown(Keys.Enter))
+                if (wasEnteredPressed)
                 {
-                    restartGame = true;
+                    _gameState = GameState.StartMenu;
                 }
             }
             else if(_gameState == GameState.StartMenu)
             {
-                if (newKeyboardState.IsKeyDown(Keys.Enter))
+                if (wasEnteredPressed)
                 {
-                    restartGame = true;
+                    startGame();
                 }
             }
 
-            _gameHUD.Update(_gameState, newKeyboardState, _oldKeyboardState);
-
-            // Let HUD update before restarting
-            if(restartGame)
-            {
-                resetGame();
-            }
             _oldKeyboardState = newKeyboardState;      
 
             base.Update(gameTime);
         }
 
-        private void resetGame()
+        private void startGame()
         {
-            _mainGame.RestartGame();
+            _mainGame.StartGame();
             _gameState = GameState.Playing;
         }
 
