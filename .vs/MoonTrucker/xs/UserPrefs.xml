@@ -7,6 +7,7 @@
       <File FileName="MoonTrucker/GameWorld/MapCoordinate.cs" Line="1" Column="1" />
       <File FileName="MoonTrucker/GameWorld/GameMap.cs" Line="86" Column="76" />
       <File FileName="MoonTrucker/GameWorld/Map.txt" Line="12" Column="17" />
+      <File FileName="MoonTrucker/GameWorld/Level.txt" Line="12" Column="17" />
       <File FileName="MoonTrucker/GameWorld/GameProp.cs" Line="65" Column="36" />
     </Files>
     <Pads>

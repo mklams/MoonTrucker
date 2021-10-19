@@ -25,7 +25,7 @@ namespace MoonTrucker.Vehicle
         private const float BOOST_FACTOR = 80f;
         private const double BOOST_COOLDOWN = .7; //sec
         private const float TURN_FACTOR = .015f;
-        private const float MAX_SPEED = 50f;
+        private const float MAX_SPEED = 80f;
         private const float BRAKING_FORCE = .5f;
 
         private const float MAX_TURN_ANGLE = MathF.PI / 6f;//30 degrees in radians
