@@ -81,7 +81,12 @@ namespace MoonTrucker.Vehicle
             // _tires[(int)Tires.FrontRight].ApplyTorque(-TURN_FACTOR);
             if (frontLeftJoint.JointAngle > -MAX_TURN_ANGLE)
             {
-                var newAngle = frontLeftJoint.JointAngle - TURN_FACTOR;
+                var newAngle = frontLeftJoint.JointAngle;
+                if (newAngle > 0)
+                {
+                    newAngle = 0;
+                }
+                newAngle = newAngle - TURN_FACTOR;
                 frontLeftJoint.SetLimits(newAngle, newAngle);
                 frontRightJoint.SetLimits(newAngle, newAngle);
             }
@@ -93,7 +98,12 @@ namespace MoonTrucker.Vehicle
             // _tires[(int)Tires.FrontRight].ApplyTorque(TURN_FACTOR);
             if (frontLeftJoint.JointAngle < MAX_TURN_ANGLE)
             {
-                var newAngle = frontLeftJoint.JointAngle + TURN_FACTOR;
+                var newAngle = frontLeftJoint.JointAngle;
+                if (newAngle < 0)
+                {
+                    newAngle = 0;
+                }
+                newAngle = newAngle + TURN_FACTOR;
                 frontLeftJoint.SetLimits(newAngle, newAngle);
                 frontRightJoint.SetLimits(newAngle, newAngle);
             }
