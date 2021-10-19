@@ -43,6 +43,11 @@ namespace MoonTrucker.Core
 
         public bool IsATopScore(int score)
         {
+            if(score == 0)
+            {
+                return false;
+            }
+
             if(Scores.Count > TOTAL_HIGH_SCORES)
             {
                 var scores = GetTopScores(TOTAL_HIGH_SCORES);

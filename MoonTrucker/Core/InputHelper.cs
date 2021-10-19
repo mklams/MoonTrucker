@@ -18,6 +18,9 @@ namespace MoonTrucker.Core
         /// <param name="key">When this method returns, contains the correct character if conversion succeeded.
         /// Else contains the null, (000), character.</param>
         /// <returns>True if conversion was successful</returns>
+        /// 
+        /// Source: https://roy-t.nl/2010/02/11/code-snippet-converting-keyboard-input-to-text-in-xna.html
+        /// 
         public static bool TryConvertKeyboardInput(KeyboardState keyboard, KeyboardState oldKeyboard, out char key)
         {
             Keys[] keys = keyboard.GetPressedKeys();
