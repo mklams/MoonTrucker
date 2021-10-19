@@ -25,7 +25,7 @@ namespace MoonTrucker.Vehicle
         private const float BOOST_FACTOR = 80f;
         private const double BOOST_COOLDOWN = .7; //sec
         private const float TURN_FACTOR = .015f;
-        private const float MAX_SPEED = 50f;
+        private const float MAX_SPEED = 80f;
         private const float BRAKING_FORCE = .5f;
 
         private const float MAX_TURN_ANGLE = MathF.PI / 6f;//30 degrees in radians
@@ -81,7 +81,12 @@ namespace MoonTrucker.Vehicle
             // _tires[(int)Tires.FrontRight].ApplyTorque(-TURN_FACTOR);
             if (frontLeftJoint.JointAngle > -MAX_TURN_ANGLE)
             {
-                var newAngle = frontLeftJoint.JointAngle - TURN_FACTOR;
+                var newAngle = frontLeftJoint.JointAngle;
+                if (newAngle > 0)
+                {
+                    newAngle = 0;
+                }
+                newAngle = newAngle - TURN_FACTOR;
                 frontLeftJoint.SetLimits(newAngle, newAngle);
                 frontRightJoint.SetLimits(newAngle, newAngle);
             }
@@ -93,7 +98,12 @@ namespace MoonTrucker.Vehicle
             // _tires[(int)Tires.FrontRight].ApplyTorque(TURN_FACTOR);
             if (frontLeftJoint.JointAngle < MAX_TURN_ANGLE)
             {
-                var newAngle = frontLeftJoint.JointAngle + TURN_FACTOR;
+                var newAngle = frontLeftJoint.JointAngle;
+                if (newAngle < 0)
+                {
+                    newAngle = 0;
+                }
+                newAngle = newAngle + TURN_FACTOR;
                 frontLeftJoint.SetLimits(newAngle, newAngle);
                 frontRightJoint.SetLimits(newAngle, newAngle);
             }

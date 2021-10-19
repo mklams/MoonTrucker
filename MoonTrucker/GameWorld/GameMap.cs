@@ -44,7 +44,7 @@ namespace MoonTrucker.GameWorld
         private char[][] loadMapFromFile(bool shouldUseVehicleTestbench = false)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = shouldUseVehicleTestbench ? "MoonTrucker.GameWorld.TestBench.txt" : "MoonTrucker.GameWorld.Map.txt";
+            var resourceName = shouldUseVehicleTestbench ? "MoonTrucker.GameWorld.TestBench.txt" : "MoonTrucker.GameWorld.Level.txt";
             char[][] tileMap;
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))

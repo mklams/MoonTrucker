@@ -62,7 +62,7 @@ namespace MoonTrucker.GameWorld
 
         public void OnNext(GameTarget target)
         {
-            AddTime(TimeSpan.FromSeconds(5));
+            AddTime(TimeSpan.FromSeconds(6));
         }
         #endregion
     }

@@ -112,7 +112,8 @@ namespace MoonTrucker.Vehicle
                 this.handleLeftKey(gameTime);
             }
 
-            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+            if (((keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+            && !(keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A)))) //if holding both left and right, favor left.
             {
                 _isTurning = true;
                 this.handleRightKey(gameTime);
