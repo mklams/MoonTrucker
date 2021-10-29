@@ -23,10 +23,9 @@ namespace MoonTrucker.GameWorld
         private PropFactory _propFactory;
         private Camera2D _camera;
         private SpriteBatch _spriteBatch;
-        private Vector2 _screenCenter;
         private TextureManager _manager;
 
-        public MainGame(Vector2 screenCenterPx, TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer)
+        public MainGame(TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer)
         {
             _spriteBatch = spriteBatch;
             _manager = manager;
@@ -35,7 +34,6 @@ namespace MoonTrucker.GameWorld
             // Velcro Physics expects objects to be scaled to MKS (meters, kilos, seconds)
             // 1 meters equals 14 pixels here
             ConvertUnits.SetDisplayUnitToSimUnitRatio(14f);
-            _screenCenter = ConvertUnits.ToSimUnits(screenCenterPx);
 
             _camera = new Camera2D(renderer);
             _camera.Zoom = 1f;
@@ -55,7 +53,7 @@ namespace MoonTrucker.GameWorld
 
         private GameMap generateMap()
         {
-            var tileWidth = _vehicle.Height * 2f;
+            var tileWidth = V_HEIGHT * 2f;
             return new GameMap(tileWidth, _propFactory);
         }
 

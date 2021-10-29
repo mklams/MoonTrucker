@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
-using Genbox.VelcroPhysics.Utilities;
 using MoonTrucker.GameWorld;
 using System;
 using MoonTrucker.Core;
@@ -61,14 +59,9 @@ namespace MoonTrucker
             
 
             //create game objects
-            _mainGame = new MainGame(getScreenCenter(), _textureManager, _spriteBatch, _independentRenderer);
+            _mainGame = new MainGame(_textureManager, _spriteBatch, _independentRenderer);
             _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch);
             _gameHUD = new HUD(_mainGame, _spriteBatch, _font, _textureManager, _screenWidthPx, _screenHeightPx, _independentRenderer);
-        }
-
-        private Vector2 getScreenCenter()
-        {
-            return new Vector2(_screenWidthPx / 2f, _screenHeightPx / 2f);
         }
 
         private void initializeResolutionIndependence(int realScreenWidth, int realScreenHeight)
