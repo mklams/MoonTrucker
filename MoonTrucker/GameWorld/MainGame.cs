@@ -53,7 +53,7 @@ namespace MoonTrucker.GameWorld
         private GameMap generateMap()
         {
             var tileWidth = _vehicle.Height * 2f;
-            return new GameMap(tileWidth, _propFactory, new Vector2(0, 0));
+            return new GameMap(tileWidth, _propFactory);
         }
 
         public float GetTimeLeft()

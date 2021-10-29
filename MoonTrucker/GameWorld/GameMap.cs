@@ -16,17 +16,15 @@ namespace MoonTrucker.GameWorld
         private List<IDrawable> _mapProps;
         private float _tileWidth;
         private PropFactory _propFactory;
-        private Vector2 _topLeftCorner;
         private IDisposable _cancellation;
 
         private float _mapHeight => _tileMap.Length * _tileWidth;
         private float _mapWidth => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
 
-        public GameMap(float tileWidth, PropFactory propFactory, Vector2 topLeftCorner)
+        public GameMap(float tileWidth, PropFactory propFactory)
         {
             _tileWidth = tileWidth;
             _propFactory = propFactory;
-            _topLeftCorner = topLeftCorner;
             _tileMap = loadMapFromFile();
             _mapProps = parseMap();
             _mapProps.AddRange(createWalls());
