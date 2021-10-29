@@ -26,7 +26,7 @@ namespace MoonTrucker.Vehicle
         private const double BOOST_COOLDOWN = .7; //sec
         private const float TURN_FACTOR = .015f;
         private const float MAX_SPEED = 80f;
-        private const float BRAKING_FORCE = .5f;
+        private const float BRAKING_FORCE = 1f;
 
         private const float MAX_TURN_ANGLE = MathF.PI / 6f;//30 degrees in radians
         public SimpleVehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch)
@@ -34,6 +34,11 @@ namespace MoonTrucker.Vehicle
         {
             _tires = new List<SimpleTire>();
             initializeTires();
+        }
+
+        public Body GetBody()
+        {
+            return _body;
         }
 
         public override void Draw()
@@ -63,9 +68,6 @@ namespace MoonTrucker.Vehicle
             if (_body.LinearVelocity.Length() == 0f || (!VectorHelpers.IsMovingForward(_body)))//stopped or accelerating backwards
             {
                 if (VectorHelpers.GetDirectionalVelocity(_body).Length() > MAX_SPEED) { return; }
-                // _tires[(int)Tires.FrontLeft].applyReverseDriveForce(_body.Mass * .8f);//getImpulseFactor());
-                // _tires[(int)Tires.FrontRight].applyReverseDriveForce(_body.Mass * .8f);//getImpulseFactor());
-
                 _tires.ForEach(tire => tire.applyReverseDriveForce(_body.Mass * .4f));
             }
             else//decelerate
@@ -77,8 +79,6 @@ namespace MoonTrucker.Vehicle
 
         protected override void handleLeftKey(GameTime gameTime)
         {
-            // _tires[(int)Tires.FrontLeft].ApplyTorque(-TURN_FACTOR);
-            // _tires[(int)Tires.FrontRight].ApplyTorque(-TURN_FACTOR);
             if (frontLeftJoint.JointAngle > -MAX_TURN_ANGLE)
             {
                 var newAngle = frontLeftJoint.JointAngle;
@@ -94,8 +94,6 @@ namespace MoonTrucker.Vehicle
 
         protected override void handleRightKey(GameTime gameTime)
         {
-            // _tires[(int)Tires.FrontLeft].ApplyTorque(TURN_FACTOR);
-            // _tires[(int)Tires.FrontRight].ApplyTorque(TURN_FACTOR);
             if (frontLeftJoint.JointAngle < MAX_TURN_ANGLE)
             {
                 var newAngle = frontLeftJoint.JointAngle;
@@ -115,8 +113,6 @@ namespace MoonTrucker.Vehicle
             if (_body.LinearVelocity.Length() == 0f || (VectorHelpers.IsMovingForward(_body)))//stopped or accelerating
             {
                 if (VectorHelpers.GetDirectionalVelocity(_body).Length() > MAX_SPEED) { return; }
-                // _tires[(int)Tires.FrontLeft].applyForwardDriveForce(_body.Mass * .8f);
-                // _tires[(int)Tires.FrontRight].applyForwardDriveForce(_body.Mass * .8f);
                 _tires.ForEach(tire => tire.applyForwardDriveForce(_body.Mass * .4f));
             }
             else//decelerate
@@ -139,7 +135,7 @@ namespace MoonTrucker.Vehicle
 
         protected override void snapVelocityToZero()
         {
-            if (_body.LinearVelocity.Length() < 1f)
+            if (_body.LinearVelocity.Length() > 0f && _body.LinearVelocity.Length() < 1f)
             {
                 _body.LinearVelocity = Vector2.Zero;
                 _body.AngularVelocity = 0f;
