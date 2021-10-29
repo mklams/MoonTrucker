@@ -39,8 +39,8 @@ namespace MoonTrucker.Vehicle
             _body.AngularDamping = .01f;
 
 
-            _body.Restitution = 0.3f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
-            _body.Friction = 0.2f;    //friction between other bodies (none) 0 - 1 (frictiony)
+            _body.Restitution = 1f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
+            _body.Friction = 1f;    //friction between other bodies (none) 0 - 1 (frictiony)
             _body.Inertia = 3f;
             _body.Mass = 1f;
 
@@ -53,6 +53,33 @@ namespace MoonTrucker.Vehicle
             }
             _light.SetData(colors);
             _batch = batch;
+        }
+
+        //I tried not having to re-create the car but this never worked. 
+        // public void ResetToPosition(Vector2 startPos)
+        // {
+        //     disableCollision();
+        //     _body.Position = startPos;
+        //     _body.Rotation = 0;
+        //     enableCollision();
+        // }
+
+        // private void disableCollision()
+        // {
+        //     _body.FixtureList.ForEach(fixture => fixture.Body.Enabled = false);
+        //     _body.Enabled = false;
+        // }
+
+        // private void enableCollision()
+        // {
+        //     _body.FixtureList.ForEach(fixture => fixture.Body.Enabled = true);
+        //     _body.Enabled = true;
+        // }
+
+        public void Destroy()
+        {
+            _body.FixtureList.ForEach(fix => fix.Body.RemoveFromWorld());
+            _body.RemoveFromWorld();
         }
 
         public Vector2 GetPosition()

@@ -11,7 +11,9 @@ namespace MoonTrucker.GameWorld
 {
     public class MainGame
     {
-        private const int TOTAL_GAME_TIME = 10;
+        private const int TOTAL_GAME_TIME = 15;
+        private const float V_WIDTH = 2f;
+        private const float V_HEIGHT = 5f;
 
         private GameTarget _target;
         private SimpleVehicle _vehicle;
@@ -22,11 +24,12 @@ namespace MoonTrucker.GameWorld
         private Camera2D _camera;
         private SpriteBatch _spriteBatch;
         private Vector2 _screenCenter;
+        private TextureManager _manager;
 
         public MainGame(Vector2 screenCenterPx, TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer)
         {
             _spriteBatch = spriteBatch;
-           
+            _manager = manager;
             _world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
 
             // Velcro Physics expects objects to be scaled to MKS (meters, kilos, seconds)
@@ -41,10 +44,10 @@ namespace MoonTrucker.GameWorld
             _propFactory = new PropFactory(_world, manager, spriteBatch);
 
             _timer = new Timer(TimeSpan.FromSeconds(TOTAL_GAME_TIME));
-            _vehicle = new SimpleVehicle(2f, 5f, _screenCenter, _world, manager, spriteBatch);
-            _camera.Position = _vehicle.GetPosition();
             _map = generateMap();
 
+            _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _map.GetStartPosition(), _world, manager, spriteBatch);
+            _camera.Position = _vehicle.GetPosition();
             _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory);
             _map.Subscribe(_target);
             _timer.Subscribe(_target);
@@ -74,12 +77,11 @@ namespace MoonTrucker.GameWorld
             direction.Normalize();
             float angle;
 
-            // TODO: Don't rely on catch the math error. Just handle that case;
-            try
+            if (direction.X != 0)
             {
                 angle = MathF.Atan(direction.Y / direction.X);
             }
-            catch
+            else
             {
                 angle = direction.Y > 0 ? (MathF.PI * 3f) / 2f : MathF.PI / 2;
             }
@@ -92,11 +94,18 @@ namespace MoonTrucker.GameWorld
         }
 
         public void StartGame()
-        { 
+        {
             _timer.SetTime(TimeSpan.FromSeconds(TOTAL_GAME_TIME));
             _target.SetPosition(_map.GetRandomTargetLocation());
             _target.ResetHitTotal();
-            // TODO: Reset vehicle position to center screen
+            resetVehicle();
+            _camera.SetPosition(_vehicle.GetPosition());
+        }
+
+        private void resetVehicle()
+        {
+            _vehicle.Destroy();
+            _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _map.GetStartPosition(), _world, _manager, _spriteBatch);
         }
 
         public bool IsGameOver()

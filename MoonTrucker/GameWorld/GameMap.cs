@@ -84,7 +84,7 @@ namespace MoonTrucker.GameWorld
                     if (propMapValue != TileType.Road && isTopLeftCorner(curCoordinate))
                     {
                         Vector2 propDim = getPropDimensionsInSim(curCoordinate);
-                        Vector2 curPosInSim = getCordInSim(curCoordinate);
+                        Vector2 curPosInSim = getCoordInSim(curCoordinate);
 
                         var prop = CreatePropBodyForTile(propMapValue, propDim, PropFactory.GetOriginFromDimensions(propDim, curPosInSim));
                         if (prop != null) { props.Add(prop); }
@@ -133,11 +133,16 @@ namespace MoonTrucker.GameWorld
                 if (tile == TileType.Road)
                 {
                     foundLocation = true;
-                    location = getCordInSim(new MapCoordinate(randomRow, randomCol));
+                    location = getCoordInSim(new MapCoordinate(randomRow, randomCol));
                 }
             }
 
             return Vector2.Add(location, new Vector2(_tileWidth / 2f, _tileWidth / 2f));
+        }
+
+        public Vector2 GetStartPosition()
+        {
+            return Vector2.Add(getCoordInSim(new MapCoordinate(1, 1)), new Vector2(_tileWidth / 2f, _tileWidth / 2f));
         }
 
         private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
@@ -207,7 +212,7 @@ namespace MoonTrucker.GameWorld
             return simDim;
         }
 
-        private Vector2 getCordInSim(MapCoordinate cord)
+        private Vector2 getCoordInSim(MapCoordinate cord)
         {
 
             return cord.ToVector2() * _tileWidth;
