@@ -4,6 +4,7 @@ using Genbox.VelcroPhysics.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MoonTrucker.Core;
 using MoonTrucker.Vehicle;
 
@@ -25,9 +26,12 @@ namespace MoonTrucker.GameWorld
         private SpriteBatch _spriteBatch;
         private TextureManager _manager;
 
-        public MainGame(TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer)
+        private Song _gameMusic;
+
+        public MainGame(TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer, Song gameMusic)
         {
             _spriteBatch = spriteBatch;
+            _gameMusic = gameMusic;
             _manager = manager;
             _world = new World(new Vector2(0, 0)); //Create a phyics world with no gravity
 
@@ -93,6 +97,9 @@ namespace MoonTrucker.GameWorld
 
         public void StartGame()
         {
+            MediaPlayer.Stop();
+            MediaPlayer.Play(_gameMusic);
+            MediaPlayer.IsRepeating = true;
             _timer.SetTime(TimeSpan.FromSeconds(TOTAL_GAME_TIME));
             _target.SetPosition(_map.GetRandomTargetLocation());
             _target.ResetHitTotal();

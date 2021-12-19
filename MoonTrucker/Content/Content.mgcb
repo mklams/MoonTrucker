@@ -87,3 +87,9 @@
 /processorParam:TextureFormat=Color
 /build:GameAssets/truck.png
 
+#begin Sounds/GameBackgroundMusic.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/GameBackgroundMusic.wav
+
