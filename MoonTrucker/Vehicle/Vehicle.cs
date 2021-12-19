@@ -39,10 +39,10 @@ namespace MoonTrucker.Vehicle
             _body.AngularDamping = .01f;
 
 
-            _body.Restitution = 1f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
+            _body.Restitution = .5f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
             _body.Friction = 1f;    //friction between other bodies (none) 0 - 1 (frictiony)
-            _body.Inertia = 3f;
-            _body.Mass = 1f;
+            _body.Inertia = 1f;
+            //_body.Mass = 1f;
 
             _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
             _light = new Texture2D(manager.graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));

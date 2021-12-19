@@ -68,7 +68,7 @@ namespace MoonTrucker.Vehicle
             if (_body.LinearVelocity.Length() == 0f || (!VectorHelpers.IsMovingForward(_body)))//stopped or accelerating backwards
             {
                 if (VectorHelpers.GetDirectionalVelocity(_body).Length() > MAX_SPEED) { return; }
-                _tires.ForEach(tire => tire.applyReverseDriveForce(_body.Mass * .4f));
+                _tires.ForEach(tire => tire.applyReverseDriveForce(_body.Mass * .3f));
             }
             else//decelerate
             {
@@ -113,7 +113,7 @@ namespace MoonTrucker.Vehicle
             if (_body.LinearVelocity.Length() == 0f || (VectorHelpers.IsMovingForward(_body)))//stopped or accelerating
             {
                 if (VectorHelpers.GetDirectionalVelocity(_body).Length() > MAX_SPEED) { return; }
-                _tires.ForEach(tire => tire.applyForwardDriveForce(_body.Mass * .4f));
+                _tires.ForEach(tire => tire.applyForwardDriveForce(_body.Mass * .3f));
             }
             else//decelerate
             {

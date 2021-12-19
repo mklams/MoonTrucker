@@ -91,6 +91,12 @@ public static class VectorHelpers
 
     public static Vector2 GetDirectionalVelocity(Body body)
     {
+        Vector2 directionalNormal = GetDirectionalNormal(body);
+        return Vector2.Dot(directionalNormal, body.LinearVelocity) * directionalNormal;
+    }
+
+    public static Vector2 GetDirectionalNormal(Body body)
+    {
         Vector2 directionalNormal;
         if (VectorHelpers.IsMovingForward(body))
         {
@@ -100,6 +106,6 @@ public static class VectorHelpers
         {
             directionalNormal = VectorHelpers.GetBackwardsNormal(body);
         }
-        return Vector2.Dot(directionalNormal, body.LinearVelocity) * directionalNormal;
+        return directionalNormal;
     }
 }

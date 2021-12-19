@@ -11,7 +11,7 @@ namespace MoonTrucker.Vehicle
 {
     public class SimpleTire
     {
-        private const float MAX_TRACTION_FORCE = 2f;
+        private const float MAX_TRACTION_FORCE = 10f;
         private const float _width = 1f;
         private const float _height = .2f;
         private Body _body;
@@ -30,10 +30,10 @@ namespace MoonTrucker.Vehicle
             _body.Restitution = 0.0f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
             _body.Friction = 0f;    //friction between other bodies (none) 0 - 1 (frictiony)
             _body.Inertia = 0f;
-            _body.Mass = .2f;
+            //_body.Mass = .2f;
 
             _world = world;
-            _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, Color.Transparent, Color.Red);
+            _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, Color.Red, Color.Red);
             _batch = batch;
             _body.UserData = this;
 
@@ -80,10 +80,10 @@ namespace MoonTrucker.Vehicle
             _body.ApplyAngularImpulse(-0.1f * _body.AngularVelocity);
 
             //Linear friction loss
-            Vector2 forwardVelocity = VectorHelpers.GetForwardVelocity(_body);
-            float forwardSpeed = forwardVelocity.Length();
-            float dragMagnitude = forwardSpeed * .002f;
-            _body.ApplyLinearImpulse(dragMagnitude * VectorHelpers.GetBackwardsNormal(_body));
+            Vector2 directionalVelocity = VectorHelpers.GetDirectionalVelocity(_body);
+            float directionalSpeed = directionalVelocity.Length();
+            float dragMagnitude = .02f;
+            _body.ApplyLinearImpulse(dragMagnitude * directionalSpeed * -VectorHelpers.GetDirectionalNormal(_body));
 
         }
 
