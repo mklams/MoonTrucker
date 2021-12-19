@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using MoonTrucker.GameWorld;
 using System;
 using MoonTrucker.Core;
+using Microsoft.Xna.Framework.Media;
 
 namespace MoonTrucker
 {
@@ -20,13 +21,15 @@ namespace MoonTrucker
         private int _screenHeightPx;
         private KeyboardState _oldKeyboardState;
         private TextureManager _textureManager;
-        
+
         private ResolutionIndependentRenderer _independentRenderer;
         private GameState _gameState = GameState.StartMenu;
         private MainGame _mainGame;
         private StartMenu _startMenu;
         private HUD _gameHUD;
-               
+
+        private Song _gameMusic;
+
 
         public MoonTruckerGame()
         {
@@ -53,13 +56,13 @@ namespace MoonTrucker
             {
                 _font = Content.Load<SpriteFont>("Fonts/Basic");
             }
-
+            _gameMusic = Content.Load<Song>("Sounds/GameBackgroundMusic");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
-            
+
 
             //create game objects
-            _mainGame = new MainGame(_textureManager, _spriteBatch, _independentRenderer);
+            _mainGame = new MainGame(_textureManager, _spriteBatch, _independentRenderer, _gameMusic);
             _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch);
             _gameHUD = new HUD(_mainGame, _spriteBatch, _font, _textureManager, _screenWidthPx, _screenHeightPx, _independentRenderer);
         }
@@ -94,20 +97,20 @@ namespace MoonTrucker
             if (_gameState == GameState.Playing)
             {
                 _mainGame.Update(gameTime, newKeyboardState);
-                if(_mainGame.IsGameOver())
+                if (_mainGame.IsGameOver())
                 {
                     _gameState = GameState.GameOver;
                 }
             }
-            else if(_gameState == GameState.GameOver)
+            else if (_gameState == GameState.GameOver)
             {
-                
+                MediaPlayer.Stop();
                 if (wasEnteredPressed)
                 {
                     _gameState = GameState.StartMenu;
                 }
             }
-            else if(_gameState == GameState.StartMenu)
+            else if (_gameState == GameState.StartMenu)
             {
                 // Allow must key presses to start the game
                 if (wasEnteredPressed ||
@@ -117,7 +120,7 @@ namespace MoonTrucker
                 }
             }
 
-            _oldKeyboardState = newKeyboardState;      
+            _oldKeyboardState = newKeyboardState;
 
             base.Update(gameTime);
         }
