@@ -251,6 +251,12 @@ namespace MoonTrucker.GameWorld
     {
         Building = 'B',
         Road = '_',
-        Tunnel = 'T'
+        Tunnel = 'T',
+        RestrictedRoad = 'X', //like a road but it can't have targets spawned on it
+
+        Gate = 'G',
+
+        Finish = 'F'
+
     }
 }

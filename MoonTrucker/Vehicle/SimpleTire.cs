@@ -74,7 +74,7 @@ namespace MoonTrucker.Vehicle
                 impulse.Normalize();
                 impulse = impulse * MAX_TRACTION_FORCE;
             }
-            _body.ApplyLinearImpulse(impulse);
+            _body.ApplyLinearImpulse(impulse * 1.5f);//This 1.5 multiplier makes the car feel much better. Not my proudest fix... ::shrug::
 
             //Rotations inertia loss
             _body.ApplyAngularImpulse(-0.1f * _body.AngularVelocity);
