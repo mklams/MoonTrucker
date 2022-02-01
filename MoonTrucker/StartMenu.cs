@@ -23,17 +23,20 @@ namespace MoonTrucker
 
         public void Draw(HighScores scores)
         {
-            // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.4f
-            var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 4f));
-            _spriteBatch.DrawString(_font, "Street Racer", messagePosition, Color.Red);
+            var gameName = "Street Racer";
+            var messagePosition = new Vector2(getCenterXPositionForText(gameName), _screenHeightPx * (1 / 4f));
+            _spriteBatch.DrawString(_font, gameName, messagePosition, Color.Red);
 
             int spacing = _font.LineSpacing + 2;
-            messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 3f));
-            _spriteBatch.DrawString(_font, "High Scores", messagePosition, Color.Red);
+            var highScoreMessage = "High Scores";
+            messagePosition = new Vector2(getCenterXPositionForText(highScoreMessage), _screenHeightPx * (1 / 3f));
+            _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, Color.Red);
+            var scoreYPosition = messagePosition.Y;
             foreach (Score score in scores.GetTopScores())
             {
-                messagePosition.Y += spacing;
-                _spriteBatch.DrawString(_font, $"{score.Name}    {score.HitTotal}", messagePosition, Color.Red);
+                scoreYPosition += spacing;
+                var scoreMessage = $"{score.Name}    {score.HitTotal}";
+                _spriteBatch.DrawString(_font, scoreMessage, new Vector2(getCenterXPositionForText(scoreMessage), scoreYPosition), Color.Red);
             }
 
         }
@@ -41,6 +44,12 @@ namespace MoonTrucker
         public void Update()
         {
 
+        }
+
+        public float getCenterXPositionForText(string text)
+        {
+            var messageWidth = _font.MeasureString(text).X;
+            return _screenWidthPx * 0.5f - messageWidth * 0.5f;
         }
     }
 }
