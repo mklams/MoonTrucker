@@ -54,6 +54,11 @@ namespace MoonTrucker.GameWorld
             _finish.MakeActive();
         }
 
+        public Vector2 GetFinishPosition()
+        {
+            return _finish.GetPosition();
+        }
+
         // TODO: This is a service. It needs to be in it's own class and injected in
         private char[][] loadMapFromFile(bool shouldUseVehicleTestbench = false)
         {

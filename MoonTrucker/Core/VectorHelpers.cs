@@ -108,4 +108,26 @@ public static class VectorHelpers
         }
         return directionalNormal;
     }
+
+    public static float GetAngleFromAToB(Vector2 aPosition, Vector2 bPosition)
+    {
+        var direction = new Vector2(bPosition.X - aPosition.X, bPosition.Y - aPosition.Y);
+        direction.Normalize();
+        float angle;
+
+        if (direction.X != 0)
+        {
+            angle = MathF.Atan(direction.Y / direction.X);
+        }
+        else
+        {
+            angle = direction.Y > 0 ? (MathF.PI * 3f) / 2f : MathF.PI / 2;
+        }
+        if (bPosition.X < aPosition.X)
+        {
+            angle += MathF.PI;
+        }
+
+        return angle;
+    }
 }

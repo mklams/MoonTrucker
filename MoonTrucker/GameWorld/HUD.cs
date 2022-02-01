@@ -1,10 +1,7 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MoonTrucker.Core;
-using MoonTrucker.Vehicle;
 
 namespace MoonTrucker.GameWorld
 {
@@ -130,7 +127,8 @@ namespace MoonTrucker.GameWorld
         {
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
-            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, _game.GetAngleFromVehicleToTarget(), arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
+            var destPosition = _game.LevelComplete ? _game.GetAngleFromVehicleToFinish() : _game.GetAngleFromVehicleToTarget();
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, destPosition, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
         }
     }
 }

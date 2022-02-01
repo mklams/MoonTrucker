@@ -88,28 +88,18 @@ namespace MoonTrucker.GameWorld
 
         public bool PlayerWon => _levels.AllLevelsComplete;
 
+        public float GetAngleFromVehicleToFinish()
+        {
+            var finishPosition = _map.GetFinishPosition();
+            var vehiclePosition = _vehicle.GetPosition();
+            return VectorHelpers.GetAngleFromAToB(vehiclePosition, finishPosition);
+        }
+
         public float GetAngleFromVehicleToTarget()
         {
             var targetPosition = _target.GetPosition();
             var vehiclePosition = _vehicle.GetPosition();
-            var direction = new Vector2(targetPosition.X - vehiclePosition.X, targetPosition.Y - vehiclePosition.Y);
-            direction.Normalize();
-            float angle;
-
-            if (direction.X != 0)
-            {
-                angle = MathF.Atan(direction.Y / direction.X);
-            }
-            else
-            {
-                angle = direction.Y > 0 ? (MathF.PI * 3f) / 2f : MathF.PI / 2;
-            }
-            if (targetPosition.X < vehiclePosition.X)
-            {
-                angle += MathF.PI;
-            }
-
-            return angle;
+            return VectorHelpers.GetAngleFromAToB(vehiclePosition, targetPosition);
         }
 
         public void StartGame()
@@ -167,13 +157,14 @@ namespace MoonTrucker.GameWorld
                 {
                     ResetLevel();
                 }
-                
             }
         }
 
+        public bool LevelComplete => _target.HitTotal >= _levels.CurrentLevel.NumberOfTargets;
+
         private void updateFinish()
         {
-            if(_target.HitTotal >= _levels.CurrentLevel.NumberOfTargets)
+            if(LevelComplete)
             {
                 _map.ActivateFinish();
             }

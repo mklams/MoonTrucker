@@ -31,6 +31,11 @@ namespace MoonTrucker.GameWorld
             _body.SetColor(Color.Green);
         }
 
+        public Vector2 GetPosition()
+        {
+            return _body.Body.Position;
+        }
+
         public bool IsPlayerInFinishZone()
         {
             return _playerHit;
