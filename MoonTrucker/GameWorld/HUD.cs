@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MoonTrucker.Core;
@@ -105,10 +106,8 @@ namespace MoonTrucker.GameWorld
 
         private void drawGameOver()
         {
-            // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.4f
-            var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 3f));
-
-            var message = _game.PlayerWon ? "You Won! You are the raddest street racer!" : "Game Over";
+            String message = _game.PlayerWon ? "You Won! You are the raddest street racer!" : "Game Over";
+            var messagePosition = new Vector2(getCenterXPositionForText(message), _screenHeightPx * (1 / 3f));
 
             _spriteBatch.DrawString(_font, message, messagePosition, Color.Red);
         }
@@ -117,9 +116,9 @@ namespace MoonTrucker.GameWorld
         {
             if(IsHighScoreGame())
             {
-                // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.3f
-                var messagePosition = new Vector2(_screenWidthPx * 0.3f, _screenHeightPx * (1 / 2f));
-                _spriteBatch.DrawString(_font, $"New High Score! Enter your name: {_highScoreName}", messagePosition, Color.Red);
+                var message = $"New High Score! Enter your name: {_highScoreName}";
+                var messagePosition = new Vector2(getCenterXPositionForText(message), _screenHeightPx * (1 / 2f));
+                _spriteBatch.DrawString(_font, message, messagePosition, Color.Red);
             }
         }
 
@@ -129,6 +128,12 @@ namespace MoonTrucker.GameWorld
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
             var destPosition = _game.LevelComplete ? _game.GetAngleFromVehicleToFinish() : _game.GetAngleFromVehicleToTarget();
             _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, destPosition, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
+        }
+
+        public float getCenterXPositionForText(string text)
+        {
+            var messageWidth = _font.MeasureString(text).X;
+            return _screenWidthPx * 0.5f - messageWidth * 0.5f;
         }
     }
 }

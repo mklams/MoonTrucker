@@ -31,11 +31,11 @@ namespace MoonTrucker.GameWorld
         public MainGame(TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer, Song gameMusic)
         {
             // TODO: Inject levels
-            var levels = new Level[3]
+            var levels = new Level[1]
             {
-                new Level(15, 1),
-                new Level(15, 2),
-                new Level(15, 3)
+                new Level(15, 0),
+                //new Level(15, 2),
+                //new Level(15, 3)
             };
             _levels = new GameLevels(levels);
 
