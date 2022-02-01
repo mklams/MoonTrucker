@@ -112,7 +112,7 @@ namespace MoonTrucker
             }
             else if (_gameState == GameState.StartMenu)
             {
-                // Allow must key presses to start the game
+                // Allow most key presses to start the game
                 if (wasEnteredPressed ||
                     InputHelper.TryConvertKeyboardInput(newKeyboardState, _oldKeyboardState, out char _))
                 {

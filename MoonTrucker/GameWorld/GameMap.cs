@@ -17,6 +17,7 @@ namespace MoonTrucker.GameWorld
         private float _tileWidth;
         private PropFactory _propFactory;
         private IDisposable _cancellation;
+        private Finish _finish; // TODO: This probably needs to be a member of MainGame instead
 
         private float _mapHeight => _tileMap.Length * _tileWidth;
         private float _mapWidth => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
@@ -36,6 +37,21 @@ namespace MoonTrucker.GameWorld
             {
                 prop.Draw();
             }
+        }
+
+        public void ResetMap()
+        {
+            _finish.MakeInactive();
+        }
+
+        public bool IsPlayerInWinZone()
+        {
+            return _finish.IsPlayerInFinishZone();
+        }
+
+        public void ActivateFinish()
+        {
+            _finish.MakeActive();
         }
 
         // TODO: This is a service. It needs to be in it's own class and injected in
@@ -153,6 +169,9 @@ namespace MoonTrucker.GameWorld
                     return _propFactory.CreateRectangleBody(propDim.X, propDim.Y, origin);
                 case TileType.Tunnel:
                     return _propFactory.CreateRectangleSensor(propDim.X, propDim.Y, origin);
+                case TileType.Finish:
+                    _finish = new Finish(propDim.X / 2f, origin, _propFactory);
+                    return _finish;
                 default:
                     return null; // TODO: DON'T RETURN NULLL
             }

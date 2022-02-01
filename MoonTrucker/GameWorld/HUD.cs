@@ -78,6 +78,7 @@ namespace MoonTrucker.GameWorld
             drawScore();
             drawTimer();
             drawArrow();
+            drawLevel();
             if (state == GameState.GameOver)
             {
                 drawGameOver();
@@ -98,12 +99,21 @@ namespace MoonTrucker.GameWorld
             _spriteBatch.DrawString(_font, $"Countdown: {_game.GetTimeLeft()}", timePosition, Color.Red);
         }
 
+        private void drawLevel()
+        {
+            var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(500, 0));
+
+            _spriteBatch.DrawString(_font, $"Level: {_game.GetCurrentLevel()}", timePosition, Color.Red);
+        }
+
         private void drawGameOver()
         {
             // TODO: Figure out length of text and use that to get width pos instead of magic number of 0.4f
             var messagePosition = new Vector2(_screenWidthPx * 0.4f, _screenHeightPx * (1 / 3f));
 
-            _spriteBatch.DrawString(_font, "Game Over", messagePosition, Color.Red);
+            var message = _game.PlayerWon ? "You Won! You are the raddest street racer!" : "Game Over";
+
+            _spriteBatch.DrawString(_font, message, messagePosition, Color.Red);
         }
 
         private void drawHighScore()

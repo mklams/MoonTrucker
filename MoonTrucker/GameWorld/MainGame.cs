@@ -12,10 +12,10 @@ namespace MoonTrucker.GameWorld
 {
     public class MainGame
     {
-        private const int TOTAL_GAME_TIME = 15;
         private const float V_WIDTH = 2f;
         private const float V_HEIGHT = 5f;
 
+        private GameLevels _levels;
         private GameTarget _target;
         private SimpleVehicle _vehicle;
         private GameMap _map;
@@ -30,6 +30,16 @@ namespace MoonTrucker.GameWorld
 
         public MainGame(TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer, Song gameMusic)
         {
+            // TODO: Inject levels
+            var levels = new Level[3]
+            {
+                new Level(15, 1),
+                new Level(15, 2),
+                new Level(15, 3)
+            };
+            _levels = new GameLevels(levels);
+
+
             _spriteBatch = spriteBatch;
             _gameMusic = gameMusic;
             _manager = manager;
@@ -45,7 +55,7 @@ namespace MoonTrucker.GameWorld
 
             _propFactory = new PropFactory(_world, manager, spriteBatch);
 
-            _timer = new Timer(TimeSpan.FromSeconds(TOTAL_GAME_TIME));
+            _timer = new Timer(_levels.CurrentLevelTimeLimit);
             _map = generateMap();
 
             _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _map.GetStartPosition(), _world, manager, spriteBatch);
@@ -66,10 +76,17 @@ namespace MoonTrucker.GameWorld
             return (int)_timer.GetTime().TotalSeconds;
         }
 
+        public int GetCurrentLevel()
+        {
+            return _levels.CurrentLevelNumber;
+        }
+
         public int GetScore()
         {
             return _target.HitTotal;
         }
+
+        public bool PlayerWon => _levels.AllLevelsComplete;
 
         public float GetAngleFromVehicleToTarget()
         {
@@ -100,9 +117,17 @@ namespace MoonTrucker.GameWorld
             MediaPlayer.Stop();
             MediaPlayer.Play(_gameMusic);
             MediaPlayer.IsRepeating = true;
-            _timer.SetTime(TimeSpan.FromSeconds(TOTAL_GAME_TIME));
-            _target.SetPosition(_map.GetRandomTargetLocation());
+
+            ResetLevel();
             _target.ResetHitTotal();
+            _map.ResetMap();
+        }
+
+        public void ResetLevel()
+        {
+            _timer.SetTime(_levels.CurrentLevelTimeLimit);
+            _target.SetPosition(_map.GetRandomTargetLocation());
+            _map.ResetMap();
             resetVehicle();
             _camera.SetPosition(_vehicle.GetPosition());
         }
@@ -115,16 +140,43 @@ namespace MoonTrucker.GameWorld
 
         public bool IsGameOver()
         {
-            return _timer.IsTimerUp();
+            return _timer.IsTimerUp() || _levels.AllLevelsComplete;
         }
 
         public void Update(GameTime gameTime, KeyboardState newKeyboardState)
         {
+            checkForLevelComplete();
+
             _vehicle.UpdateVehicle(newKeyboardState, gameTime);
             _timer.Update(gameTime);
 
+            //Check if finish should be activiated
+            updateFinish();
+
             _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             _camera.Position = ConvertUnits.ToDisplayUnits(_vehicle.GetPosition());
+        }
+
+        public void checkForLevelComplete()
+        {
+            if (_map.IsPlayerInWinZone())
+            {
+                _levels.NextLevel();
+
+                if (!_levels.AllLevelsComplete)
+                {
+                    ResetLevel();
+                }
+                
+            }
+        }
+
+        private void updateFinish()
+        {
+            if(_target.HitTotal >= _levels.CurrentLevel.NumberOfTargets)
+            {
+                _map.ActivateFinish();
+            }
         }
 
         public void Draw()

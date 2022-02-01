@@ -5,8 +5,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Utilities;
-using Genbox.VelcroPhysics.Collision.Shapes;
-using Genbox.VelcroPhysics.Shared;
 using Genbox.VelcroPhysics.Collision.ContactSystem;
 using Genbox.VelcroPhysics.Collision.Handlers;
 using MoonTrucker.Core;
@@ -16,11 +14,11 @@ namespace MoonTrucker.GameWorld
 
     public class PropFactory
     {
-        private Genbox.VelcroPhysics.Dynamics.World _world;
+        private World _world;
         private SpriteBatch _spriteBatch;
         private TextureManager _textureManager;
 
-        public PropFactory(Genbox.VelcroPhysics.Dynamics.World world, TextureManager manager, SpriteBatch batch)
+        public PropFactory(World world, TextureManager manager, SpriteBatch batch)
         {
             _world = world;
             _textureManager = manager;
@@ -100,22 +98,28 @@ namespace MoonTrucker.GameWorld
         public readonly Body Body;
         private Texture2D _sprite;
         private SpriteBatch _batch;
+        private Color _color = Color.White;
         // TODO: Abstract away the parameters wolrd, manager, batch
-        public CircleProp(float radius, Vector2 origin, Genbox.VelcroPhysics.Dynamics.World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
+        public CircleProp(float radius, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
         {
             Body = BodyFactory.CreateCircle(world, radius, 1f, origin);
             Body.BodyType = BodyType.Static;
             Body.Restitution = 1f;
             Body.Friction = 1f;
             Body.IsSensor = isSensor;
-            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.WhiteSmoke, Color.White);
+            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.White, Color.White);
             _batch = batch;
+        }
+
+        public void SetColor(Color color)
+        {
+            _color = color;
         }
 
         public void Draw()
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, Color.White, Body.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _color, Body.Rotation, origin, 1f, SpriteEffects.None, 0f);
         }
     }
 }
