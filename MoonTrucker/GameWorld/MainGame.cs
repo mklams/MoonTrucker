@@ -107,13 +107,13 @@ namespace MoonTrucker.GameWorld
             MediaPlayer.Stop();
             MediaPlayer.Play(_gameMusic);
             MediaPlayer.IsRepeating = true;
-
-            ResetLevel();
+            _levels.RestLevels();
+            setupLevel();
             _target.ResetHitTotal();
             _map.ResetMap();
         }
 
-        public void ResetLevel()
+        private void setupLevel()
         {
             _timer.SetTime(_levels.CurrentLevelTimeLimit);
             _target.SetPosition(_map.GetRandomTargetLocation());
@@ -155,7 +155,7 @@ namespace MoonTrucker.GameWorld
 
                 if (!_levels.AllLevelsComplete)
                 {
-                    ResetLevel();
+                    setupLevel();
                 }
             }
         }

@@ -47,6 +47,12 @@ namespace MoonTrucker.GameWorld
 
         public int CurrentLevelNumber => _currentLevel;
 
+        public void RestLevels()
+        {
+            _completedAllLevels = false;
+            _currentLevel = 1;
+        }
+
         public Level NextLevel()
         {
             _currentLevel++;
