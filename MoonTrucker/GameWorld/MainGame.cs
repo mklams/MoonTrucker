@@ -39,7 +39,6 @@ namespace MoonTrucker.GameWorld
             };
             _levels = new GameLevels(levels);
 
-
             _spriteBatch = spriteBatch;
             _gameMusic = gameMusic;
             _manager = manager;
@@ -48,21 +47,24 @@ namespace MoonTrucker.GameWorld
             // Velcro Physics expects objects to be scaled to MKS (meters, kilos, seconds)
             // 1 meters equals 14 pixels here
             ConvertUnits.SetDisplayUnitToSimUnitRatio(14f);
-
-            _camera = new Camera2D(renderer);
-            _camera.Zoom = 1f;
-            _camera.RecalculateTransformationMatrices(); // TODO: This might not be needed
+            createCamera(renderer);
 
             _propFactory = new PropFactory(_world, manager, spriteBatch);
 
             _timer = new Timer(_levels.CurrentLevelTimeLimit);
             _map = generateMap();
-
             _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _map.GetStartPosition(), _world, manager, spriteBatch);
             _camera.Position = _vehicle.GetPosition();
             _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory);
             _map.Subscribe(_target);
             _timer.Subscribe(_target);
+        }
+
+        private void createCamera(ResolutionIndependentRenderer renderer)
+        {
+            _camera = new Camera2D(renderer);
+            _camera.Zoom = 1f;
+            _camera.RecalculateTransformationMatrices(); // TODO: This might not be needed
         }
 
         private GameMap generateMap()
@@ -135,7 +137,7 @@ namespace MoonTrucker.GameWorld
 
         public void Update(GameTime gameTime, KeyboardState newKeyboardState)
         {
-            checkForLevelComplete();
+            updateLevel();
 
             _vehicle.UpdateVehicle(newKeyboardState, gameTime);
             _timer.Update(gameTime);
@@ -147,7 +149,7 @@ namespace MoonTrucker.GameWorld
             _camera.Position = ConvertUnits.ToDisplayUnits(_vehicle.GetPosition());
         }
 
-        public void checkForLevelComplete()
+        public void updateLevel()
         {
             if (_map.IsPlayerInWinZone())
             {
