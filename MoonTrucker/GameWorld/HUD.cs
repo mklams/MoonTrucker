@@ -44,7 +44,6 @@ namespace MoonTrucker.GameWorld
         {
             if(gameState == GameState.GameOver)
             {
-                // When game is over, if user has a top 10 score let them entre initials
                 if (IsHighScoreGame())
                 {
 

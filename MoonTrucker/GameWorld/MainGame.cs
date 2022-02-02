@@ -50,14 +50,6 @@ namespace MoonTrucker.GameWorld
             createCamera(renderer);
 
             _propFactory = new PropFactory(_world, manager, spriteBatch);
-
-            //_timer = new Timer(_levels.CurrentLevelTimeLimit);
-            //_map = generateMap();
-            //_vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _map.GetStartPosition(), _world, manager, spriteBatch);
-            //_camera.Position = _vehicle.GetPosition();
-            //_target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory);
-            //_map.Subscribe(_target);
-            //_timer.Subscribe(_target);
         }
 
         private void createCamera(ResolutionIndependentRenderer renderer)
