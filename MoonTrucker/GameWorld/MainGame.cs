@@ -33,9 +33,9 @@ namespace MoonTrucker.GameWorld
             // TODO: Inject levels
             var levels = new Level[3]
             {
-                new Level(15, 1),
-                new Level(15, 2),
-                new Level(15, 3)
+                new Level(15, 0, "MoonTrucker.GameWorld.Level.txt"),
+                new Level(15, 2, "MoonTrucker.GameWorld.Map.txt"),
+                new Level(15, 3, "MoonTrucker.GameWorld.Level.txt")
             };
             _levels = new GameLevels(levels);
 
@@ -51,13 +51,13 @@ namespace MoonTrucker.GameWorld
 
             _propFactory = new PropFactory(_world, manager, spriteBatch);
 
-            _timer = new Timer(_levels.CurrentLevelTimeLimit);
-            _map = generateMap();
-            _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _map.GetStartPosition(), _world, manager, spriteBatch);
-            _camera.Position = _vehicle.GetPosition();
-            _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory);
-            _map.Subscribe(_target);
-            _timer.Subscribe(_target);
+            //_timer = new Timer(_levels.CurrentLevelTimeLimit);
+            //_map = generateMap();
+            //_vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _map.GetStartPosition(), _world, manager, spriteBatch);
+            //_camera.Position = _vehicle.GetPosition();
+            //_target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory);
+            //_map.Subscribe(_target);
+            //_timer.Subscribe(_target);
         }
 
         private void createCamera(ResolutionIndependentRenderer renderer)
@@ -70,7 +70,7 @@ namespace MoonTrucker.GameWorld
         private GameMap generateMap()
         {
             var tileWidth = V_HEIGHT * 2f;
-            return new GameMap(tileWidth, _propFactory);
+            return new GameMap(_levels.CurrentLevel.MapName, tileWidth, _propFactory);
         }
 
         public float GetTimeLeft()
@@ -112,23 +112,20 @@ namespace MoonTrucker.GameWorld
             _levels.RestLevels();
             setupLevel();
             _target.ResetHitTotal();
-            _map.ResetMap();
         }
 
         private void setupLevel()
         {
-            _timer.SetTime(_levels.CurrentLevelTimeLimit);
-            _target.SetPosition(_map.GetRandomTargetLocation());
-            _map.ResetMap();
-            resetVehicle();
+            _world.Clear();
+            _map = generateMap();
+            _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _map.GetStartPosition(), _world, _manager, _spriteBatch);
             _camera.SetPosition(_vehicle.GetPosition());
+            _timer = new Timer(_levels.CurrentLevelTimeLimit);
+            _target = new GameTarget(_vehicle.Width, _map.GetRandomTargetLocation(), _propFactory);
+            _map.Subscribe(_target);
+            _timer.Subscribe(_target);
         }
 
-        private void resetVehicle()
-        {
-            _vehicle.Destroy();
-            _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _map.GetStartPosition(), _world, _manager, _spriteBatch);
-        }
 
         public bool IsGameOver()
         {

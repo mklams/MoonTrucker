@@ -40,6 +40,7 @@ namespace MoonTrucker.GameWorld
 
         public void SetPosition(Vector2 position)
         {
+
             _body.Body.Position = position;
         }
 

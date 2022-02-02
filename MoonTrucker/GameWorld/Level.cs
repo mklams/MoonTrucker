@@ -9,11 +9,13 @@ namespace MoonTrucker.GameWorld
     {
         public readonly int TimeLimit;
         public readonly int NumberOfTargets;
+        public readonly string MapName;
 
-        public Level(int timeLimt, int numOfTargets)
+        public Level(int timeLimt, int numOfTargets, string mapName)
         {
             TimeLimit = timeLimt;
             NumberOfTargets = numOfTargets;
+            MapName = mapName;
         }
     }
 

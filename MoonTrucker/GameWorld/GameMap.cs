@@ -18,12 +18,14 @@ namespace MoonTrucker.GameWorld
         private PropFactory _propFactory;
         private IDisposable _cancellation;
         private Finish _finish; // TODO: This probably needs to be a member of MainGame instead
+        private string _mapName;
 
         private float _mapHeight => _tileMap.Length * _tileWidth;
         private float _mapWidth => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
 
-        public GameMap(float tileWidth, PropFactory propFactory)
+        public GameMap(string mapName, float tileWidth, PropFactory propFactory)
         {
+            _mapName = mapName;
             _tileWidth = tileWidth;
             _propFactory = propFactory;
             _tileMap = loadMapFromFile();
@@ -37,11 +39,6 @@ namespace MoonTrucker.GameWorld
             {
                 prop.Draw();
             }
-        }
-
-        public void ResetMap()
-        {
-            _finish.MakeInactive();
         }
 
         public bool IsPlayerInWinZone()
@@ -63,7 +60,7 @@ namespace MoonTrucker.GameWorld
         private char[][] loadMapFromFile(bool shouldUseVehicleTestbench = false)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = shouldUseVehicleTestbench ? "MoonTrucker.GameWorld.TestBench.txt" : "MoonTrucker.GameWorld.Level.txt";
+            var resourceName = shouldUseVehicleTestbench ? "MoonTrucker.GameWorld.TestBench.txt" : _mapName;
             char[][] tileMap;
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
