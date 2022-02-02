@@ -18,6 +18,7 @@ namespace MoonTrucker
         private float _deltaFade = 0.005f;
         private Color _startColor = Color.Red;
         private Color _endColor = Color.Blue;
+        private float _fontScale = 3f;
         public StartMenu(float screenWidthPx, float screenHeightPx, SpriteFont font, SpriteBatch spriteBatch)
         {
             _screenWidthPx = screenWidthPx;
@@ -42,8 +43,8 @@ namespace MoonTrucker
         public void Draw(HighScores scores)
         {
             var gameName = "Street Racer";
-            var messagePosition = new Vector2(getCenterXPositionForText(gameName), _screenHeightPx * (1 / 4f));
-            _spriteBatch.DrawString(_font, gameName, messagePosition, getColor(), 0f, Vector2.One, 1f, SpriteEffects.None, 1);
+            var messagePosition = new Vector2(getCenterXPositionForText(gameName, true), _screenHeightPx * (1 / 4f));
+            _spriteBatch.DrawString(_font, gameName, messagePosition, getColor(), 0f, Vector2.Zero, _fontScale, SpriteEffects.None, 1);
 
             if (_showHighScores)
             {
@@ -108,9 +109,13 @@ namespace MoonTrucker
             }
         }
 
-        public float getCenterXPositionForText(string text)
+        public float getCenterXPositionForText(string text, bool isTitle = false)
         {
             var messageWidth = _font.MeasureString(text).X;
+            if (isTitle)
+            {
+                messageWidth *= _fontScale;
+            }
             return _screenWidthPx * 0.5f - messageWidth * 0.5f;
         }
     }
