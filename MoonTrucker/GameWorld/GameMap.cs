@@ -17,7 +17,7 @@ namespace MoonTrucker.GameWorld
         private float _tileWidth;
         private PropFactory _propFactory;
         private IDisposable _cancellation;
-        private Finish _finish; // TODO: This probably needs to be a member of MainGame instead
+        private Finish _finish; // TODO: This can be null if the map doesn't have a finish. Handle that more gracefully
         private string _mapName;
 
         private float _mapHeight => _tileMap.Length * _tileWidth;
@@ -43,17 +43,20 @@ namespace MoonTrucker.GameWorld
 
         public bool IsPlayerInWinZone()
         {
-            return _finish.IsPlayerInFinishZone();
+            return _finish is null ? false: _finish.IsPlayerInFinishZone();
         }
 
         public void ActivateFinish()
         {
-            _finish.MakeActive();
+            if(_finish != null)
+            {
+                _finish.MakeActive();
+            }
         }
 
         public Vector2 GetFinishPosition()
         {
-            return _finish.GetPosition();
+            return _finish is null ? new Vector2(0,0) :  _finish.GetPosition();
         }
 
         // TODO: This is a service. It needs to be in it's own class and injected in
