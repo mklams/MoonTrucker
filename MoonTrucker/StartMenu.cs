@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -9,6 +10,13 @@ namespace MoonTrucker
 {
     public class StartMenu
     {
+        private enum MenuOptions
+        {
+            Start,
+            HighScores
+        }
+        private MenuOptions _selectedOption;
+        private List<MenuOptions> _options;
         private SpriteBatch _spriteBatch;
         private float _screenWidthPx;
         private float _screenHeightPx;
@@ -18,13 +26,17 @@ namespace MoonTrucker
         private float _deltaFade = 0.005f;
         private Color _startColor = Color.Red;
         private Color _endColor = Color.Blue;
-        private float _fontScale = 3f;
+        private float _titleScale = 4f;
+        private float _menuScale = 1.5f;
+        private float _selectedScale = 2.5f;
         public StartMenu(float screenWidthPx, float screenHeightPx, SpriteFont font, SpriteBatch spriteBatch)
         {
             _screenWidthPx = screenWidthPx;
             _screenHeightPx = screenHeightPx;
             _font = font;
             _spriteBatch = spriteBatch;
+            _options = new List<MenuOptions>() { MenuOptions.Start, MenuOptions.HighScores };
+            _selectedOption = MenuOptions.Start;
         }
 
         private Color getColor()
@@ -42,35 +54,119 @@ namespace MoonTrucker
 
         public void Draw(HighScores scores)
         {
-            var gameName = "Street Racer";
-            var messagePosition = new Vector2(getCenterXPositionForText(gameName, true), _screenHeightPx * (1 / 4f));
-            _spriteBatch.DrawString(_font, gameName, messagePosition, getColor(), 0f, Vector2.Zero, _fontScale, SpriteEffects.None, 1);
-
-            if (_showHighScores)
+            if (!_showHighScores)
             {
-                int spacing = _font.LineSpacing + 2;
-                var highScoreMessage = "High Scores";
-                messagePosition = new Vector2(getCenterXPositionForText(highScoreMessage), _screenHeightPx * (1 / 3f));
-                _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, Color.Red);
-                var scoreYPosition = messagePosition.Y;
-                foreach (Score score in scores.GetTopScores())
+                drawTitleLogo();
+                drawMenuOptions();
+            }
+            else
+            {
+                drawHighScores(scores);
+            }
+        }
+
+        private void drawHighScores(HighScores scores)
+        {
+            int spacing = _font.LineSpacing + 2;
+            var highScoreMessage = "High Scores";
+            var messagePosition = new Vector2(getCenterXPositionForText(highScoreMessage, _titleScale), _screenHeightPx * (1 / 4f));
+            _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, Color.Red, 0f, Vector2.Zero, _titleScale, SpriteEffects.None, 1);
+            var scoreYPosition = (messagePosition.Y + 2 * spacing);
+            foreach (Score score in scores.GetTopScores())
+            {
+                scoreYPosition += spacing;
+                var scoreMessage = $"{score.Name}    {score.HitTotal}";
+                _spriteBatch.DrawString(_font, scoreMessage, new Vector2(getCenterXPositionForText(scoreMessage), scoreYPosition), Color.Red);
+            }
+        }
+
+        private void drawTitleLogo()
+        {
+            var gameName = "Street Racer";
+            var messagePosition = new Vector2(getCenterXPositionForText(gameName, _titleScale), _screenHeightPx * (1 / 4f));
+            _spriteBatch.DrawString(_font, gameName, messagePosition, getColor(), 0f, Vector2.Zero, _titleScale, SpriteEffects.None, 1);
+        }
+
+        private void drawMenuOptions()
+        {
+            int spacing = _font.LineSpacing;
+            var menuYPos = _screenHeightPx * (2 / 3f);
+            foreach (MenuOptions option in _options)
+            {
+                var menuMessage = this.getMenuOptionText(option);
+                if (_selectedOption == option)
                 {
-                    scoreYPosition += spacing;
-                    var scoreMessage = $"{score.Name}    {score.HitTotal}";
-                    _spriteBatch.DrawString(_font, scoreMessage, new Vector2(getCenterXPositionForText(scoreMessage), scoreYPosition), Color.Red);
+                    _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _selectedScale), menuYPos), getColor(), 0f, Vector2.Zero, _selectedScale, SpriteEffects.None, 1);
+                    menuYPos += spacing * 2f;
+                }
+                else
+                {
+                    _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _menuScale), menuYPos), getColor(), 0f, Vector2.Zero, _menuScale, SpriteEffects.None, 1);
+                    menuYPos += (spacing);
                 }
             }
-
-
         }
 
         public void Update(KeyboardState keyboardState, KeyboardState oldKeyboardState)
         {
-            if (InputHelper.WasKeyPressed(Keys.Space, keyboardState, oldKeyboardState))
+            if (_showHighScores)
             {
-                _showHighScores = !_showHighScores;
+                if (InputHelper.WasKeyPressed(Keys.Enter, keyboardState, oldKeyboardState)
+                || InputHelper.WasKeyPressed(Keys.Space, keyboardState, oldKeyboardState)
+                || InputHelper.WasKeyPressed(Keys.Escape, keyboardState, oldKeyboardState))
+                {
+                    _showHighScores = false;
+                }
+            }
+            else
+            {
+                if (InputHelper.WasKeyPressed(Keys.Up, keyboardState, oldKeyboardState))
+                {
+                    navigateBackwardsInMenu();
+                }
+                else if (InputHelper.WasKeyPressed(Keys.Down, keyboardState, oldKeyboardState))
+                {
+                    navigateForwardsInMenu();
+                }
+                else if (InputHelper.WasKeyPressed(Keys.Space, keyboardState, oldKeyboardState))
+                {
+                    if (_selectedOption == MenuOptions.Start)
+                    {
+                        //Start game....
+                    }
+                    if (_selectedOption == MenuOptions.HighScores)
+                    {
+                        _showHighScores = true;
+                    }
+                }
             }
             this.updateColorFade();
+        }
+
+        private void navigateBackwardsInMenu()
+        {
+            var index = _options.IndexOf(_selectedOption);
+            if (index == 0)
+            {
+                _selectedOption = _options[_options.Count - 1];
+            }
+            else
+            {
+                _selectedOption = _options[index - 1];
+            }
+        }
+
+        private void navigateForwardsInMenu()
+        {
+            var index = _options.IndexOf(_selectedOption);
+            if (index == _options.Count - 1)
+            {
+                _selectedOption = _options[0];
+            }
+            else
+            {
+                _selectedOption = _options[index + 1];
+            }
         }
 
         private void updateColorFade()
@@ -109,14 +205,24 @@ namespace MoonTrucker
             }
         }
 
-        public float getCenterXPositionForText(string text, bool isTitle = false)
+        public float getCenterXPositionForText(string text, float scale = 1)
         {
             var messageWidth = _font.MeasureString(text).X;
-            if (isTitle)
-            {
-                messageWidth *= _fontScale;
-            }
+            messageWidth *= scale;
             return _screenWidthPx * 0.5f - messageWidth * 0.5f;
+        }
+
+        private string getMenuOptionText(MenuOptions option)
+        {
+            switch (option)
+            {
+                case MenuOptions.Start:
+                    return "Start Game";
+                case MenuOptions.HighScores:
+                    return "High Scores";
+                default:
+                    return "No Text Found!";
+            }
         }
     }
 }
