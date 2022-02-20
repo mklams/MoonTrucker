@@ -1,5 +1,3 @@
-using Genbox.VelcroPhysics.Collision.Shapes;
-using Genbox.VelcroPhysics.Definitions;
 using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Utilities;
@@ -11,12 +9,11 @@ namespace MoonTrucker.Vehicle
 {
     public class SimpleTire
     {
-        private const float MAX_TRACTION_FORCE = 10f;
+        private const float MAX_TRACTION_FORCE = 75f;
         private const float _width = 1f;
         private const float _height = .2f;
         private Body _body;
         private World _world;
-        private TextureManager _textureManager;
         private SpriteBatch _batch;
         private Texture2D _sprite;
 
@@ -25,7 +22,6 @@ namespace MoonTrucker.Vehicle
             _body = BodyFactory.CreateRectangle(world, _width, _height, 1f, position, 0, BodyType.Dynamic);
             _body.LinearDamping = 0f; //makes car appear "floaty"
             _body.AngularDamping = .01f;
-            _textureManager = manager;
 
             _body.Restitution = 0.0f; //how bouncy (not bouncy) 0 - 1(super bouncy) 
             _body.Friction = 0f;    //friction between other bodies (none) 0 - 1 (frictiony)
