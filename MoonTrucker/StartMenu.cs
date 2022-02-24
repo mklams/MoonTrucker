@@ -10,6 +10,8 @@ namespace MoonTrucker
 {
     public class StartMenu
     {
+
+        public bool ShouldStart { get; private set; }
         private enum MenuOptions
         {
             Start,
@@ -31,12 +33,20 @@ namespace MoonTrucker
         private float _selectedScale = 2.5f;
         public StartMenu(float screenWidthPx, float screenHeightPx, SpriteFont font, SpriteBatch spriteBatch)
         {
+            ShouldStart = false;
             _screenWidthPx = screenWidthPx;
             _screenHeightPx = screenHeightPx;
             _font = font;
             _spriteBatch = spriteBatch;
             _options = new List<MenuOptions>() { MenuOptions.Start, MenuOptions.HighScores };
             _selectedOption = MenuOptions.Start;
+        }
+
+        //Called by owner of StartMenu. 
+        public void AcknowledgeStartGame()
+        {
+            ShouldStart = false;
+            _showHighScores = false;
         }
 
         private Color getColor()
@@ -128,11 +138,12 @@ namespace MoonTrucker
                 {
                     navigateForwardsInMenu();
                 }
-                else if (InputHelper.WasKeyPressed(Keys.Space, keyboardState, oldKeyboardState))
+                else if (InputHelper.WasKeyPressed(Keys.Space, keyboardState, oldKeyboardState)
+                || InputHelper.WasKeyPressed(Keys.Enter, keyboardState, oldKeyboardState))
                 {
                     if (_selectedOption == MenuOptions.Start)
                     {
-                        //Start game....
+                        ShouldStart = true;
                     }
                     if (_selectedOption == MenuOptions.HighScores)
                     {
