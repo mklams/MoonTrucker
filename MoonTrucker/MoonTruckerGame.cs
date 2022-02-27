@@ -63,7 +63,7 @@ namespace MoonTrucker
 
             //create game objects
             _mainGame = new MainGame(_textureManager, _spriteBatch, _independentRenderer, _gameMusic);
-            _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch);
+            _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch, _textureManager);
             _gameHUD = new HUD(_mainGame, _spriteBatch, _font, _textureManager, _screenWidthPx, _screenHeightPx, _independentRenderer);
         }
 

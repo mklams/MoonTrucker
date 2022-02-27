@@ -20,6 +20,8 @@ namespace MoonTrucker
         private MenuOptions _selectedOption;
         private List<MenuOptions> _options;
         private SpriteBatch _spriteBatch;
+
+        private TextureManager _textureManager;
         private float _screenWidthPx;
         private float _screenHeightPx;
         private SpriteFont _font;
@@ -29,17 +31,20 @@ namespace MoonTrucker
         private Color _startColor = Color.Red;
         private Color _endColor = Color.Blue;
         private float _titleScale = 4f;
-        private float _menuScale = 1.5f;
-        private float _selectedScale = 2.5f;
-        public StartMenu(float screenWidthPx, float screenHeightPx, SpriteFont font, SpriteBatch spriteBatch)
+        private float _menuScale = 2.5f;
+
+        private Texture2D _pixel;
+        public StartMenu(float screenWidthPx, float screenHeightPx, SpriteFont font, SpriteBatch spriteBatch, TextureManager textureManager)
         {
             ShouldStart = false;
             _screenWidthPx = screenWidthPx;
             _screenHeightPx = screenHeightPx;
+            _textureManager = textureManager;
             _font = font;
             _spriteBatch = spriteBatch;
             _options = new List<MenuOptions>() { MenuOptions.Start, MenuOptions.HighScores };
             _selectedOption = MenuOptions.Start;
+            _pixel = _textureManager.GetTexture("pixel");
         }
 
         //Called by owner of StartMenu. 
@@ -106,13 +111,14 @@ namespace MoonTrucker
                 var menuMessage = this.getMenuOptionText(option);
                 if (_selectedOption == option)
                 {
-                    _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _selectedScale), menuYPos), getColor(), 0f, Vector2.Zero, _selectedScale, SpriteEffects.None, 1);
-                    menuYPos += spacing * 2f;
+                    _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _menuScale), menuYPos), getColor(), 0f, Vector2.Zero, _menuScale, SpriteEffects.None, 1);
+                    _spriteBatch.Draw(_pixel, new Rectangle((int)getCenterXPositionForText(menuMessage, _menuScale), (int)(menuYPos + (_font.MeasureString(menuMessage).Y * _menuScale) - 10), (int)(_font.MeasureString(menuMessage).X * _menuScale), 5), getColor());
+                    menuYPos += spacing * 3f;
                 }
                 else
                 {
                     _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _menuScale), menuYPos), getColor(), 0f, Vector2.Zero, _menuScale, SpriteEffects.None, 1);
-                    menuYPos += (spacing);
+                    menuYPos += spacing * 3f;
                 }
             }
         }
