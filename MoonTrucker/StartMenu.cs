@@ -136,11 +136,13 @@ namespace MoonTrucker
             }
             else
             {
-                if (InputHelper.WasKeyPressed(Keys.Up, keyboardState, oldKeyboardState))
+                if (InputHelper.WasKeyPressed(Keys.Up, keyboardState, oldKeyboardState)
+                || InputHelper.WasKeyPressed(Keys.W, keyboardState, oldKeyboardState))
                 {
                     navigateBackwardsInMenu();
                 }
-                else if (InputHelper.WasKeyPressed(Keys.Down, keyboardState, oldKeyboardState))
+                else if (InputHelper.WasKeyPressed(Keys.Down, keyboardState, oldKeyboardState)
+                || InputHelper.WasKeyPressed(Keys.S, keyboardState, oldKeyboardState))
                 {
                     navigateForwardsInMenu();
                 }
