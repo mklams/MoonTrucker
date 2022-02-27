@@ -30,8 +30,10 @@ namespace MoonTrucker
         private float _deltaFade = 0.005f;
         private Color _startColor = Color.Red;
         private Color _endColor = Color.Blue;
-        private float _titleScale = 4f;
-        private float _menuScale = 2.5f;
+        private float _titleScale = 1f;
+        private float _menuScale = 0.5f;
+        private float _highScoreTitleScale = 0.75f;
+        private float _highScoreNameScale = 0.25f;
 
         private Texture2D _pixel;
         public StartMenu(float screenWidthPx, float screenHeightPx, SpriteFont font, SpriteBatch spriteBatch, TextureManager textureManager)
@@ -60,9 +62,9 @@ namespace MoonTrucker
             var diffGreen = _endColor.G - _startColor.G;
             var diffBlue = _endColor.B - _startColor.B;
 
-            float newRed = ((float)diffRed * _percentFade) + (float)_startColor.R;
-            float newGreen = ((float)diffGreen * _percentFade) + (float)_startColor.G;
-            float newBlue = ((float)diffBlue * _percentFade) + (float)_startColor.B;
+            float newRed = (diffRed * _percentFade) + _startColor.R;
+            float newGreen = (diffGreen * _percentFade) + _startColor.G;
+            float newBlue = (diffBlue * _percentFade) + _startColor.B;
 
             return new Color((int)Math.Round(newRed), (int)Math.Round(newGreen), (int)Math.Round(newBlue));
         }
@@ -82,16 +84,16 @@ namespace MoonTrucker
 
         private void drawHighScores(HighScores scores)
         {
-            int spacing = _font.LineSpacing + 2;
+            var spacing = _font.LineSpacing* _highScoreNameScale;
             var highScoreMessage = "High Scores";
-            var messagePosition = new Vector2(getCenterXPositionForText(highScoreMessage, _titleScale), _screenHeightPx * (1 / 4f));
-            _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, Color.Red, 0f, Vector2.Zero, _titleScale, SpriteEffects.None, 1);
+            var messagePosition = new Vector2(getCenterXPositionForText(highScoreMessage, _highScoreTitleScale), _screenHeightPx * (1 / 4f));
+            _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, Color.Red, 0f, Vector2.Zero, _highScoreTitleScale, SpriteEffects.None, 1);
             var scoreYPosition = (messagePosition.Y + 2 * spacing);
             foreach (Score score in scores.GetTopScores())
             {
                 scoreYPosition += spacing;
                 var scoreMessage = $"{score.Name}    {score.HitTotal}";
-                _spriteBatch.DrawString(_font, scoreMessage, new Vector2(getCenterXPositionForText(scoreMessage), scoreYPosition), Color.Red);
+                _spriteBatch.DrawString(_font, scoreMessage, new Vector2(getCenterXPositionForText(scoreMessage, _highScoreNameScale), scoreYPosition), Color.Red,0,Vector2.Zero, _highScoreNameScale, SpriteEffects.None, 1);
             }
         }
 
@@ -104,7 +106,7 @@ namespace MoonTrucker
 
         private void drawMenuOptions()
         {
-            int spacing = _font.LineSpacing;
+            var spacing = _font.LineSpacing * _menuScale;
             var menuYPos = _screenHeightPx * (2 / 3f);
             foreach (MenuOptions option in _options)
             {
@@ -113,12 +115,12 @@ namespace MoonTrucker
                 {
                     _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _menuScale), menuYPos), getColor(), 0f, Vector2.Zero, _menuScale, SpriteEffects.None, 1);
                     _spriteBatch.Draw(_pixel, new Rectangle((int)getCenterXPositionForText(menuMessage, _menuScale), (int)(menuYPos + (_font.MeasureString(menuMessage).Y * _menuScale) - 10), (int)(_font.MeasureString(menuMessage).X * _menuScale), 5), getColor());
-                    menuYPos += spacing * 3f;
+                    menuYPos += spacing;
                 }
                 else
                 {
                     _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _menuScale), menuYPos), getColor(), 0f, Vector2.Zero, _menuScale, SpriteEffects.None, 1);
-                    menuYPos += spacing * 3f;
+                    menuYPos += spacing;
                 }
             }
         }
