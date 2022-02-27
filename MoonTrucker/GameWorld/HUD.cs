@@ -17,6 +17,9 @@ namespace MoonTrucker.GameWorld
         private MainGame _game;
         private GameSave _gameSave; 
         private HighScores _highScores;
+        private float _hudScale = 0.2f;
+        private float _gameOverScale = 0.3f;
+        private float _highScoreScale = 0.25f;
 
         //TODO: Break out getting high score initials to own class
         private string _highScoreName = "";
@@ -76,6 +79,7 @@ namespace MoonTrucker.GameWorld
             drawTimer();
             drawArrow();
             drawLevel();
+
             if (state == GameState.GameOver)
             {
                 drawGameOver();
@@ -86,29 +90,29 @@ namespace MoonTrucker.GameWorld
         private void drawScore()
         {
             var scorePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
-            _spriteBatch.DrawString(_font, $"Score: {_game.GetScore()}", scorePosition, Color.Red);
+            _spriteBatch.DrawString(_font, $"Score: {_game.GetScore()}", scorePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1);
         }
 
         private void drawTimer()
         {
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 0));
 
-            _spriteBatch.DrawString(_font, $"Countdown: {_game.GetTimeLeft()}", timePosition, Color.Red);
+            _spriteBatch.DrawString(_font, $"Countdown: {_game.GetTimeLeft()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1);
         }
 
         private void drawLevel()
         {
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(500, 0));
 
-            _spriteBatch.DrawString(_font, $"Level: {_game.GetCurrentLevel()}", timePosition, Color.Red);
+            _spriteBatch.DrawString(_font, $"Level: {_game.GetCurrentLevel()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1);
         }
 
         private void drawGameOver()
         {
-            String message = _game.PlayerWon ? "You Won! You are the raddest street racer!" : "Game Over";
-            var messagePosition = new Vector2(getCenterXPositionForText(message), _screenHeightPx * (1 / 3f));
+            string message = _game.PlayerWon ? "You Won! You are the raddest street racer!" : "Game Over";
+            var messagePosition = new Vector2(getCenterXPositionForText(message, _gameOverScale), _screenHeightPx * (1 / 3f));
 
-            _spriteBatch.DrawString(_font, message, messagePosition, Color.Red);
+            _spriteBatch.DrawString(_font, message, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1);
         }
 
         private void drawHighScore()
@@ -116,8 +120,8 @@ namespace MoonTrucker.GameWorld
             if(IsHighScoreGame())
             {
                 var message = $"New High Score! Enter your name: {_highScoreName}";
-                var messagePosition = new Vector2(getCenterXPositionForText(message), _screenHeightPx * (1 / 2f));
-                _spriteBatch.DrawString(_font, message, messagePosition, Color.Red);
+                var messagePosition = new Vector2(getCenterXPositionForText(message, _highScoreScale), _screenHeightPx * (1 / 2f));
+                _spriteBatch.DrawString(_font, message, messagePosition, Color.Red, 0, Vector2.Zero, _highScoreScale, SpriteEffects.None, 1);
             }
         }
 
@@ -129,9 +133,9 @@ namespace MoonTrucker.GameWorld
             _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, destPosition, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
         }
 
-        public float getCenterXPositionForText(string text)
+        public float getCenterXPositionForText(string text, float scale)
         {
-            var messageWidth = _font.MeasureString(text).X;
+            var messageWidth = _font.MeasureString(text).X* scale;
             return _screenWidthPx * 0.5f - messageWidth * 0.5f;
         }
     }
