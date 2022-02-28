@@ -34,8 +34,15 @@ namespace MoonTrucker
         private float _menuScale = 0.5f;
         private float _highScoreTitleScale = 0.75f;
         private float _highScoreNameScale = 0.25f;
+        private int _numberOfRacingParticles = 35;
+        private Direction _lastGeneratedDirection = Direction.Vertical;
+        private List<LinearParticleTrail> _racingParticles;
+        private Random rand = new Random();
+        private double _minTimeBetweenRacingParticles = 0.15;
+        private double _lastRacingParticleCreationTime = 0.0;
 
         private Texture2D _pixel;
+        private Color _baseColor = Color.Silver;
         public StartMenu(float screenWidthPx, float screenHeightPx, SpriteFont font, SpriteBatch spriteBatch, TextureManager textureManager)
         {
             ShouldStart = false;
@@ -47,6 +54,7 @@ namespace MoonTrucker
             _options = new List<MenuOptions>() { MenuOptions.Start, MenuOptions.HighScores };
             _selectedOption = MenuOptions.Start;
             _pixel = _textureManager.GetTexture("pixel");
+            _racingParticles = new List<LinearParticleTrail>();
         }
 
         //Called by owner of StartMenu. 
@@ -71,6 +79,7 @@ namespace MoonTrucker
 
         public void Draw(HighScores scores)
         {
+            drawRacingParticles();
             if (!_showHighScores)
             {
                 drawTitleLogo();
@@ -84,16 +93,16 @@ namespace MoonTrucker
 
         private void drawHighScores(HighScores scores)
         {
-            var spacing = _font.LineSpacing* _highScoreNameScale;
+            var spacing = _font.LineSpacing * _highScoreNameScale;
             var highScoreMessage = "High Scores";
             var messagePosition = new Vector2(getCenterXPositionForText(highScoreMessage, _highScoreTitleScale), _screenHeightPx * (1 / 4f));
-            _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, Color.Red, 0f, Vector2.Zero, _highScoreTitleScale, SpriteEffects.None, 1);
+            _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, _baseColor, 0f, Vector2.Zero, _highScoreTitleScale, SpriteEffects.None, 1);
             var scoreYPosition = (messagePosition.Y + 2 * spacing);
             foreach (Score score in scores.GetTopScores())
             {
                 scoreYPosition += spacing;
                 var scoreMessage = $"{score.Name}    {score.HitTotal}";
-                _spriteBatch.DrawString(_font, scoreMessage, new Vector2(getCenterXPositionForText(scoreMessage, _highScoreNameScale), scoreYPosition), Color.Red,0,Vector2.Zero, _highScoreNameScale, SpriteEffects.None, 1);
+                _spriteBatch.DrawString(_font, scoreMessage, new Vector2(getCenterXPositionForText(scoreMessage, _highScoreNameScale), scoreYPosition), _baseColor, 0, Vector2.Zero, _highScoreNameScale, SpriteEffects.None, 1);
             }
         }
 
@@ -101,7 +110,7 @@ namespace MoonTrucker
         {
             var gameName = "Street Racer";
             var messagePosition = new Vector2(getCenterXPositionForText(gameName, _titleScale), _screenHeightPx * (1 / 4f));
-            _spriteBatch.DrawString(_font, gameName, messagePosition, getColor(), 0f, Vector2.Zero, _titleScale, SpriteEffects.None, 1);
+            _spriteBatch.DrawString(_font, gameName, messagePosition, _baseColor, 0f, Vector2.Zero, _titleScale, SpriteEffects.None, 1);
         }
 
         private void drawMenuOptions()
@@ -113,20 +122,21 @@ namespace MoonTrucker
                 var menuMessage = this.getMenuOptionText(option);
                 if (_selectedOption == option)
                 {
-                    _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _menuScale), menuYPos), getColor(), 0f, Vector2.Zero, _menuScale, SpriteEffects.None, 1);
-                    _spriteBatch.Draw(_pixel, new Rectangle((int)getCenterXPositionForText(menuMessage, _menuScale), (int)(menuYPos + (_font.MeasureString(menuMessage).Y * _menuScale) - 10), (int)(_font.MeasureString(menuMessage).X * _menuScale), 5), getColor());
+                    _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _menuScale), menuYPos), _baseColor, 0f, Vector2.Zero, _menuScale, SpriteEffects.None, 1);
+                    _spriteBatch.Draw(_pixel, new Rectangle((int)getCenterXPositionForText(menuMessage, _menuScale), (int)(menuYPos + (_font.MeasureString(menuMessage).Y * _menuScale) - 10), (int)(_font.MeasureString(menuMessage).X * _menuScale), 5), _baseColor);
                     menuYPos += spacing;
                 }
                 else
                 {
-                    _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _menuScale), menuYPos), getColor(), 0f, Vector2.Zero, _menuScale, SpriteEffects.None, 1);
+                    _spriteBatch.DrawString(_font, menuMessage, new Vector2(getCenterXPositionForText(menuMessage, _menuScale), menuYPos), _baseColor, 0f, Vector2.Zero, _menuScale, SpriteEffects.None, 1);
                     menuYPos += spacing;
                 }
             }
         }
 
-        public void Update(KeyboardState keyboardState, KeyboardState oldKeyboardState)
+        public void Update(KeyboardState keyboardState, KeyboardState oldKeyboardState, GameTime gameTime)
         {
+            this.updateRacingParticles(gameTime);
             if (_showHighScores)
             {
                 if (InputHelper.WasKeyPressed(Keys.Enter, keyboardState, oldKeyboardState)
@@ -244,6 +254,60 @@ namespace MoonTrucker
                 default:
                     return "No Text Found!";
             }
+        }
+
+        private void drawRacingParticles()
+        {
+            _racingParticles.ForEach(lpt => lpt.Draw());
+        }
+
+        private void updateRacingParticles(GameTime gameTime)
+        {
+            if (_racingParticles.Count < _numberOfRacingParticles && gameTime.TotalGameTime.TotalSeconds - _lastRacingParticleCreationTime > _minTimeBetweenRacingParticles)
+            {
+                _lastRacingParticleCreationTime = gameTime.TotalGameTime.TotalSeconds;
+                if (_lastGeneratedDirection == Direction.Horizontal)
+                {
+                    _racingParticles.Add(
+                        new LinearParticleTrail(
+                            new Vector2(_screenWidthPx, _screenHeightPx),
+                            Direction.Vertical,
+                            rand.Next(15, ((int)_screenWidthPx - 15)),
+                            getColor(),
+                            _spriteBatch,
+                            _textureManager
+                        )
+                    );
+                    _lastGeneratedDirection = Direction.Vertical;
+                }
+                else
+                {
+                    _racingParticles.Add(
+                        new LinearParticleTrail(
+                            new Vector2(_screenWidthPx, _screenHeightPx),
+                            Direction.Horizontal,
+                            rand.Next(15, ((int)_screenHeightPx - 15)),
+                            getColor(),
+                            _spriteBatch,
+                            _textureManager
+                        )
+                    );
+                    _lastGeneratedDirection = Direction.Horizontal;
+                }
+            }
+            List<LinearParticleTrail> toRemove = new List<LinearParticleTrail>();
+            _racingParticles.ForEach((lpt) =>
+            {
+                if (lpt.IsDone())
+                {
+                    toRemove.Add(lpt);
+                }
+                else
+                {
+                    lpt.Update(gameTime);
+                }
+            });
+            toRemove.ForEach(lpt => _racingParticles.Remove(lpt));
         }
     }
 }

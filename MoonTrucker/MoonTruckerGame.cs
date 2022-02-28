@@ -112,7 +112,7 @@ namespace MoonTrucker
             }
             else if (_gameState == GameState.StartMenu)
             {
-                _startMenu.Update(newKeyboardState, _oldKeyboardState);
+                _startMenu.Update(newKeyboardState, _oldKeyboardState, gameTime);
                 if (_startMenu.ShouldStart)
                 //  || InputHelper.TryConvertKeyboardInput(newKeyboardState, _oldKeyboardState, out char _))  // Allow most key inputs
                 {
