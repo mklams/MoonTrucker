@@ -105,3 +105,9 @@
 /processorParam:Quality=Best
 /build:Sounds/GameBackgroundMusic.wav
 
+#begin Sounds/TitleMenuMusic.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/TitleMenuMusic.wav
+

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MoonTrucker.Core;
 using MoonTrucker.GameWorld;
 
@@ -42,8 +43,9 @@ namespace MoonTrucker
         private double _lastRacingParticleCreationTime = 0.0;
 
         private Texture2D _pixel;
+        private Song _menuMusic;
         private Color _baseColor = Color.Silver;
-        public StartMenu(float screenWidthPx, float screenHeightPx, SpriteFont font, SpriteBatch spriteBatch, TextureManager textureManager)
+        public StartMenu(float screenWidthPx, float screenHeightPx, SpriteFont font, SpriteBatch spriteBatch, TextureManager textureManager, Song backgroundMusic)
         {
             ShouldStart = false;
             _screenWidthPx = screenWidthPx;
@@ -55,6 +57,8 @@ namespace MoonTrucker
             _selectedOption = MenuOptions.Start;
             _pixel = _textureManager.GetTexture("pixel");
             _racingParticles = new List<LinearParticleTrail>();
+            _menuMusic = backgroundMusic;
+            StartMusic();
         }
 
         //Called by owner of StartMenu. 
@@ -62,6 +66,13 @@ namespace MoonTrucker
         {
             ShouldStart = false;
             _showHighScores = false;
+        }
+
+        public void StartMusic()
+        {
+            MediaPlayer.Stop();
+            MediaPlayer.Play(_menuMusic);
+            MediaPlayer.IsRepeating = true;
         }
 
         private Color getColor()

@@ -29,6 +29,7 @@ namespace MoonTrucker
         private HUD _gameHUD;
 
         private Song _gameMusic;
+        private Song _menuMusic;
 
 
         public MoonTruckerGame()
@@ -57,13 +58,14 @@ namespace MoonTrucker
                 _font = Content.Load<SpriteFont>("Fonts/Basic");
             }
             _gameMusic = Content.Load<Song>("Sounds/GameBackgroundMusic");
+            _menuMusic = Content.Load<Song>("Sounds/TitleMenuMusic");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _textureManager = new TextureManager(Content, GraphicsDevice);
 
 
             //create game objects
             _mainGame = new MainGame(_textureManager, _spriteBatch, _independentRenderer, _gameMusic);
-            _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch, _textureManager);
+            _startMenu = new StartMenu(_screenWidthPx, _screenHeightPx, _font, _spriteBatch, _textureManager, _menuMusic);
             _gameHUD = new HUD(_mainGame, _spriteBatch, _font, _textureManager, _screenWidthPx, _screenHeightPx, _independentRenderer);
         }
 
@@ -108,6 +110,7 @@ namespace MoonTrucker
                 if (wasEnteredPressed)
                 {
                     _gameState = GameState.StartMenu;
+                    _startMenu.StartMusic();
                 }
             }
             else if (_gameState == GameState.StartMenu)
