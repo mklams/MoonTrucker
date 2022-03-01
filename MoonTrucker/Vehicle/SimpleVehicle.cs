@@ -62,6 +62,15 @@ namespace MoonTrucker.Vehicle
             _tires.ForEach(tire => tire.UpdateFriction());
         }
 
+        protected override void updateEffects()
+        {
+            _tires.ForEach((tire) =>
+            {
+                tire.Update();
+                tire.LogTireTrail();
+            });
+        }
+
         protected override void handleDownKey(GameTime gameTime)
         {
             _inDrive = false;
@@ -147,7 +156,7 @@ namespace MoonTrucker.Vehicle
             //Front left tire
             var jointDef = this.createJointDef();
             var relPosition = new Vector2(1.7f, -0.6f);
-            var tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch);
+            var tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, false);
             jointDef.BodyB = tire.GetBody();
             jointDef.LocalAnchorA = relPosition;
             frontLeftJoint = (RevoluteJoint)_world.CreateJoint(jointDef);
@@ -156,7 +165,7 @@ namespace MoonTrucker.Vehicle
             //Front right tire
             jointDef = this.createJointDef();
             relPosition = new Vector2(1.7f, 0.6f);
-            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch);
+            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, false);
             jointDef.BodyB = tire.GetBody();
             jointDef.LocalAnchorA = relPosition;
             frontRightJoint = (RevoluteJoint)_world.CreateJoint(jointDef);
@@ -165,7 +174,7 @@ namespace MoonTrucker.Vehicle
             //Back left tire
             jointDef = this.createJointDef();
             relPosition = new Vector2(-1.7f, -0.6f);
-            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch);
+            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, true);
             jointDef.BodyB = tire.GetBody();
             jointDef.LocalAnchorA = relPosition;
             _world.CreateJoint(jointDef);
@@ -174,7 +183,7 @@ namespace MoonTrucker.Vehicle
             //Back right tire
             jointDef = this.createJointDef();
             relPosition = new Vector2(-1.7f, 0.6f);
-            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch);
+            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, true);
             jointDef.BodyB = tire.GetBody();
             jointDef.LocalAnchorA = relPosition;
             _world.CreateJoint(jointDef);

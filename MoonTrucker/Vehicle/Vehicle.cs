@@ -151,6 +151,7 @@ namespace MoonTrucker.Vehicle
             }
             this.snapVelocityToZero();
             this.applyFriction();
+            this.updateEffects();
             this.restorativeTurn(gameTime);
         }
         protected abstract void restorativeTurn(GameTime gameTime);
@@ -161,6 +162,8 @@ namespace MoonTrucker.Vehicle
         protected abstract void handleRightKey(GameTime gameTime);
         protected abstract void snapVelocityToZero();
         protected abstract void applyFriction();
+
+        protected abstract void updateEffects();
 
         protected abstract void handleSpaceBar(GameTime gameTime);
 

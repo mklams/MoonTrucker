@@ -97,5 +97,9 @@ namespace MoonTrucker.Vehicle
             throw new System.NotImplementedException();
         }
 
+        protected override void updateEffects()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
