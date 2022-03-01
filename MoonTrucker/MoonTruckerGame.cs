@@ -110,7 +110,7 @@ namespace MoonTrucker
                 if (wasEnteredPressed)
                 {
                     _gameState = GameState.StartMenu;
-                    _startMenu.StartMusic();
+                    _startMenu.InitializeStartMenu();
                 }
             }
             else if (_gameState == GameState.StartMenu)

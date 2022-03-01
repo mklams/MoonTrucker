@@ -58,7 +58,7 @@ namespace MoonTrucker
             _pixel = _textureManager.GetTexture("pixel");
             _racingParticles = new List<LinearParticleTrail>();
             _menuMusic = backgroundMusic;
-            StartMusic();
+            InitializeStartMenu();
         }
 
         //Called by owner of StartMenu. 
@@ -68,11 +68,12 @@ namespace MoonTrucker
             _showHighScores = false;
         }
 
-        public void StartMusic()
+        public void InitializeStartMenu()
         {
             MediaPlayer.Stop();
             MediaPlayer.Play(_menuMusic);
             MediaPlayer.IsRepeating = true;
+            _racingParticles = new List<LinearParticleTrail>();
         }
 
         private Color getColor()
