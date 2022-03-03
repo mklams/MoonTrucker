@@ -67,3 +67,13 @@ MoonTrucker/bin/Debug/netcoreapp3.1/.DS_Store
 MoonTrucker/bin/Debug/netcoreapp3.1/StreetRacerSaveData.xml
 .vs/MoonTrucker/xs/UserPrefs.xml
 MoonTrucker/Content/obj/DesktopGL/Content/GameAssets/Arrow.mgcontent
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/Sounds/GameBackgroundMusic.ogg
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/GameAssets/pixel.xnb
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/Sounds/GameBackgroundMusic.xnb
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/Sounds/TitleMenuMusic.ogg
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/Sounds/TitleMenuMusic.xnb
+MoonTrucker/Content/bin/DesktopGL/Content/GameAssets/pixel.xnb
+MoonTrucker/Content/bin/DesktopGL/Content/Sounds/GameBackgroundMusic.ogg
+MoonTrucker/Content/bin/DesktopGL/Content/Sounds/GameBackgroundMusic.xnb
+MoonTrucker/Content/bin/DesktopGL/Content/Sounds/TitleMenuMusic.ogg
+MoonTrucker/Content/bin/DesktopGL/Content/Sounds/TitleMenuMusic.xnb

@@ -172,7 +172,7 @@ namespace MoonTrucker.GameWorld
             {
                 case TileType.Building:
                     return _propFactory.CreateRectangleBody(propDim.X, propDim.Y, origin);
-                case TileType.Tunnel:
+                case TileType.Hidden:
                     return _propFactory.CreateRectangleSensor(propDim.X, propDim.Y, origin);
                 case TileType.Finish:
                     _finish = new Finish(propDim.X / 2f, origin, _propFactory);
@@ -275,7 +275,7 @@ namespace MoonTrucker.GameWorld
     {
         Building = 'B',
         Road = '_',
-        Tunnel = 'T',
+        Hidden = 'H',
         RestrictedRoad = 'X', //like a road but it can't have targets spawned on it
 
         Gate = 'G',
