@@ -13,13 +13,13 @@ namespace MoonTrucker.GameWorld
         private int _score;
         private int _targetsHit;
         private Timer _timer;
-        private GameTarget _infiniteTarget = null;
+        private Vector2 _randomTargetPosition;
 
         public bool IsInfiniteLevel => _config.IsInfiniteLevel;
         public TimeSpan TimeLimit => TimeSpan.FromSeconds(_config.TimeLimit);
         public bool LevelIsFinished => _map.IsPlayerInWinZone();
         public int TimeLeftInSeconds => _timer.GetTimeInSeconds();
-        public bool AllTargetsCollected => _targetsHit >= _map.GetNumberOfTargets();
+        public bool AllTargetsCollected => _targetsHit >= _map.GetNumberOfTargets() + _config.AddtionalTargets;
 
         public Level(LevelConfig config, float tileWidth, PropFactory propFactory)
         {
@@ -28,6 +28,7 @@ namespace MoonTrucker.GameWorld
             _score = 0;
             _targetsHit = 0;
             _timer = new Timer(TimeLimit);
+            _randomTargetPosition = new Vector2();
         }
 
         public void Load()
@@ -49,7 +50,7 @@ namespace MoonTrucker.GameWorld
 
         public Vector2 GetTargetPosition()
         {
-            return _infiniteTarget?.GetPosition() ?? new Vector2(0f, 0f);
+            return _randomTargetPosition;
         }
 
         public Vector2 GetStartPosition()
@@ -81,6 +82,11 @@ namespace MoonTrucker.GameWorld
             }
         }
 
+        public bool ShowArrow()
+        {
+            return _targetsHit >= _map.GetNumberOfTargets();
+        }
+
         private void targetHit()
         {
             _targetsHit++;
@@ -89,6 +95,8 @@ namespace MoonTrucker.GameWorld
             double points = 50 + 50 * (1.0 / elapsedTime);
             _score += (int)points;
         }
+
+        private bool _useRandomTarget => _targetsHit >= _map.GetNumberOfTargets() && !AllTargetsCollected;
 
         #region IObserver<GameTarget> implmentation
         public void OnCompleted()
@@ -104,17 +112,13 @@ namespace MoonTrucker.GameWorld
         public void OnNext(GameTarget target)
         {
             targetHit();
-            if(IsInfiniteLevel && AllTargetsCollected)
+            target.Hide();
+
+            if(_useRandomTarget)
             {
-                if(_infiniteTarget == null)
-                {
-                    _infiniteTarget = target;
-                }
-                target.SetPosition(_map.GetRandomTargetLocation());
-            }
-            else
-            {
-                target.Hide();
+                target.Show();
+                _randomTargetPosition = _map.GetRandomTargetLocation();
+                target.SetPosition(_randomTargetPosition);
             }
             
         }
@@ -127,12 +131,14 @@ namespace MoonTrucker.GameWorld
         public readonly int TimeLimit;
         public readonly string MapName;
         public readonly bool IsInfiniteLevel;
+        public readonly int AddtionalTargets;
 
-        public LevelConfig(int timeLimt, string mapName, bool infiniteLevel = false)
+        public LevelConfig(int timeLimt, string mapName, int addtionalTargets = 0, bool infiniteLevel = false)
         {
             TimeLimit = timeLimt;
             MapName = mapName;
             IsInfiniteLevel = infiniteLevel;
+            AddtionalTargets = addtionalTargets;
         }
     }
 
@@ -140,9 +146,9 @@ namespace MoonTrucker.GameWorld
     {
         private LevelConfig[] _levelsConfig = new LevelConfig[3]
         {
-            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt"),
+            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 1),
             new LevelConfig(15, "MoonTrucker.GameWorld.Map.txt"),
-            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", true)
+            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 2)
         };
         private Level[] _levels;
         private int _currentLevel = 0;

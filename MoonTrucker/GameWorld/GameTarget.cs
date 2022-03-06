@@ -46,6 +46,12 @@ namespace MoonTrucker.GameWorld
             _body.Body.Enabled = false;
         }
 
+        public void Show()
+        {
+            _isHidden = false;
+            _body.Body.Enabled = true;
+        }
+
         public void ResetHitTotal()
         {
             HitTotal = 0;

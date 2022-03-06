@@ -70,7 +70,7 @@ namespace MoonTrucker.GameWorld
 
         public float GetAngleFromVehicleToDestination()
         {
-            return (_currentLevel.IsInfiniteLevel && _currentLevel.AllTargetsCollected) ? GetAngleFromVehicleToTarget() : GetAngleFromVehicleToFinish();
+            return _currentLevel.AllTargetsCollected ? GetAngleFromVehicleToFinish() : GetAngleFromVehicleToTarget();
         }
 
         private float GetAngleFromVehicleToFinish()
@@ -89,7 +89,7 @@ namespace MoonTrucker.GameWorld
 
         public bool ShowArrow()
         {
-            return _currentLevel.AllTargetsCollected;
+            return _currentLevel.ShowArrow();
         }
 
         public void StartGame()
