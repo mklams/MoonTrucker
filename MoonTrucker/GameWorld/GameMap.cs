@@ -122,6 +122,12 @@ namespace MoonTrucker.GameWorld
                 }
             }
 
+            if(_targets.Count < 1)
+            {
+                // TODO: Handle this more gracefully
+                throw new Exception("Invalid game map. Map must have at least 1 target (T)");
+            }
+
             return props;
         }
 
