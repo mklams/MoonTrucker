@@ -101,9 +101,10 @@ namespace MoonTrucker.GameWorld
             throw new NotImplementedException();
         }
 
-        public void OnNext(GameTarget value)
+        public void OnNext(GameTarget target)
         {
             targetHit();
+            target.Hide();
         }
     }
 

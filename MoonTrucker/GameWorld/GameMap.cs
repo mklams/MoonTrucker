@@ -10,7 +10,7 @@ namespace MoonTrucker.GameWorld
     // TODO: Move tile logic to own class
     // TODO: Should this or the main game be observing GameTarget?
 
-    public class GameMap : IDrawable, IObserver<GameTarget>
+    public class GameMap : IDrawable
     {
         private char[][] _tileMap;
         private List<IDrawable> _mapProps;
@@ -200,7 +200,6 @@ namespace MoonTrucker.GameWorld
                     var target = new GameTarget(_tileWidth / 4f, origin, _propFactory);
                     _targets.Add(target);
                     _numberOfTargets++;
-                    target.Subscribe(this);
                     return target;
                 default:
                     return null; // TODO: DON'T RETURN NULLL
@@ -266,31 +265,6 @@ namespace MoonTrucker.GameWorld
 
             return cord.ToVector2() * _tileWidth;
         }
-
-        #region IObserver<GameTarget> Implementation
-        public void OnCompleted()
-        {
-            // TODO: Remove Target
-        }
-
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNext(GameTarget target)
-        {
-            if (target.IsMovingTarget)
-            {
-                target.SetPosition(GetRandomTargetLocation());
-            }
-            else
-            {
-                target.Hide();
-            }
-        }
-
-        #endregion
     }
 
     public enum TileType
