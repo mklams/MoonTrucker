@@ -85,7 +85,10 @@ namespace MoonTrucker.GameWorld
         private void targetHit()
         {
             _targetsHit++;
-            _score += 100;
+            int elapsedTime = _timer.GetElapsedTime();
+            elapsedTime = (elapsedTime <= 0) ? 1 : elapsedTime;
+            double points = 50 + 50 * (1.0 / elapsedTime);
+            _score += (int)points;
         }
 
         public void OnCompleted()

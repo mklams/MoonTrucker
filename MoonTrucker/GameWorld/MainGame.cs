@@ -93,10 +93,10 @@ namespace MoonTrucker.GameWorld
             MediaPlayer.Play(_gameMusic);
             MediaPlayer.IsRepeating = true;
             _currentLevel = _levels.RestLevels();
-            setupLevel();
+            setupVehicle();
         }
 
-        private void setupLevel()
+        private void setupVehicle()
         {
             _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _currentLevel.GetStartPosition(), _world, _manager, _spriteBatch);
             _camera.SetPosition(_vehicle.GetPosition());
@@ -118,15 +118,10 @@ namespace MoonTrucker.GameWorld
         public void updateLevel(GameTime gameTime)
         {
             _currentLevel.Update(gameTime);
-            if (_currentLevel.LevelIsFinished)
-            {
-                // TODO: This shouldn't be called if this was the last level
+            if (_currentLevel.LevelIsFinished && !_levels.AllLevelsComplete)
+            {   
                 _currentLevel = _levels.LoadNextLevel();
-
-                if (!_levels.AllLevelsComplete)
-                {
-                    setupLevel();
-                }
+                setupVehicle();
             }
         }
 

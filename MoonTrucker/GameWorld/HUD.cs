@@ -134,7 +134,7 @@ namespace MoonTrucker.GameWorld
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
             //var destPosition = _game.LevelComplete ? _game.GetAngleFromVehicleToFinish() : _game.GetAngleFromVehicleToTarget();
-            var destPosition = _game.GetAngleFromVehicleToFinish(); // TODO: only show arrow if there is a goal or single target
+            var destPosition = _game.GetAngleFromVehicleToFinish();
             _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, destPosition, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
         }
 

@@ -7,10 +7,13 @@ namespace MoonTrucker.GameWorld
     {
         private TimeSpan _timeSpan;
         private IDisposable _cancellation;
+        public readonly int StartTime;
+        private const int BonusTime = 6;
 
         public Timer(TimeSpan timeSpan)
         {
             _timeSpan = timeSpan;
+            StartTime = GetTimeInSeconds();
         }
 
         public void SetTime(TimeSpan time)
@@ -44,6 +47,11 @@ namespace MoonTrucker.GameWorld
             return _timeSpan < TimeSpan.Zero;
         }
 
+        public int GetElapsedTime()
+        {
+            return StartTime - GetTimeInSeconds();
+        }
+
         #region IObserver<GameTarget> Implementation
         public virtual void Subscribe(GameTarget target)
         {
@@ -67,7 +75,7 @@ namespace MoonTrucker.GameWorld
 
         public void OnNext(GameTarget target)
         {
-            AddTime(TimeSpan.FromSeconds(8));
+            AddTime(TimeSpan.FromSeconds(BonusTime));
         }
         #endregion
     }
