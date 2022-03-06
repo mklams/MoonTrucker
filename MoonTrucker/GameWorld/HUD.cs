@@ -77,7 +77,11 @@ namespace MoonTrucker.GameWorld
         {
             drawScore();
             drawTimer();
-            drawArrow();
+            if(_game.ShowArrow())
+            {
+                drawArrow();
+            }
+            
             drawLevel();
 
             if (state == GameState.GameOver)
@@ -104,7 +108,7 @@ namespace MoonTrucker.GameWorld
         {
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(500, 0));
 
-            _spriteBatch.DrawString(_font, $"Level: {_game.GetCurrentLevel()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1);
+            _spriteBatch.DrawString(_font, $"Level: {_game.GetCurrentLevelNumber()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1);
         }
 
         private void drawGameOver()
@@ -129,7 +133,8 @@ namespace MoonTrucker.GameWorld
         {
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
-            var destPosition = _game.LevelComplete ? _game.GetAngleFromVehicleToFinish() : _game.GetAngleFromVehicleToTarget();
+            //var destPosition = _game.LevelComplete ? _game.GetAngleFromVehicleToFinish() : _game.GetAngleFromVehicleToTarget();
+            var destPosition = _game.GetAngleFromVehicleToFinish(); // TODO: only show arrow if there is a goal or single target
             _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, destPosition, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
         }
 

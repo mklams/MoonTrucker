@@ -10,12 +10,16 @@ namespace MoonTrucker.GameWorld
     public class GameTarget : IDrawable, IObservable<GameTarget>
     {
         private CircleProp _body;
+        public readonly bool IsMovingTarget;
         public int HitTotal = 0;
+        private bool _isHidden = false;
 
         private List<IObserver<GameTarget>> _observers = new List<IObserver<GameTarget>>();
 
-        public GameTarget(float radius, Vector2 position, PropFactory bodyFactory)
+        public GameTarget(float radius, Vector2 position, PropFactory bodyFactory, bool isMoving = false)
         {
+            IsMovingTarget = isMoving;
+
             OnCollisionHandler onHitAction = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
             {
                 foreach (var observer in _observers)
@@ -24,13 +28,22 @@ namespace MoonTrucker.GameWorld
                 }
                 HitTotal++;
             };
-
+            
             _body = bodyFactory.CreateCircleSensor(radius, position, onHitAction);
         }
 
         public void Draw()
         {
-            _body.Draw();
+            if(!_isHidden)
+            {
+                _body.Draw();
+            }
+        }
+
+        public void Hide()
+        {
+            _isHidden = true;
+            _body.Body.Enabled = false;
         }
 
         public void ResetHitTotal()

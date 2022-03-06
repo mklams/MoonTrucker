@@ -16,18 +16,24 @@ namespace MoonTrucker.GameWorld
         private List<IDrawable> _mapProps;
         private float _tileWidth;
         private PropFactory _propFactory;
-        private IDisposable _cancellation;
         private Finish _finish; // TODO: This can be null if the map doesn't have a finish. Handle that more gracefully
-        private string _mapName;
+        private LevelConfig _level;
+        private int _numberOfTargets = 0;
+        private List<GameTarget> _targets;
 
         private float _mapHeight => _tileMap.Length * _tileWidth;
         private float _mapWidth => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
 
-        public GameMap(string mapName, float tileWidth, PropFactory propFactory)
+        public   GameMap(LevelConfig level, float tileWidth, PropFactory propFactory)
         {
-            _mapName = mapName;
+            _level = level;
             _tileWidth = tileWidth;
             _propFactory = propFactory;
+            _targets = new List<GameTarget>();
+        }
+
+        public void Load()
+        {
             _tileMap = loadMapFromFile();
             _mapProps = parseMap();
             _mapProps.AddRange(createWalls());
@@ -59,11 +65,16 @@ namespace MoonTrucker.GameWorld
             return _finish is null ? new Vector2(0,0) :  _finish.GetPosition();
         }
 
+        public int GetNumberOfTargets()
+        {
+            return _numberOfTargets;
+        }
+
         // TODO: This is a service. It needs to be in it's own class and injected in
         private char[][] loadMapFromFile(bool shouldUseVehicleTestbench = false)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = shouldUseVehicleTestbench ? "MoonTrucker.GameWorld.TestBench.txt" : _mapName;
+            var resourceName = shouldUseVehicleTestbench ? "MoonTrucker.GameWorld.TestBench.txt" : _level.MapName;
             char[][] tileMap;
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
@@ -166,6 +177,14 @@ namespace MoonTrucker.GameWorld
             return Vector2.Add(getCoordInSim(new MapCoordinate(1, 1)), new Vector2(_tileWidth / 2f, _tileWidth / 2f));
         }
 
+        public void SubscribeToTargets(IObserver<GameTarget> observer)
+        {
+            foreach(GameTarget target in _targets)
+            {
+                target.Subscribe(observer);
+            }
+        }
+
         private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
         {
             switch (tile)
@@ -177,6 +196,12 @@ namespace MoonTrucker.GameWorld
                 case TileType.Finish:
                     _finish = new Finish(propDim.X / 2f, origin, _propFactory);
                     return _finish;
+                case TileType.Target:
+                    var target = new GameTarget(_tileWidth / 4f, origin, _propFactory);
+                    _targets.Add(target);
+                    _numberOfTargets++;
+                    target.Subscribe(this);
+                    return target;
                 default:
                     return null; // TODO: DON'T RETURN NULLL
             }
@@ -243,16 +268,6 @@ namespace MoonTrucker.GameWorld
         }
 
         #region IObserver<GameTarget> Implementation
-        public virtual void Subscribe(GameTarget target)
-        {
-            _cancellation = target.Subscribe(this);
-        }
-
-        public virtual void Unsubscribe()
-        {
-            _cancellation.Dispose();
-        }
-
         public void OnCompleted()
         {
             // TODO: Remove Target
@@ -265,7 +280,14 @@ namespace MoonTrucker.GameWorld
 
         public void OnNext(GameTarget target)
         {
-            target.SetPosition(GetRandomTargetLocation());
+            if (target.IsMovingTarget)
+            {
+                target.SetPosition(GetRandomTargetLocation());
+            }
+            else
+            {
+                target.Hide();
+            }
         }
 
         #endregion
@@ -277,9 +299,8 @@ namespace MoonTrucker.GameWorld
         Road = '_',
         Hidden = 'H',
         RestrictedRoad = 'X', //like a road but it can't have targets spawned on it
-
+        Target = 'T',
         Gate = 'G',
-
         Finish = 'F'
 
     }

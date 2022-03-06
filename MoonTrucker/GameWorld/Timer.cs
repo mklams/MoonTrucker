@@ -29,6 +29,11 @@ namespace MoonTrucker.GameWorld
             return isTimeNegative ? TimeSpan.Zero : _timeSpan;
         }
 
+        public int GetTimeInSeconds()
+        {
+            return (int) GetTime().TotalSeconds;
+        }
+
         public void Update(GameTime gameTime)
         {
             _timeSpan -= gameTime.ElapsedGameTime;
