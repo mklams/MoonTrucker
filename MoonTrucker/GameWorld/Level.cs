@@ -15,7 +15,6 @@ namespace MoonTrucker.GameWorld
         private Timer _timer;
         private Vector2 _randomTargetPosition;
 
-        public bool IsInfiniteLevel => _config.IsInfiniteLevel;
         public TimeSpan TimeLimit => TimeSpan.FromSeconds(_config.TimeLimit);
         public bool LevelIsFinished => _map.IsPlayerInWinZone();
         public int TimeLeftInSeconds => _timer.GetTimeInSeconds();
@@ -76,7 +75,7 @@ namespace MoonTrucker.GameWorld
 
         private void updateFinish()
         {
-            if (AllTargetsCollected && !IsInfiniteLevel)
+            if (AllTargetsCollected)
             {
                 _map.ActivateFinish();
             }
@@ -130,14 +129,12 @@ namespace MoonTrucker.GameWorld
     {
         public readonly int TimeLimit;
         public readonly string MapName;
-        public readonly bool IsInfiniteLevel;
         public readonly int AddtionalTargets;
 
-        public LevelConfig(int timeLimt, string mapName, int addtionalTargets = 0, bool infiniteLevel = false)
+        public LevelConfig(int timeLimt, string mapName, int addtionalTargets = 0)
         {
             TimeLimit = timeLimt;
             MapName = mapName;
-            IsInfiniteLevel = infiniteLevel;
             AddtionalTargets = addtionalTargets;
         }
     }
