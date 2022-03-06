@@ -8,23 +8,23 @@ namespace MoonTrucker.GameWorld
 {
     public class Level: IDrawable, IObserver<GameTarget>
     {
-        public readonly LevelConfig Config;
+        private readonly LevelConfig _config;
         private GameMap _map;
-        private PropFactory _propFactory;
         private int _score;
         private int _targetsHit;
         private Timer _timer;
+        private GameTarget _infiniteTarget = null;
 
-        public TimeSpan TimeLimit => TimeSpan.FromSeconds(Config.TimeLimit);
+        public bool IsInfiniteLevel => _config.IsInfiniteLevel;
+        public TimeSpan TimeLimit => TimeSpan.FromSeconds(_config.TimeLimit);
         public bool LevelIsFinished => _map.IsPlayerInWinZone();
         public int TimeLeftInSeconds => _timer.GetTimeInSeconds();
         public bool AllTargetsCollected => _targetsHit >= _map.GetNumberOfTargets();
 
         public Level(LevelConfig config, float tileWidth, PropFactory propFactory)
         {
-            _propFactory = propFactory;
-            Config = config;
-            _map = new GameMap(Config, tileWidth, _propFactory);
+            _config = config;
+            _map = new GameMap(config, tileWidth, propFactory);
             _score = 0;
             _targetsHit = 0;
             _timer = new Timer(TimeLimit);
@@ -49,8 +49,7 @@ namespace MoonTrucker.GameWorld
 
         public Vector2 GetTargetPosition()
         {
-            // TODO: Actually get the position
-            return new Vector2(0f, 0f);
+            return _infiniteTarget?.GetPosition() ?? new Vector2(0f, 0f);
         }
 
         public Vector2 GetStartPosition()
@@ -76,7 +75,7 @@ namespace MoonTrucker.GameWorld
 
         private void updateFinish()
         {
-            if (AllTargetsCollected)
+            if (AllTargetsCollected && !IsInfiniteLevel)
             {
                 _map.ActivateFinish();
             }
@@ -91,6 +90,7 @@ namespace MoonTrucker.GameWorld
             _score += (int)points;
         }
 
+        #region IObserver<GameTarget> implmentation
         public void OnCompleted()
         {
             throw new NotImplementedException();
@@ -104,8 +104,21 @@ namespace MoonTrucker.GameWorld
         public void OnNext(GameTarget target)
         {
             targetHit();
-            target.Hide();
+            if(IsInfiniteLevel && AllTargetsCollected)
+            {
+                if(_infiniteTarget == null)
+                {
+                    _infiniteTarget = target;
+                }
+                target.SetPosition(_map.GetRandomTargetLocation());
+            }
+            else
+            {
+                target.Hide();
+            }
+            
         }
+        #endregion
     }
 
 
@@ -113,11 +126,13 @@ namespace MoonTrucker.GameWorld
     {
         public readonly int TimeLimit;
         public readonly string MapName;
+        public readonly bool IsInfiniteLevel;
 
-        public LevelConfig(int timeLimt, string mapName)
+        public LevelConfig(int timeLimt, string mapName, bool infiniteLevel = false)
         {
             TimeLimit = timeLimt;
             MapName = mapName;
+            IsInfiniteLevel = infiniteLevel;
         }
     }
 
@@ -127,7 +142,7 @@ namespace MoonTrucker.GameWorld
         {
             new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt"),
             new LevelConfig(15, "MoonTrucker.GameWorld.Map.txt"),
-            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt")
+            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", true)
         };
         private Level[] _levels;
         private int _currentLevel = 0;

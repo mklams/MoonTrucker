@@ -8,8 +8,6 @@ using Microsoft.Xna.Framework;
 namespace MoonTrucker.GameWorld
 {
     // TODO: Move tile logic to own class
-    // TODO: Should this or the main game be observing GameTarget?
-
     public class GameMap : IDrawable
     {
         private char[][] _tileMap;

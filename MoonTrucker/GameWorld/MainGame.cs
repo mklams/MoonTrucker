@@ -68,14 +68,19 @@ namespace MoonTrucker.GameWorld
 
         public bool PlayerWon => _levels.AllLevelsComplete;
 
-        public float GetAngleFromVehicleToFinish()
+        public float GetAngleFromVehicleToDestination()
+        {
+            return (_currentLevel.IsInfiniteLevel && _currentLevel.AllTargetsCollected) ? GetAngleFromVehicleToTarget() : GetAngleFromVehicleToFinish();
+        }
+
+        private float GetAngleFromVehicleToFinish()
         {
             var finishPosition = _currentLevel.GetFinishPosition();
             var vehiclePosition = _vehicle.GetPosition();
             return VectorHelpers.GetAngleFromAToB(vehiclePosition, finishPosition);
         }
 
-        public float GetAngleFromVehicleToTarget()
+        private float GetAngleFromVehicleToTarget()
         {
             var targetPosition = _currentLevel.GetTargetPosition();
             var vehiclePosition = _vehicle.GetPosition();
