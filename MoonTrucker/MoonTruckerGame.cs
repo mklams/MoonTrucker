@@ -8,14 +8,14 @@ using Microsoft.Xna.Framework.Media;
 
 namespace MoonTrucker
 {
-    public class MoonTruckerGame : Game
+    public enum GameMode
     {
-        public enum GameMode
-        {
-            Arcade,
-            Endless
-        }
+        Arcade,
+        Endless
+    }
 
+    public class MoonTruckerGame : Game
+    {   
         private LevelConfig[] _arcadeLevels = new LevelConfig[3]
         {
             new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 1),

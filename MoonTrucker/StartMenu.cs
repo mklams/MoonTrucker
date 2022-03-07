@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MoonTrucker.Core;
-using MoonTrucker.GameWorld;
 
 namespace MoonTrucker
 {
@@ -20,7 +20,6 @@ namespace MoonTrucker
             HighScores
         }
         private MenuOptions _selectedOption;
-        private MenuOptions[] _options;
         private SpriteBatch _spriteBatch;
 
         private TextureManager _textureManager;
@@ -54,7 +53,6 @@ namespace MoonTrucker
             _textureManager = textureManager;
             _font = font;
             _spriteBatch = spriteBatch;
-            _options = (MenuOptions[])Enum.GetValues(typeof(MenuOptions));
             _selectedOption = MenuOptions.Arcade;
             _pixel = _textureManager.GetTexture("pixel");
             _racingParticles = new List<LinearParticleTrail>();
@@ -77,16 +75,16 @@ namespace MoonTrucker
             _racingParticles = new List<LinearParticleTrail>();
         }
 
-        public MoonTruckerGame.GameMode GetSelectedMode()
+        public GameMode GetSelectedMode()
         {
             switch (_selectedOption)
             {
                 case MenuOptions.Arcade:
-                    return MoonTruckerGame.GameMode.Arcade;
+                    return GameMode.Arcade;
                 case MenuOptions.Endless:
-                    return MoonTruckerGame.GameMode.Endless;
+                    return GameMode.Endless;
                 default:
-                    return MoonTruckerGame.GameMode.Arcade;
+                    return GameMode.Arcade;
             }
         }
 
@@ -143,7 +141,7 @@ namespace MoonTrucker
         {
             var spacing = _font.LineSpacing * _menuScale;
             var menuYPos = _screenHeightPx * (2 / 3f);
-            foreach (MenuOptions option in _options)
+            foreach (MenuOptions option in Enum.GetValues(typeof(MenuOptions)))
             {
                 var menuMessage = this.getMenuOptionText(option);
                 if (_selectedOption == option)
@@ -205,16 +203,16 @@ namespace MoonTrucker
             _selectedOption--;
             if (_selectedOption < 0)
             {
-                _selectedOption = _options[_options.Length - 1];
+                _selectedOption = Enum.GetValues(typeof(MenuOptions)).Cast<MenuOptions>().Max();
             }
         }
 
         private void navigateForwardsInMenu()
         {
             _selectedOption++;
-            if ((int)_selectedOption >= _options.Length)
+            if ((int)_selectedOption >= Enum.GetNames(typeof(MenuOptions)).Length)
             {
-                _selectedOption = _options[0];
+                _selectedOption = Enum.GetValues(typeof(MenuOptions)).Cast<MenuOptions>().Min();
             }
         }
 
