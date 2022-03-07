@@ -141,12 +141,7 @@ namespace MoonTrucker.GameWorld
 
     public class GameLevels
     {
-        private LevelConfig[] _levelsConfig = new LevelConfig[3]
-        {
-            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 1),
-            new LevelConfig(15, "MoonTrucker.GameWorld.Map.txt"),
-            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 2)
-        };
+        private LevelConfig[] _levelsConfig;
         private Level[] _levels;
         private int _currentLevel = 0;
         private bool _completedAllLevels = false;
@@ -155,8 +150,9 @@ namespace MoonTrucker.GameWorld
 
         public int TotalScore => _totalScore;
 
-        public GameLevels(float tileWidth, PropFactory propFactory, World world)
+        public GameLevels(LevelConfig[] config, float tileWidth, PropFactory propFactory, World world)
         {
+            _levelsConfig = config;
             _world = world;
             _levels = new Level[_levelsConfig.Length];
             for (int i = 0; i < _levels.Length; i++)

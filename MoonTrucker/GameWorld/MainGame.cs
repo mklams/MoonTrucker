@@ -40,7 +40,7 @@ namespace MoonTrucker.GameWorld
             createCamera(renderer);
 
             _propFactory = new PropFactory(_world, manager, spriteBatch);
-            _levels = new GameLevels(TILE_WIDTH, _propFactory, _world);
+            
         }
 
         private void createCamera(ResolutionIndependentRenderer renderer)
@@ -92,8 +92,9 @@ namespace MoonTrucker.GameWorld
             return _currentLevel.ShowArrow();
         }
 
-        public void StartGame()
+        public void StartGame(LevelConfig[] config)
         {
+            _levels = new GameLevels(config, TILE_WIDTH, _propFactory, _world);
             MediaPlayer.Stop();
             MediaPlayer.Play(_gameMusic);
             MediaPlayer.IsRepeating = true;
