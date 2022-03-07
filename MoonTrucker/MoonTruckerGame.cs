@@ -10,6 +10,14 @@ namespace MoonTrucker
 {
     public class MoonTruckerGame : Game
     {
+
+        private LevelConfig[] _arcadeLevels = new LevelConfig[3]
+        {
+            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 1),
+            new LevelConfig(15, "MoonTrucker.GameWorld.Map.txt"),
+            new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 2)
+        };
+
         private const bool _fullScreen = false;
         private const int _resolutionWidthPx = 1920;
         private const int _resolutionHeightPx = 1080;
@@ -129,9 +137,11 @@ namespace MoonTrucker
             base.Update(gameTime);
         }
 
+        
+
         private void startGame()
         {
-            _mainGame.StartGame();
+            _mainGame.StartGame(_arcadeLevels);
             _gameState = GameState.Playing;
         }
 
