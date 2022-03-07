@@ -15,11 +15,12 @@ namespace MoonTrucker
         public bool ShouldStart { get; private set; }
         private enum MenuOptions
         {
-            Start,
+            Arcade,
+            Endless,
             HighScores
         }
         private MenuOptions _selectedOption;
-        private List<MenuOptions> _options;
+        private MenuOptions[] _options;
         private SpriteBatch _spriteBatch;
 
         private TextureManager _textureManager;
@@ -53,8 +54,8 @@ namespace MoonTrucker
             _textureManager = textureManager;
             _font = font;
             _spriteBatch = spriteBatch;
-            _options = new List<MenuOptions>() { MenuOptions.Start, MenuOptions.HighScores };
-            _selectedOption = MenuOptions.Start;
+            _options = (MenuOptions[])Enum.GetValues(typeof(MenuOptions));
+            _selectedOption = MenuOptions.Arcade;
             _pixel = _textureManager.GetTexture("pixel");
             _racingParticles = new List<LinearParticleTrail>();
             _menuMusic = backgroundMusic;
@@ -74,6 +75,19 @@ namespace MoonTrucker
             MediaPlayer.Play(_menuMusic);
             MediaPlayer.IsRepeating = true;
             _racingParticles = new List<LinearParticleTrail>();
+        }
+
+        public MoonTruckerGame.GameMode GetSelectedMode()
+        {
+            switch (_selectedOption)
+            {
+                case MenuOptions.Arcade:
+                    return MoonTruckerGame.GameMode.Arcade;
+                case MenuOptions.Endless:
+                    return MoonTruckerGame.GameMode.Endless;
+                default:
+                    return MoonTruckerGame.GameMode.Arcade;
+            }
         }
 
         private Color getColor()
@@ -173,7 +187,7 @@ namespace MoonTrucker
                 else if (InputHelper.WasKeyPressed(Keys.Space, keyboardState, oldKeyboardState)
                 || InputHelper.WasKeyPressed(Keys.Enter, keyboardState, oldKeyboardState))
                 {
-                    if (_selectedOption == MenuOptions.Start)
+                    if (_selectedOption == MenuOptions.Arcade || _selectedOption == MenuOptions.Endless)
                     {
                         ShouldStart = true;
                     }
@@ -188,27 +202,19 @@ namespace MoonTrucker
 
         private void navigateBackwardsInMenu()
         {
-            var index = _options.IndexOf(_selectedOption);
-            if (index == 0)
+            _selectedOption--;
+            if (_selectedOption < 0)
             {
-                _selectedOption = _options[_options.Count - 1];
-            }
-            else
-            {
-                _selectedOption = _options[index - 1];
+                _selectedOption = _options[_options.Length - 1];
             }
         }
 
         private void navigateForwardsInMenu()
         {
-            var index = _options.IndexOf(_selectedOption);
-            if (index == _options.Count - 1)
+            _selectedOption++;
+            if ((int)_selectedOption >= _options.Length)
             {
                 _selectedOption = _options[0];
-            }
-            else
-            {
-                _selectedOption = _options[index + 1];
             }
         }
 
@@ -259,8 +265,10 @@ namespace MoonTrucker
         {
             switch (option)
             {
-                case MenuOptions.Start:
-                    return "Start Game";
+                case MenuOptions.Arcade:
+                    return "Arcade";
+                case MenuOptions.Endless:
+                    return "Endless";
                 case MenuOptions.HighScores:
                     return "High Scores";
                 default:

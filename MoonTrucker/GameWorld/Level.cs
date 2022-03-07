@@ -15,10 +15,11 @@ namespace MoonTrucker.GameWorld
         private Timer _timer;
         private Vector2 _randomTargetPosition;
 
+        public bool IsEndlessLevel => _config.EndlessMap;
         public TimeSpan TimeLimit => TimeSpan.FromSeconds(_config.TimeLimit);
         public bool LevelIsFinished => _map.IsPlayerInWinZone();
         public int TimeLeftInSeconds => _timer.GetTimeInSeconds();
-        public bool AllTargetsCollected => _targetsHit >= _map.GetNumberOfTargets() + _config.AddtionalTargets;
+        public bool AllTargetsCollected => (_targetsHit >= _map.GetNumberOfTargets() + _config.AddtionalTargets) && !IsEndlessLevel;
 
         public Level(LevelConfig config, float tileWidth, PropFactory propFactory)
         {
@@ -113,7 +114,7 @@ namespace MoonTrucker.GameWorld
             targetHit();
             target.Hide();
 
-            if(_useRandomTarget)
+            if(_useRandomTarget || IsEndlessLevel)
             {
                 target.Show();
                 _randomTargetPosition = _map.GetRandomTargetLocation();
@@ -124,17 +125,23 @@ namespace MoonTrucker.GameWorld
         #endregion
     }
 
-
     public class LevelConfig
     {
         public readonly int TimeLimit;
         public readonly string MapName;
         public readonly int AddtionalTargets;
+        public readonly bool EndlessMap = false;
 
         public LevelConfig(int timeLimt, string mapName, int addtionalTargets = 0)
         {
             TimeLimit = timeLimt;
             MapName = mapName;
+
+            if (addtionalTargets < 0)
+            {
+                EndlessMap = true;
+                addtionalTargets = 0;
+            }
             AddtionalTargets = addtionalTargets;
         }
     }

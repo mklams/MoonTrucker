@@ -10,12 +10,22 @@ namespace MoonTrucker
 {
     public class MoonTruckerGame : Game
     {
+        public enum GameMode
+        {
+            Arcade,
+            Endless
+        }
 
         private LevelConfig[] _arcadeLevels = new LevelConfig[3]
         {
             new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 1),
             new LevelConfig(15, "MoonTrucker.GameWorld.Map.txt"),
             new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 2)
+        };
+
+        private LevelConfig[] _endlessLevel = new LevelConfig[1]
+        {
+            new LevelConfig(15, "MoonTrucker.GameWorld.Map.txt", -1)
         };
 
         private const bool _fullScreen = false;
@@ -125,7 +135,6 @@ namespace MoonTrucker
             {
                 _startMenu.Update(newKeyboardState, _oldKeyboardState, gameTime);
                 if (_startMenu.ShouldStart)
-                //  || InputHelper.TryConvertKeyboardInput(newKeyboardState, _oldKeyboardState, out char _))  // Allow most key inputs
                 {
                     startGame();
                     _startMenu.AcknowledgeStartGame();
@@ -137,11 +146,10 @@ namespace MoonTrucker
             base.Update(gameTime);
         }
 
-        
-
         private void startGame()
         {
-            _mainGame.StartGame(_arcadeLevels);
+            var levels = (_startMenu.GetSelectedMode() == GameMode.Arcade) ? _arcadeLevels : _endlessLevel;
+            _mainGame.StartGame(levels);
             _gameState = GameState.Playing;
         }
 
