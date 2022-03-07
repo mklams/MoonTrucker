@@ -148,7 +148,9 @@ namespace MoonTrucker
 
         private void startGame()
         {
-            var levels = (_startMenu.GetSelectedMode() == GameMode.Arcade) ? _arcadeLevels : _endlessLevel;
+            var gameMode = _startMenu.GetSelectedMode();
+            var levels = (gameMode == GameMode.Arcade) ? _arcadeLevels : _endlessLevel;
+            _mainGame.SetMode(gameMode);
             _mainGame.StartGame(levels);
             _gameState = GameState.Playing;
         }
@@ -165,7 +167,7 @@ namespace MoonTrucker
             _spriteBatch.Begin();
             if (_gameState == GameState.StartMenu)
             {
-                _startMenu.Draw(_gameHUD.GetHighScores());
+                _startMenu.Draw(_gameHUD.GetHighScoresForMode(_startMenu.HighScoreMode));
             }
             else
             {

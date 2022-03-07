@@ -43,6 +43,11 @@ namespace MoonTrucker.GameWorld
             return _highScores;
         }
 
+        public HighScores GetHighScoresForMode(GameMode mode)
+        {
+            return new HighScores(_highScores.GetTopScoresByMode(mode));
+        }
+
         public void Update(GameState gameState, KeyboardState newKeyboardState, KeyboardState oldKeyboardState)
         {
             if(gameState == GameState.GameOver)
@@ -52,7 +57,7 @@ namespace MoonTrucker.GameWorld
 
                     if(_highScoreName.Length > 0 && newKeyboardState.IsKeyDown(Keys.Enter))
                     {
-                        _highScores.AddScore(new Score(_game.GetScore(), _highScoreName));
+                        _highScores.AddScore(new Score(_game.GetScore(), _highScoreName, _game.Mode));
                         _gameSave.Save(_highScores.GetTopScores());
 
                         _highScoreName = "";

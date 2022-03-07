@@ -27,6 +27,9 @@ namespace MoonTrucker.GameWorld
 
         private Song _gameMusic;
 
+        private GameMode _mode = GameMode.Arcade;
+        public GameMode Mode => _mode;
+
         public MainGame(TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer, Song gameMusic)
         {
             _spriteBatch = spriteBatch;
@@ -41,6 +44,11 @@ namespace MoonTrucker.GameWorld
 
             _propFactory = new PropFactory(_world, manager, spriteBatch);
             
+        }
+
+        public void SetMode(GameMode mode)
+        {
+            _mode = mode;
         }
 
         private void createCamera(ResolutionIndependentRenderer renderer)

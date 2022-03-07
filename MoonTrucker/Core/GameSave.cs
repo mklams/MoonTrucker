@@ -12,11 +12,13 @@ namespace MoonTrucker.Core
     {
         public int HitTotal;
         public string Name;
+        public GameMode Mode;
 
-        public Score(int pointTotal, string name)
+        public Score(int pointTotal, string name, GameMode mode = GameMode.Arcade)
         {
             HitTotal = pointTotal;
             Name = name;
+            Mode = mode;
         }
         public Score() { }
     }
@@ -37,6 +39,14 @@ namespace MoonTrucker.Core
         public List<Score> GetTopScores(int topNumber = TOTAL_HIGH_SCORES)
         {
             return (from score in Scores
+                    orderby score.HitTotal descending
+                    select score).Take(topNumber).ToList();
+        }
+
+        public List<Score> GetTopScoresByMode(GameMode mode, int topNumber = TOTAL_HIGH_SCORES)
+        {
+            return (from score in Scores
+                    where score.Mode == mode
                     orderby score.HitTotal descending
                     select score).Take(topNumber).ToList();
         }

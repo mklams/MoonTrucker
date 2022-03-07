@@ -41,6 +41,8 @@ namespace MoonTrucker
         private Random rand = new Random();
         private double _minTimeBetweenRacingParticles = 0.15;
         private double _lastRacingParticleCreationTime = 0.0;
+        private GameMode _highScoreMode = GameMode.Arcade;
+        public GameMode HighScoreMode => _highScoreMode;
 
         private Texture2D _pixel;
         private Song _menuMusic;
@@ -168,6 +170,12 @@ namespace MoonTrucker
                 || InputHelper.WasKeyPressed(Keys.Escape, keyboardState, oldKeyboardState))
                 {
                     _showHighScores = false;
+                }
+
+                if(InputHelper.WasKeyPressed(Keys.Left, keyboardState, oldKeyboardState)
+                    || InputHelper.WasKeyPressed(Keys.Right, keyboardState, oldKeyboardState))
+                {
+                    _highScoreMode = (_highScoreMode == GameMode.Arcade) ? GameMode.Endless : GameMode.Arcade;
                 }
             }
             else
