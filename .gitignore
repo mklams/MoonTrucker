@@ -77,3 +77,7 @@ MoonTrucker/Content/bin/DesktopGL/Content/Sounds/GameBackgroundMusic.ogg
 MoonTrucker/Content/bin/DesktopGL/Content/Sounds/GameBackgroundMusic.xnb
 MoonTrucker/Content/bin/DesktopGL/Content/Sounds/TitleMenuMusic.ogg
 MoonTrucker/Content/bin/DesktopGL/Content/Sounds/TitleMenuMusic.xnb
+MoonTrucker/Content/obj/DesktopGL/Content/Sounds/TitleMenuMusic.mgcontent
+MoonTrucker/Content/obj/DesktopGL/Content/GameAssets/pixel.mgcontent
+MoonTrucker/Content/obj/DesktopGL/Content/Sounds/GameBackgroundMusic.mgcontent
+.vs/MoonTrucker/xs/project-cache/MoonTrucker-Debug.json
