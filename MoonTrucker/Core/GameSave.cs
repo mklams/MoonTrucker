@@ -34,7 +34,13 @@ namespace MoonTrucker.Core
             Scores = previousScores;
         }
 
+
         public HighScores() : this(new List<Score>()) { }
+
+        public int HighScoreCountForMode(GameMode mode)
+        {
+            return Scores.Where(score => score.Mode == mode).Count();
+        }
 
         public List<Score> GetTopScores(int topNumber = TOTAL_HIGH_SCORES)
         {
@@ -43,7 +49,7 @@ namespace MoonTrucker.Core
                     select score).Take(topNumber).ToList();
         }
 
-        public List<Score> GetTopScoresByMode(GameMode mode, int topNumber = TOTAL_HIGH_SCORES)
+        public List<Score> GetTopScoresForMode(GameMode mode, int topNumber = TOTAL_HIGH_SCORES)
         {
             return (from score in Scores
                     where score.Mode == mode
@@ -51,16 +57,16 @@ namespace MoonTrucker.Core
                     select score).Take(topNumber).ToList();
         }
 
-        public bool IsATopScore(int score)
+        public bool IsATopScore(int score, GameMode mode)
         {
             if(score == 0)
             {
                 return false;
             }
 
-            if(Scores.Count > TOTAL_HIGH_SCORES)
+            if(HighScoreCountForMode(mode) > TOTAL_HIGH_SCORES)
             {
-                var scores = GetTopScores(TOTAL_HIGH_SCORES);
+                var scores = GetTopScoresForMode(mode, TOTAL_HIGH_SCORES);
                 return scores.Last().HitTotal < score;
             }
 
@@ -70,11 +76,6 @@ namespace MoonTrucker.Core
         public void AddScore(Score score)
         {
             Scores.Add(score);
-            if (Scores.Count > TOTAL_HIGH_SCORES)
-            {
-
-                Scores = GetTopScores(TOTAL_HIGH_SCORES);
-            }
         }
     }
 

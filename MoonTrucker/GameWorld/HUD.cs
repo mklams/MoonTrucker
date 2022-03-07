@@ -45,7 +45,7 @@ namespace MoonTrucker.GameWorld
 
         public HighScores GetHighScoresForMode(GameMode mode)
         {
-            return new HighScores(_highScores.GetTopScoresByMode(mode));
+            return new HighScores(_highScores.GetTopScoresForMode(mode));
         }
 
         public void Update(GameState gameState, KeyboardState newKeyboardState, KeyboardState oldKeyboardState)
@@ -75,7 +75,7 @@ namespace MoonTrucker.GameWorld
 
         private bool IsHighScoreGame()
         {
-            return _highScores.IsATopScore(_game.GetScore());
+            return _highScores.IsATopScore(_game.GetScore(), _game.Mode);
         }
 
         public void Draw(GameState state)
@@ -86,8 +86,13 @@ namespace MoonTrucker.GameWorld
             {
                 drawArrow();
             }
+
+            if(_game.Mode != GameMode.Endless)
+            {
+                drawLevel();
+            }
             
-            drawLevel();
+
 
             if (state == GameState.GameOver)
             {
