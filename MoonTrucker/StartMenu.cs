@@ -120,7 +120,7 @@ namespace MoonTrucker
         private void drawHighScores(HighScores scores)
         {
             var spacing = _font.LineSpacing * _highScoreNameScale;
-            var highScoreMessage = "High Scores";
+            var highScoreMessage = $"High Scores - {getModeText(HighScoreMode)}";
             var messagePosition = new Vector2(getCenterXPositionForText(highScoreMessage, _highScoreTitleScale), _screenHeightPx * (1 / 4f));
             _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, _baseColor, 0f, Vector2.Zero, _highScoreTitleScale, SpriteEffects.None, 1);
             var scoreYPosition = (messagePosition.Y + 2 * spacing);
@@ -265,6 +265,19 @@ namespace MoonTrucker
             var messageWidth = _font.MeasureString(text).X;
             messageWidth *= scale;
             return _screenWidthPx * 0.5f - messageWidth * 0.5f;
+        }
+
+        private string getModeText(GameMode mode)
+        {
+            switch (mode)
+            {
+                case GameMode.Arcade:
+                    return "Arcade";
+                case GameMode.Endless:
+                    return "Endless";
+                default:
+                    return "";
+            }
         }
 
         private string getMenuOptionText(MenuOptions option)
