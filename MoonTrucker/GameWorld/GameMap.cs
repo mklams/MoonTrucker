@@ -69,13 +69,12 @@ namespace MoonTrucker.GameWorld
         }
 
         // TODO: This is a service. It needs to be in it's own class and injected in
-        private char[][] loadMapFromFile(bool shouldUseVehicleTestbench = false)
+        private char[][] loadMapFromFile()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = shouldUseVehicleTestbench ? "MoonTrucker.GameWorld.TestBench.txt" : _level.MapName;
             char[][] tileMap;
 
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (Stream stream = assembly.GetManifestResourceStream(_level.MapName))
             using (StreamReader reader = new StreamReader(stream))
             {
                 string tileString = sanitizeMapString(reader.ReadToEnd());
@@ -106,21 +105,19 @@ namespace MoonTrucker.GameWorld
                 for (int col = 0; col < _tileMap[row].Length; col++)
                 {
                     var propMapValue = (TileType)_tileMap[row][col];
-                    if ((char)propMapValue == '\r')
+                    if ((char)propMapValue == '\r' || propMapValue == TileType.Road)
                     {
                         continue;
                     }
                     var curCoordinate = new MapCoordinate(row, col);
-                    // TODO: Remove this commented out code if rendering individual blocks works
-                    //if (propMapValue != TileType.Road && isTopLeftCorner(curCoordinate))
-                    if (propMapValue != TileType.Road)
-                    {
-                        Vector2 propDim = getPropDimensionsInSim(curCoordinate);
-                        Vector2 curPosInSim = getCoordInSim(curCoordinate);
 
-                        var prop = CreatePropBodyForTile(propMapValue, propDim, PropFactory.GetOriginFromDimensions(propDim, curPosInSim));
-                        if (prop != null) { props.Add(prop); }
-                    }
+                    if(!isFirstInBlock(curCoordinate)) { continue; }
+
+                    Vector2 propDim = getPropDimensionsInSim(curCoordinate);
+                    Vector2 curPosInSim = getCoordInSim(curCoordinate);
+
+                    var prop = CreatePropBodyForTile(propMapValue, propDim, PropFactory.GetOriginFromDimensions(propDim, curPosInSim));
+                    if (prop != null) { props.Add(prop); }
                 }
             }
 
@@ -212,6 +209,23 @@ namespace MoonTrucker.GameWorld
             }
         }
 
+        private TileType getTileAtCoordinate(MapCoordinate coordinate)
+        {
+            return (TileType) _tileMap[coordinate.Row][coordinate.Column];
+        }
+
+        private bool isFirstInBlock(MapCoordinate coordinate)
+        {
+            var propMapValue = getTileAtCoordinate(coordinate);
+            if(propMapValue != TileType.Building && propMapValue != TileType.Hidden)
+            {
+                // TODO: Elevate this check. For now only do rectangle parsing with Buildings
+                return true;
+            }
+
+            return !doesTileAtCoordinateMatchValue((char)propMapValue, new MapCoordinate(coordinate.Row, coordinate.Column - 1));
+        }
+
         private bool isTopLeftCorner(MapCoordinate coordinate)
         {
             char propMapValue = _tileMap[coordinate.Row][coordinate.Column];
@@ -234,12 +248,11 @@ namespace MoonTrucker.GameWorld
         // TODO: Don't use point since this is a dimension
         private Point getPropDimensions(MapCoordinate startingCoordinate)
         {
-            // TODO: If rendering individual static props works remove this code
-            return new Point(1, 1);
             int width = 0;
             int height = 0;
 
             char propMapValue = _tileMap[startingCoordinate.Row][startingCoordinate.Column];
+            // TODO: Use height or get rid of it
             for (int curRow = startingCoordinate.Row; curRow < _tileMap.Length; curRow++)
             {
                 if (_tileMap[curRow][startingCoordinate.Column] != propMapValue)
@@ -258,7 +271,8 @@ namespace MoonTrucker.GameWorld
                 width++;
             }
 
-            return new Point(width, height);
+            return new Point(width, 1);
+            //return new Point(width, height);
         }
 
         private Vector2 getPropDimensionsInSim(MapCoordinate startingCoordinate)
