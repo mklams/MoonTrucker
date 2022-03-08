@@ -59,7 +59,7 @@ namespace MoonTrucker.GameWorld
         private SpriteBatch _batch;
         private Color _color = Color.White;
         // TODO: Abstract away the parameters wolrd, manager, batch
-        public RectangleProp(float width, float height, Vector2 origin, Genbox.VelcroPhysics.Dynamics.World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
+        public RectangleProp(float width, float height, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
         {
             Body = BodyFactory.CreateRectangle(world, width, height, 1f, origin);
             Body.BodyType = BodyType.Static;
