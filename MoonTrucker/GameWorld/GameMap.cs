@@ -118,9 +118,9 @@ namespace MoonTrucker.GameWorld
                     {
                         continue;
                     }
-                    
 
-                    if(!isFirstInBlock(curCoordinate)) { continue; }
+
+                    if (!isFirstInBlock(curCoordinate)) { continue; }
 
                     Vector2 propDim = getPropDimensionsInSim(curCoordinate);
                     Vector2 curPosInSim = getCoordInSim(curCoordinate);
@@ -186,7 +186,7 @@ namespace MoonTrucker.GameWorld
 
         public Vector2 GetStartPosition()
         {
-            if(_startLocation is null)
+            if (_startLocation is null)
             {
                 return Vector2.Add(getCoordInSim(new MapCoordinate(1, 1)), new Vector2(_tileWidth / 2f, _tileWidth / 2f));
             }
@@ -217,6 +217,11 @@ namespace MoonTrucker.GameWorld
                     _targets.Add(target);
                     _numberOfTargets++;
                     return target;
+                case TileType.GenUp:
+
+                case TileType.GenRight:
+                case TileType.GenDown:
+                case TileType.GenLeft:
                 default:
                     return null; // TODO: DON'T RETURN NULLL
             }
@@ -224,13 +229,13 @@ namespace MoonTrucker.GameWorld
 
         private TileType getTileAtCoordinate(MapCoordinate coordinate)
         {
-            return (TileType) _tileMap[coordinate.Row][coordinate.Column];
+            return (TileType)_tileMap[coordinate.Row][coordinate.Column];
         }
 
         private bool isFirstInBlock(MapCoordinate coordinate)
         {
             var propMapValue = getTileAtCoordinate(coordinate);
-            if(propMapValue != TileType.Building && propMapValue != TileType.Hidden)
+            if (propMapValue != TileType.Building && propMapValue != TileType.Hidden)
             {
                 // TODO: Elevate this check. For now only do rectangle parsing with Buildings
                 return true;
@@ -311,7 +316,10 @@ namespace MoonTrucker.GameWorld
         Target = 'T',
         Gate = 'G',
         Finish = 'F',
-        Start = 'S'
-
+        Start = 'S',
+        GenUp = '^',
+        GenRight = '>',
+        GenDown = 'V',
+        GenLeft = '<',
     }
 }
