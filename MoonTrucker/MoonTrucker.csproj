@@ -17,6 +17,7 @@
     <None Remove="GameWorld\Map.txt" />
     <None Remove="GameWorld\Level.txt" />
     <None Remove="GameWorld\TestBench.txt" />
+    <None Remove="GameWorld\TestBench_.txt" />
     <None Remove="Core\" />
     <None Remove="Vehicle\" />
   </ItemGroup>
@@ -26,6 +27,7 @@
     <EmbeddedResource Include="GameWorld\Map.txt" />
     <EmbeddedResource Include="GameWorld\Level.txt" />
     <EmbeddedResource Include="GameWorld\TestBench.txt" />
+    <EmbeddedResource Include="GameWorld\TestBench_.txt" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />

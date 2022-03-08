@@ -19,7 +19,7 @@ namespace MoonTrucker
     {
         private LevelConfig[] _debug = new LevelConfig[1]
         {
-            new LevelConfig(int.MaxValue, "MoonTrucker.GameWorld.TestBench.txt", -1)
+            new LevelConfig(int.MaxValue, (/* useSolidDebug */ true) ? "MoonTrucker.GameWorld.TestBench_.txt" : "MoonTrucker.GameWorld.TestBench.txt", -1)
         };
         private LevelConfig[] _arcadeLevels = new LevelConfig[3]
         {
