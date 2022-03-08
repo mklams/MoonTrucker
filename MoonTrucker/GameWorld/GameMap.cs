@@ -111,9 +111,10 @@ namespace MoonTrucker.GameWorld
                     if (propMapValue == TileType.Start)
                     {
                         _startLocation = curCoordinate;
+                        continue;
                     }
 
-                    if ((char)propMapValue == '\r' || propMapValue == TileType.Road || propMapValue == TileType.Start)
+                    if ((char)propMapValue == '\r' || propMapValue == TileType.Road)
                     {
                         continue;
                     }
