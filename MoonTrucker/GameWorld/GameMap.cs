@@ -18,6 +18,7 @@ namespace MoonTrucker.GameWorld
         private LevelConfig _level;
         private int _numberOfTargets = 0;
         private List<GameTarget> _targets;
+        private MapCoordinate _startLocation;
 
         private float _mapHeight => _tileMap.Length * _tileWidth;
         private float _mapWidth => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
@@ -105,11 +106,18 @@ namespace MoonTrucker.GameWorld
                 for (int col = 0; col < _tileMap[row].Length; col++)
                 {
                     var propMapValue = (TileType)_tileMap[row][col];
-                    if ((char)propMapValue == '\r' || propMapValue == TileType.Road)
+                    var curCoordinate = new MapCoordinate(row, col);
+
+                    if (propMapValue == TileType.Start)
+                    {
+                        _startLocation = curCoordinate;
+                    }
+
+                    if ((char)propMapValue == '\r' || propMapValue == TileType.Road || propMapValue == TileType.Start)
                     {
                         continue;
                     }
-                    var curCoordinate = new MapCoordinate(row, col);
+                    
 
                     if(!isFirstInBlock(curCoordinate)) { continue; }
 
@@ -177,7 +185,11 @@ namespace MoonTrucker.GameWorld
 
         public Vector2 GetStartPosition()
         {
-            return Vector2.Add(getCoordInSim(new MapCoordinate(1, 1)), new Vector2(_tileWidth / 2f, _tileWidth / 2f));
+            if(_startLocation is null)
+            {
+                return Vector2.Add(getCoordInSim(new MapCoordinate(1, 1)), new Vector2(_tileWidth / 2f, _tileWidth / 2f));
+            }
+            return getCoordInSim(_startLocation);
         }
 
         public void SubscribeToTargets(IObserver<GameTarget> observer)
@@ -297,7 +309,8 @@ namespace MoonTrucker.GameWorld
         RestrictedRoad = 'X', //like a road but it can't have targets spawned on it
         Target = 'T',
         Gate = 'G',
-        Finish = 'F'
+        Finish = 'F',
+        Start = 'S'
 
     }
 }
