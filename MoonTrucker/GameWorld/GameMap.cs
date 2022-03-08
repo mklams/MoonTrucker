@@ -111,7 +111,9 @@ namespace MoonTrucker.GameWorld
                         continue;
                     }
                     var curCoordinate = new MapCoordinate(row, col);
-                    if (propMapValue != TileType.Road && isTopLeftCorner(curCoordinate))
+                    // TODO: Remove this commented out code if rendering individual blocks works
+                    //if (propMapValue != TileType.Road && isTopLeftCorner(curCoordinate))
+                    if (propMapValue != TileType.Road)
                     {
                         Vector2 propDim = getPropDimensionsInSim(curCoordinate);
                         Vector2 curPosInSim = getCoordInSim(curCoordinate);
@@ -232,6 +234,8 @@ namespace MoonTrucker.GameWorld
         // TODO: Don't use point since this is a dimension
         private Point getPropDimensions(MapCoordinate startingCoordinate)
         {
+            // TODO: If rendering individual static props works remove this code
+            return new Point(1, 1);
             int width = 0;
             int height = 0;
 
