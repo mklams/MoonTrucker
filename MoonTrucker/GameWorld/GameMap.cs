@@ -22,7 +22,7 @@ namespace MoonTrucker.GameWorld
         private float _mapHeight => _tileMap.Length * _tileWidth;
         private float _mapWidth => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
 
-        public   GameMap(LevelConfig level, float tileWidth, PropFactory propFactory)
+        public GameMap(LevelConfig level, float tileWidth, PropFactory propFactory)
         {
             _level = level;
             _tileWidth = tileWidth;
@@ -47,12 +47,12 @@ namespace MoonTrucker.GameWorld
 
         public bool IsPlayerInWinZone()
         {
-            return _finish is null ? false: _finish.IsPlayerInFinishZone();
+            return _finish is null ? false : _finish.IsPlayerInFinishZone();
         }
 
         public void ActivateFinish()
         {
-            if(_finish != null)
+            if (_finish != null)
             {
                 _finish.MakeActive();
             }
@@ -60,7 +60,7 @@ namespace MoonTrucker.GameWorld
 
         public Vector2 GetFinishPosition()
         {
-            return _finish is null ? new Vector2(0,0) :  _finish.GetPosition();
+            return _finish is null ? new Vector2(0, 0) : _finish.GetPosition();
         }
 
         public int GetNumberOfTargets()
@@ -124,7 +124,7 @@ namespace MoonTrucker.GameWorld
                 }
             }
 
-            if(_targets.Count < 1)
+            if (_targets.Count < 1)
             {
                 // TODO: Handle this more gracefully
                 throw new Exception("Invalid game map. Map must have at least 1 target (T)");
@@ -185,7 +185,7 @@ namespace MoonTrucker.GameWorld
 
         public void SubscribeToTargets(IObserver<GameTarget> observer)
         {
-            foreach(GameTarget target in _targets)
+            foreach (GameTarget target in _targets)
             {
                 target.Subscribe(observer);
             }

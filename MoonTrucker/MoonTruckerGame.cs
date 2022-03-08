@@ -11,11 +11,16 @@ namespace MoonTrucker
     public enum GameMode
     {
         Arcade,
-        Endless
+        Endless,
+        Debug
     }
 
     public class MoonTruckerGame : Game
-    {   
+    {
+        private LevelConfig[] _debug = new LevelConfig[1]
+        {
+            new LevelConfig(int.MaxValue, "MoonTrucker.GameWorld.TestBench.txt", -1)
+        };
         private LevelConfig[] _arcadeLevels = new LevelConfig[3]
         {
             new LevelConfig(15, "MoonTrucker.GameWorld.Level.txt", 1),
@@ -149,7 +154,9 @@ namespace MoonTrucker
         private void startGame()
         {
             var gameMode = _startMenu.GetSelectedMode();
-            var levels = (gameMode == GameMode.Arcade) ? _arcadeLevels : _endlessLevel;
+            var levels = (gameMode == GameMode.Arcade) ? _arcadeLevels :
+                         (gameMode == GameMode.Debug) ? _debug :
+                         _endlessLevel;
             _mainGame.SetMode(gameMode);
             _mainGame.StartGame(levels);
             _gameState = GameState.Playing;

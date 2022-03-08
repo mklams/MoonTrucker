@@ -17,6 +17,7 @@ namespace MoonTrucker
         {
             Arcade,
             Endless,
+            Debug,
             HighScores
         }
         private MenuOptions _selectedOption;
@@ -85,6 +86,8 @@ namespace MoonTrucker
                     return GameMode.Arcade;
                 case MenuOptions.Endless:
                     return GameMode.Endless;
+                case MenuOptions.Debug:
+                    return GameMode.Debug;
                 default:
                     return GameMode.Arcade;
             }
@@ -172,7 +175,7 @@ namespace MoonTrucker
                     _showHighScores = false;
                 }
 
-                if(InputHelper.WasKeyPressed(Keys.Left, keyboardState, oldKeyboardState)
+                if (InputHelper.WasKeyPressed(Keys.Left, keyboardState, oldKeyboardState)
                     || InputHelper.WasKeyPressed(Keys.Right, keyboardState, oldKeyboardState))
                 {
                     _highScoreMode = (_highScoreMode == GameMode.Arcade) ? GameMode.Endless : GameMode.Arcade;
@@ -193,7 +196,7 @@ namespace MoonTrucker
                 else if (InputHelper.WasKeyPressed(Keys.Space, keyboardState, oldKeyboardState)
                 || InputHelper.WasKeyPressed(Keys.Enter, keyboardState, oldKeyboardState))
                 {
-                    if (_selectedOption == MenuOptions.Arcade || _selectedOption == MenuOptions.Endless)
+                    if (_selectedOption == MenuOptions.Arcade || _selectedOption == MenuOptions.Endless || _selectedOption == MenuOptions.Debug)
                     {
                         ShouldStart = true;
                     }
@@ -275,6 +278,8 @@ namespace MoonTrucker
                     return "Arcade";
                 case GameMode.Endless:
                     return "Endless";
+                case GameMode.Debug:
+                    return "Debug";
                 default:
                     return "";
             }
@@ -288,6 +293,8 @@ namespace MoonTrucker
                     return "Arcade";
                 case MenuOptions.Endless:
                     return "Endless";
+                case MenuOptions.Debug:
+                    return "Debug";
                 case MenuOptions.HighScores:
                     return "High Scores";
                 default:
