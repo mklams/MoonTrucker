@@ -75,8 +75,8 @@ namespace MoonTrucker.GameWorld
             Vertices vertices = new Vertices
             {
                 new Vector2(0, 0),
-                new Vector2(0, height),
-                new Vector2(height, 0)
+                new Vector2(height, height/2),
+                new Vector2(0, height)
 
             };
 
