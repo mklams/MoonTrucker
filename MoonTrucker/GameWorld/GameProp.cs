@@ -9,6 +9,7 @@ using Genbox.VelcroPhysics.Collision.ContactSystem;
 using Genbox.VelcroPhysics.Collision.Handlers;
 using MoonTrucker.Core;
 using System.Collections.Generic;
+using Genbox.VelcroPhysics.Shared;
 
 namespace MoonTrucker.GameWorld
 {
@@ -26,9 +27,9 @@ namespace MoonTrucker.GameWorld
             _spriteBatch = batch;
         }
 
-        public TriangleProp CreateTriangleBody(float height, Vector2 origin)
+        public TriangleProp CreateTriangleBody(float height, Vector2 origin, Vector2 leftCorner)
         {
-            return new TriangleProp(height, origin, _world, _textureManager, _spriteBatch);
+            return new TriangleProp(height, origin, leftCorner, _world, _textureManager, _spriteBatch);
         }
 
         public RectangleProp CreateRectangleBody(float width, float height, Vector2 origin)
@@ -64,23 +65,26 @@ namespace MoonTrucker.GameWorld
         private Texture2D _sprite;
         private SpriteBatch _batch;
         private Color _color = Color.White;
+        private Vector2 _leftCorner;
+        private Vector2 _origin;
         // TODO: Abstract away the parameters wolrd, manager, batch
-        public TriangleProp(float height, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
+        public TriangleProp(float height, Vector2 origin, Vector2 leftCorner, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
         {
-            //Body = BodyFactory.CreateRectangle(world, width, height, 1f, origin);
-            var v1 = new Vector2(origin.X - height/2, origin.Y - height/2);
-            var v2 = new Vector2(origin.X + height / 2, origin.Y + height / 2);
-            var v3 = new Vector2(origin.X - height / 2, origin.Y + height / 2);
-            var vertices = new List<Vector2>();
-            vertices.Add(v1);
-            vertices.Add(v2);
-            vertices.Add(v3);
+            _origin = origin;
+            _leftCorner = leftCorner;
+            Vertices vertices = new Vertices
+            {
+                new Vector2(0, 0),
+                new Vector2(0, height),
+                new Vector2(height, 0)
 
-            Body = BodyFactory.CreatePolygon(world, new Genbox.VelcroPhysics.Shared.Vertices(vertices), 1f, origin);
+            };
+
+            Body = BodyFactory.CreatePolygon(world, vertices, 1f, _leftCorner);
             Body.BodyType = BodyType.Static;
-            Body.Restitution = 0f;
+            //Body.Restitution = 0f;
             Body.Friction = .5f;
-            Body.IsSensor = isSensor;
+            Body.IsSensor = false;
             _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aquamarine);
             _batch = batch;
 
@@ -101,9 +105,8 @@ namespace MoonTrucker.GameWorld
             };
         }
         public void Draw()
-        {
-            var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _color, Body.Rotation, origin, 1f, SpriteEffects.None, 0f);
+        {         
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _color, Body.Rotation, new Vector2(0,0), 1f, SpriteEffects.None, 0f);
         }
     }
 
