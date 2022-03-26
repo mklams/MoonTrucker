@@ -111,3 +111,10 @@ MoonTrucker/Content/obj/DesktopGL/GameAssets/truck.mgcontent
 MoonTrucker/Content/obj/DesktopGL/Sounds/GameBackgroundMusic.mgcontent
 MoonTrucker/Content/obj/DesktopGL/Sounds/TitleMenuMusic.mgcontent
 MoonTrucker/Content/obj/Windows/.mgstats
+MoonTrucker/StartMenu.cs
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/GameAssets/ArrowLeft.xnb
+.gitignore
+.gitignore
+MoonTrucker/Content/obj/DesktopGL/Content/GameAssets/ArrowLeft.mgcontent
+MoonTrucker/Content/obj/DesktopGL/Content/GameAssets/ArrowRight.mgcontent
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/GameAssets/ArrowRight.xnb
