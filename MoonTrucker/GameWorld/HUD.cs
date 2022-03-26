@@ -117,7 +117,6 @@ namespace MoonTrucker.GameWorld
         private void drawLevel()
         {
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(500, 0));
-
             _spriteBatch.DrawString(_font, $"Level: {_game.GetCurrentLevelNumber()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1);
         }
 

@@ -4,6 +4,10 @@ using Microsoft.Xna.Framework;
 
 public static class VectorHelpers
 {
+    public static float DegToRad(float degrees)
+    {
+        return (float)(Math.PI / 180) * degrees;
+    }
     public static Vector2 CopyVector(Vector2 vector)
     {
         float vx, vy;

@@ -1,12 +1,14 @@
 ﻿using System;
 using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Utilities;
+using Genbox.VelcroPhysics.Extensions.DebugView;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MoonTrucker.Core;
 using MoonTrucker.Vehicle;
+using Genbox.VelcroPhysics.Interfaces;
 
 namespace MoonTrucker.GameWorld
 {
@@ -24,10 +26,9 @@ namespace MoonTrucker.GameWorld
         private SpriteBatch _spriteBatch;
         private TextureManager _manager;
         private Level _currentLevel;
-
         private Song _gameMusic;
-
         private GameMode _mode = GameMode.Arcade;
+
         public GameMode Mode => _mode;
 
         public MainGame(TextureManager manager, SpriteBatch spriteBatch, ResolutionIndependentRenderer renderer, Song gameMusic)
@@ -42,8 +43,12 @@ namespace MoonTrucker.GameWorld
             ConvertUnits.SetDisplayUnitToSimUnitRatio(14f);
             createCamera(renderer);
 
-            _propFactory = new PropFactory(_world, manager, spriteBatch);
-            
+            _propFactory = new PropFactory(_world, manager, spriteBatch);   
+        }
+
+        public Vector2 CurrentVehiclePosition()
+        {
+            return _vehicle.GetPosition();
         }
 
         public void SetMode(GameMode mode)

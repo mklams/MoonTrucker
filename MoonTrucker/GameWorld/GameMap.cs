@@ -125,7 +125,7 @@ namespace MoonTrucker.GameWorld
                     Vector2 propDim = getPropDimensionsInSim(curCoordinate);
                     Vector2 curPosInSim = getCoordInSim(curCoordinate);
 
-                    var prop = CreatePropBodyForTile(propMapValue, propDim, PropFactory.GetOriginFromDimensions(propDim, curPosInSim));
+                    var prop = CreatePropBodyForTile(propMapValue, propDim, PropFactory.GetOriginFromDimensions(propDim, curPosInSim), curPosInSim);
                     if (prop != null) { props.Add(prop); }
                 }
             }
@@ -201,12 +201,14 @@ namespace MoonTrucker.GameWorld
             }
         }
 
-        private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin)
+        private IDrawable CreatePropBodyForTile(TileType tile, Vector2 propDim, Vector2 origin, Vector2 leftCorner)
         {
             switch (tile)
             {
                 case TileType.Building:
                     return _propFactory.CreateRectangleBody(propDim.X, propDim.Y, origin);
+                case TileType.BuildingAngled:
+                    return _propFactory.CreateTriangleBody(propDim.X, origin, leftCorner);
                 case TileType.Hidden:
                     return _propFactory.CreateRectangleSensor(propDim.X, propDim.Y, origin);
                 case TileType.Finish:
@@ -310,6 +312,7 @@ namespace MoonTrucker.GameWorld
     public enum TileType
     {
         Building = 'B',
+        BuildingAngled = 'A',
         Road = '_',
         Hidden = 'H',
         RestrictedRoad = 'X', //like a road but it can't have targets spawned on it
