@@ -27,9 +27,9 @@ namespace MoonTrucker.GameWorld
             _spriteBatch = batch;
         }
 
-        public TriangleProp CreateTriangleBody(float height, Vector2 origin, Vector2 leftCorner)
+        public TriangleProp CreateTriangleBody(float height, Vector2 leftCorner)
         {
-            return new TriangleProp(height, origin, leftCorner, _world, _textureManager, _spriteBatch);
+            return new TriangleProp(height, leftCorner, _world, _textureManager, _spriteBatch);
         }
 
         public RectangleProp CreateRectangleBody(float width, float height, Vector2 origin)
@@ -59,6 +59,11 @@ namespace MoonTrucker.GameWorld
         }
     }
 
+    public enum TriangleShapes
+    {
+
+    }
+
     public class TriangleProp : IDrawable
     {
         public Body Body;
@@ -66,16 +71,14 @@ namespace MoonTrucker.GameWorld
         private SpriteBatch _batch;
         private Color _color = Color.White;
         private Vector2 _leftCorner;
-        private Vector2 _origin;
         // TODO: Abstract away the parameters wolrd, manager, batch
-        public TriangleProp(float height, Vector2 origin, Vector2 leftCorner, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
+        public TriangleProp(float height, Vector2 leftCorner, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
         {
-            _origin = origin;
             _leftCorner = leftCorner;
             Vertices vertices = new Vertices
             {
                 new Vector2(0, 0),
-                new Vector2(height, height/2),
+                new Vector2(height, height),
                 new Vector2(0, height)
 
             };

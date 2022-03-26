@@ -208,7 +208,7 @@ namespace MoonTrucker.GameWorld
                 case TileType.Building:
                     return _propFactory.CreateRectangleBody(propDim.X, propDim.Y, origin);
                 case TileType.BuildingAngled:
-                    return _propFactory.CreateTriangleBody(propDim.X, origin, leftCorner);
+                    return _propFactory.CreateTriangleBody(propDim.X, leftCorner);
                 case TileType.Hidden:
                     return _propFactory.CreateRectangleSensor(propDim.X, propDim.Y, origin);
                 case TileType.Finish:
@@ -324,5 +324,9 @@ namespace MoonTrucker.GameWorld
         GenRight = '>',
         GenDown = 'V',
         GenLeft = '<',
+        TriangleDR = '1',
+        TriangleDL = '2',
+        TriangleUR = '3',
+        TriangleUL = '4',
     }
 }

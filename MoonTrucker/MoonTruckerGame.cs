@@ -153,7 +153,7 @@ namespace MoonTrucker
 
         private void startGame()
         {
-            var gameMode = _startMenu.GetSelectedMode();
+            var gameMode = _startMenu.SelectedGameMode;
             var levels = (gameMode == GameMode.Arcade) ? _arcadeLevels :
                          (gameMode == GameMode.Debug) ? _debug :
                          _endlessLevel;
