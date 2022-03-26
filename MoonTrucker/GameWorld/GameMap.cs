@@ -208,7 +208,12 @@ namespace MoonTrucker.GameWorld
                 case TileType.Building:
                     return _propFactory.CreateRectangleBody(propDim.X, propDim.Y, origin);
                 case TileType.BuildingAngled:
-                    return _propFactory.CreateTriangleBody(propDim.X, leftCorner);
+                case TileType.TriangleDL:
+                case TileType.TriangleDR:
+                case TileType.TriangleUR:
+                case TileType.TriangleUL:
+                    TriangleShape shape = TriangleProp.GetTrianglePropFromTile(tile);
+                    return _propFactory.CreateTriangleBody(propDim.X, leftCorner, shape);
                 case TileType.Hidden:
                     return _propFactory.CreateRectangleSensor(propDim.X, propDim.Y, origin);
                 case TileType.Finish:

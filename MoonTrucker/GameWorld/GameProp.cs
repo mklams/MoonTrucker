@@ -1,15 +1,11 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
 using Genbox.VelcroPhysics.Dynamics;
 using Genbox.VelcroPhysics.Factories;
 using Genbox.VelcroPhysics.Utilities;
 using Genbox.VelcroPhysics.Collision.ContactSystem;
 using Genbox.VelcroPhysics.Collision.Handlers;
 using MoonTrucker.Core;
-using System.Collections.Generic;
-using Genbox.VelcroPhysics.Shared;
 
 namespace MoonTrucker.GameWorld
 {
@@ -27,9 +23,9 @@ namespace MoonTrucker.GameWorld
             _spriteBatch = batch;
         }
 
-        public TriangleProp CreateTriangleBody(float height, Vector2 leftCorner)
+        public TriangleProp CreateTriangleBody(float height, Vector2 leftCorner, TriangleShape shape)
         {
-            return new TriangleProp(height, leftCorner, _world, _textureManager, _spriteBatch);
+            return new TriangleProp(height, leftCorner, _world, _textureManager, _spriteBatch, shape);
         }
 
         public RectangleProp CreateRectangleBody(float width, float height, Vector2 origin)
@@ -56,60 +52,6 @@ namespace MoonTrucker.GameWorld
         public static Vector2 GetOriginFromDimensions(Vector2 dim, Vector2 topLeftCorner)
         {
             return new Vector2(topLeftCorner.X + dim.X / 2f, topLeftCorner.Y + dim.Y / 2f);
-        }
-    }
-
-    public enum TriangleShapes
-    {
-
-    }
-
-    public class TriangleProp : IDrawable
-    {
-        public Body Body;
-        private Texture2D _sprite;
-        private SpriteBatch _batch;
-        private Color _color = Color.White;
-        private Vector2 _leftCorner;
-        // TODO: Abstract away the parameters wolrd, manager, batch
-        public TriangleProp(float height, Vector2 leftCorner, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
-        {
-            _leftCorner = leftCorner;
-            Vertices vertices = new Vertices
-            {
-                new Vector2(0, 0),
-                new Vector2(height, height),
-                new Vector2(0, height)
-
-            };
-
-            Body = BodyFactory.CreatePolygon(world, vertices, 1f, _leftCorner);
-            Body.BodyType = BodyType.Static;
-            //Body.Restitution = 0f;
-            Body.Friction = .5f;
-            Body.IsSensor = false;
-            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aquamarine);
-            _batch = batch;
-
-            Body.OnCollision = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
-            {
-                if (isSensor)
-                {
-                    _color = Color.Tomato;
-                }
-            };
-
-            Body.OnSeparation = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
-            {
-                if (isSensor)
-                {
-                    _color = Color.White;
-                }
-            };
-        }
-        public void Draw()
-        {         
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _color, Body.Rotation, new Vector2(0,0), 1f, SpriteEffects.None, 0f);
         }
     }
 
