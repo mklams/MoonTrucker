@@ -329,8 +329,8 @@ namespace MoonTrucker.GameWorld
         GenRight = '>',
         GenDown = 'V',
         GenLeft = '<',
-        TriangleDR = '1',
-        TriangleDL = '2',
+        TriangleDL = '1',
+        TriangleDR = '2',
         TriangleUR = '3',
         TriangleUL = '4',
     }

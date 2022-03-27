@@ -29,7 +29,7 @@ namespace MoonTrucker.GameWorld
                 case TileType.TriangleDR:
                     return TriangleShape.DownRight;
                 case TileType.TriangleDL:
-                    return TriangleShape.UpLeft;
+                    return TriangleShape.DownLeft;
                 case TileType.TriangleUL:
                     return TriangleShape.UpLeft;
                 case TileType.TriangleUR:
@@ -40,20 +40,39 @@ namespace MoonTrucker.GameWorld
             }
         }
 
-        public static float GetRotationsForTriangleShape(TriangleShape shape, float height = 1)
+        private Vertices GetVerticesForTriangleShape(TriangleShape shape, float height = 1f)
         {
             switch (shape)
             {
                 case TriangleShape.DownLeft:
-                    return 0;
+                    return new Vertices
+                    {
+                        new Vector2(0, 0),
+                        new Vector2(0, height),
+                        new Vector2(height, height),
+                    };
                 case TriangleShape.DownRight:
-                    return 1.5708f;
+                    return new Vertices
+                    {
+                        new Vector2(height, 0),
+                        new Vector2(0, height),
+                        new Vector2(height, height),
+                    };
                 case TriangleShape.UpRight:
-                    return 180;
+                    return new Vertices
+                    {
+                        new Vector2(0, 0),
+                        new Vector2(height, 0),
+                        new Vector2(height, height),
+                    };
                 case TriangleShape.UpLeft:
-                    return 270;
                 default:
-                    return 0;
+                    return new Vertices
+                    {
+                        new Vector2(height, 0),
+                        new Vector2(0, height),
+                        new Vector2(0, 0),
+                    };
             }
         }
 
@@ -62,26 +81,16 @@ namespace MoonTrucker.GameWorld
         private Texture2D _sprite;
         private SpriteBatch _batch;
         private Color _color = Color.White;
-        private Vector2 _leftCorner;
         // TODO: Abstract away the parameters wolrd, manager, batch
         public TriangleProp(float height, Vector2 leftCorner, World world, TextureManager manager, SpriteBatch batch, TriangleShape shape, bool isSensor = false)
         {
-            _leftCorner = leftCorner;
-            Vertices vertices = new Vertices
-                {
-                    new Vector2(0, 0),
-                    new Vector2(height, height),
-                    new Vector2(0, height)
-
-                };
-            float rotation = GetRotationsForTriangleShape(shape);
-
-            Body = BodyFactory.CreatePolygon(world, vertices, 1f, _leftCorner, rotation);
+            Vertices vertices = GetVerticesForTriangleShape(shape, height);
+            Body = BodyFactory.CreatePolygon(world, vertices, 1f, leftCorner);
             Body.BodyType = BodyType.Static;
             //Body.Restitution = 0f;
             Body.Friction = .5f;
             Body.IsSensor = false;
-            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aquamarine);
+            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aqua);
             _batch = batch;
 
             Body.OnCollision = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>

@@ -170,7 +170,7 @@ namespace MoonTrucker
 
         public void Update(KeyboardState keyboardState, KeyboardState oldKeyboardState, GameTime gameTime)
         {
-            this.updateRacingParticles(gameTime);
+            updateRacingParticles(gameTime);
             if (_showHighScores)
             {
                 if (InputHelper.WasKeyPressed(Keys.Enter, keyboardState, oldKeyboardState)
@@ -209,13 +209,13 @@ namespace MoonTrucker
                     {
                         _showHighScores = true;
                     }
-                }else if (InputHelper.WasKeyPressed(Keys.Right, keyboardState, oldKeyboardState)
-                    || InputHelper.WasKeyPressed(Keys.Left, keyboardState, oldKeyboardState))
+                }else if (_selectedOption == MenuOptions.Play && (InputHelper.WasKeyPressed(Keys.Right, keyboardState, oldKeyboardState)
+                    || InputHelper.WasKeyPressed(Keys.Left, keyboardState, oldKeyboardState)))
                 {
                     _selectedGameMode = getNextMode(_selectedGameMode);
                 }
             }
-            this.updateColorFade();
+            updateColorFade();
         }
 
         private GameMode getNextMode(GameMode mode)
