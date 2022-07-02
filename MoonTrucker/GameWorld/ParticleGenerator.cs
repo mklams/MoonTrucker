@@ -186,7 +186,6 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
     private static bool shouldGenerateOn(char c)
     {
         return (c == (char)TileType.Road)
-        || (c == (char)TileType.RestrictedRoad)
         || (c == (char)TileType.Hidden);
     }
 }
