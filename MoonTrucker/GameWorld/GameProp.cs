@@ -69,7 +69,7 @@ namespace MoonTrucker.GameWorld
             Body.Restitution = 0f;//your buildings were bouncy with Restitution=1.
             Body.Friction = .5f;
             Body.IsSensor = isSensor;
-            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aquamarine);
+            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aqua);
             _batch = batch;
 
             Body.OnCollision = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>

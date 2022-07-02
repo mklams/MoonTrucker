@@ -15,11 +15,11 @@ namespace MoonTrucker.GameWorld
         private Timer _timer;
         private Vector2 _randomTargetPosition;
 
-        public bool IsEndlessLevel => _config.EndlessMap;
+        public bool IsEndlessLevel => _config.IsEndlessMap;
         public TimeSpan TimeLimit => TimeSpan.FromSeconds(_config.TimeLimit);
         public bool LevelIsFinished => _map.IsPlayerInWinZone();
         public int TimeLeftInSeconds => _timer.GetTimeInSeconds();
-        public bool AllTargetsCollected => (_targetsHit >= _map.GetNumberOfTargets() + _config.AddtionalTargets) && !IsEndlessLevel;
+        public bool AllTargetsCollected => (_targetsHit >= _map.GetNumberOfTargets() + _config.EndlessTargetCount) && !IsEndlessLevel;
 
         public Level(LevelConfig config, float tileWidth, PropFactory propFactory)
         {
@@ -96,8 +96,6 @@ namespace MoonTrucker.GameWorld
             _score += (int)points;
         }
 
-        private bool _useRandomTarget => _targetsHit >= _map.GetNumberOfTargets() && !AllTargetsCollected;
-
         #region IObserver<GameTarget> implmentation
         public void OnCompleted()
         {
@@ -114,7 +112,7 @@ namespace MoonTrucker.GameWorld
             targetHit();
             target.Hide();
 
-            if(_useRandomTarget || IsEndlessLevel)
+            if(IsEndlessLevel)
             {
                 target.Show();
                 _randomTargetPosition = _map.GetRandomTargetLocation();
@@ -129,20 +127,14 @@ namespace MoonTrucker.GameWorld
     {
         public readonly int TimeLimit;
         public readonly string MapName;
-        public readonly int AddtionalTargets;
-        public readonly bool EndlessMap = false;
+        public readonly int EndlessTargetCount;
+        public bool IsEndlessMap => EndlessTargetCount > 0;
 
-        public LevelConfig(int timeLimt, string mapName, int addtionalTargets = 0)
+        public LevelConfig(int timeLimt, string mapName, int endlessTargetCount = 0)
         {
             TimeLimit = timeLimt;
             MapName = mapName;
-
-            if (addtionalTargets < 0)
-            {
-                EndlessMap = true;
-                addtionalTargets = 0;
-            }
-            AddtionalTargets = addtionalTargets;
+            EndlessTargetCount = endlessTargetCount;
         }
     }
 
