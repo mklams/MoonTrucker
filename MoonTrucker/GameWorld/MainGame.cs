@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MoonTrucker.Core;
 using MoonTrucker.Vehicle;
-using Genbox.VelcroPhysics.Interfaces;
 
 namespace MoonTrucker.GameWorld
 {
