@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MoonTrucker.Core;
 
 namespace MoonTrucker.GameWorld
 {
@@ -18,7 +20,10 @@ namespace MoonTrucker.GameWorld
         private LevelConfig _level;
         private int _numberOfTargets = 0;
         private List<GameTarget> _targets;
+        private List<ParticleGenerator> _particleGens;
         private MapCoordinate _startLocation;
+        private SpriteBatch _spriteBatch;
+        private TextureManager _textureManager;
 
         private float _mapHeight => _tileMap.Length * _tileWidth;
         private float _mapWidth => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
@@ -29,6 +34,7 @@ namespace MoonTrucker.GameWorld
             _tileWidth = tileWidth;
             _propFactory = propFactory;
             _targets = new List<GameTarget>();
+            _particleGens = new List<ParticleGenerator>();
         }
 
         public void Load()
@@ -36,6 +42,12 @@ namespace MoonTrucker.GameWorld
             _tileMap = loadMapFromFile();
             _mapProps = parseMap();
             _mapProps.AddRange(createWalls());
+        }
+
+        public void InitializeGraphics(SpriteBatch sb, TextureManager texMan)
+        {
+            _spriteBatch = sb;
+            _textureManager = texMan;
         }
 
         public void Draw()
@@ -224,14 +236,38 @@ namespace MoonTrucker.GameWorld
                     _targets.Add(target);
                     _numberOfTargets++;
                     return target;
-                case TileType.GenUp:
-
-                case TileType.GenRight:
-                case TileType.GenDown:
-                case TileType.GenLeft:
                 default:
-                    return null; // TODO: DON'T RETURN NULLL
+                    return null; // TODO: DON'T RETURN NULL
             }
+        }
+
+        private IDrawable CreatePropGraphicForTile(TileType tile, MapCoordinate currCoord)
+        {
+            Vector2 originSimCoord = getCoordInSim(currCoord); //top left corner
+            Vector2 end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Up, currCoord)); //top left corner
+            ParticleGenerator partGen;
+            switch (tile)
+            {
+                case TileType.GenUp:
+                    partGen = new ParticleGenerator(originSimCoord, end, Direction.Up, _spriteBatch, _textureManager);
+                    _particleGens.Add(partGen);
+                    break;
+                case TileType.GenRight:
+                    partGen = new ParticleGenerator(originSimCoord, end, Direction.Right, _spriteBatch, _textureManager);
+                    _particleGens.Add(partGen);
+                    break;
+                case TileType.GenDown:
+                    partGen = new ParticleGenerator(originSimCoord, end, Direction.Down, _spriteBatch, _textureManager);
+                    _particleGens.Add(partGen);
+                    break;
+                case TileType.GenLeft:
+                    partGen = new ParticleGenerator(originSimCoord, end, Direction.Left, _spriteBatch, _textureManager);
+                    _particleGens.Add(partGen);
+                    break;
+                default: return null;
+            }
+
+            return partGen;
         }
 
         private TileType getTileAtCoordinate(MapCoordinate coordinate)

@@ -36,7 +36,7 @@ namespace MoonTrucker
         private float _highScoreTitleScale = 0.75f;
         private float _highScoreNameScale = 0.25f;
         private int _numberOfRacingParticles = 35;
-        private Direction _lastGeneratedDirection = Direction.Vertical;
+        private Direction _lastGeneratedDirection = Direction.Down;
         private List<LinearParticleTrail> _racingParticles;
         private Random rand = new Random();
         private double _minTimeBetweenRacingParticles = 0.15;
@@ -331,33 +331,33 @@ namespace MoonTrucker
             if (_racingParticles.Count < _numberOfRacingParticles && gameTime.TotalGameTime.TotalSeconds - _lastRacingParticleCreationTime > _minTimeBetweenRacingParticles)
             {
                 _lastRacingParticleCreationTime = gameTime.TotalGameTime.TotalSeconds;
-                if (_lastGeneratedDirection == Direction.Horizontal)
+                if (_lastGeneratedDirection == Direction.Right)
                 {
                     _racingParticles.Add(
                         new LinearParticleTrail(
                             new Vector2(_screenWidthPx, _screenHeightPx),
-                            Direction.Vertical,
+                            Direction.Down,
                             rand.Next(15, ((int)_screenWidthPx - 15)),
                             getColor(),
                             _spriteBatch,
                             _textureManager
                         )
                     );
-                    _lastGeneratedDirection = Direction.Vertical;
+                    _lastGeneratedDirection = Direction.Down;
                 }
                 else
                 {
                     _racingParticles.Add(
                         new LinearParticleTrail(
                             new Vector2(_screenWidthPx, _screenHeightPx),
-                            Direction.Horizontal,
+                            Direction.Right,
                             rand.Next(15, ((int)_screenHeightPx - 15)),
                             getColor(),
                             _spriteBatch,
                             _textureManager
                         )
                     );
-                    _lastGeneratedDirection = Direction.Horizontal;
+                    _lastGeneratedDirection = Direction.Right;
                 }
             }
             List<LinearParticleTrail> toRemove = new List<LinearParticleTrail>();

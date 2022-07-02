@@ -36,10 +36,10 @@ public class LinearParticleTrail
         _particleTrail = new ParticleTrail(_size, sb, texMan);
         var rand = new Random();
         _startCoord = rand.Next(-20, -5);
-        _endCoord = _direction == Direction.Horizontal ?
+        _endCoord = _direction == Direction.Right ?
             (int)_screenDimensions.X + 50
             : (int)_screenDimensions.Y + 50;
-        _currentPosition = _direction == Direction.Horizontal ?
+        _currentPosition = _direction == Direction.Right ?
             new Vector2(_startCoord, _lineCoordinate)
             : new Vector2(_lineCoordinate, _startCoord);
         this._createParticleAtCurrentPosition();
@@ -55,7 +55,7 @@ public class LinearParticleTrail
         if (gameTime.TotalGameTime.TotalSeconds - _lastParticleTimeSeconds > _secondsBetweenUpdates)
         {
             _lastParticleTimeSeconds = gameTime.TotalGameTime.TotalSeconds;
-            _currentPosition = _direction == Direction.Horizontal ?
+            _currentPosition = _direction == Direction.Right ?
                 new Vector2(_currentPosition.X + _size, _lineCoordinate)
                 : new Vector2(_lineCoordinate, _currentPosition.Y + _size);
             _particleTrail.Update();
@@ -66,7 +66,7 @@ public class LinearParticleTrail
     public bool IsDone()
     {
         var oldestParticle = _particleTrail.GetCoordinateOfOldestParticle();
-        return _direction == Direction.Horizontal ?
+        return _direction == Direction.Right ?
             oldestParticle.X > _screenDimensions.X
             : oldestParticle.Y > _screenDimensions.Y;
     }
@@ -78,6 +78,8 @@ public class LinearParticleTrail
 }
 public enum Direction
 {
-    Horizontal,
-    Vertical
+    Up,
+    Right,
+    Down,
+    Left
 }
