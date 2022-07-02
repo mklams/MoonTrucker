@@ -87,13 +87,17 @@ namespace MoonTrucker.GameWorld
             return _targetsHit >= _map.GetNumberOfTargets();
         }
 
+        private double getElapsedTime()
+        {
+            int elapsedTime = _timer.GetElapsedTime();
+            elapsedTime = (elapsedTime <= 0) ? 1 : elapsedTime;
+            return elapsedTime;
+        }
+
         private void targetHit()
         {
             _targetsHit++;
-            int elapsedTime = _timer.GetElapsedTime();
-            elapsedTime = (elapsedTime <= 0) ? 1 : elapsedTime;
-            double points = 50 + 50 * (1.0 / elapsedTime);
-            _score += (int)points;
+            _score += 100; // targets worth 100 points
         }
 
         #region IObserver<GameTarget> implmentation
