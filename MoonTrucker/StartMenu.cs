@@ -125,7 +125,7 @@ namespace MoonTrucker
             drawMenuArrow(rightArrowPos);
 
             _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, _baseColor, 0f, Vector2.Zero, _highScoreTitleScale, SpriteEffects.None, 1);
-            
+
             var scoreYPosition = (messagePosition.Y + 2 * spacing);
             foreach (Score score in scores.GetTopScores())
             {
@@ -209,7 +209,8 @@ namespace MoonTrucker
                     {
                         _showHighScores = true;
                     }
-                }else if (_selectedOption == MenuOptions.Play && (InputHelper.WasKeyPressed(Keys.Right, keyboardState, oldKeyboardState)
+                }
+                else if (_selectedOption == MenuOptions.Play && (InputHelper.WasKeyPressed(Keys.Right, keyboardState, oldKeyboardState)
                     || InputHelper.WasKeyPressed(Keys.Left, keyboardState, oldKeyboardState)))
                 {
                     _selectedGameMode = getNextMode(_selectedGameMode);
@@ -222,7 +223,7 @@ namespace MoonTrucker
         {
             // With LINQ as your hammer, the world is full of nails
             var lastMode = Enum.GetValues(typeof(GameMode)).Cast<GameMode>().Last();
-            if(mode == lastMode)
+            if (mode == lastMode)
             {
                 return Enum.GetValues(typeof(GameMode)).Cast<GameMode>().First();
             }
@@ -335,10 +336,12 @@ namespace MoonTrucker
                 {
                     _racingParticles.Add(
                         new LinearParticleTrail(
+                            Vector2.Zero,
                             new Vector2(_screenWidthPx, _screenHeightPx),
                             Direction.Down,
                             rand.Next(15, ((int)_screenWidthPx - 15)),
                             getColor(),
+                            true,
                             _spriteBatch,
                             _textureManager
                         )
@@ -349,10 +352,12 @@ namespace MoonTrucker
                 {
                     _racingParticles.Add(
                         new LinearParticleTrail(
+                            Vector2.Zero,
                             new Vector2(_screenWidthPx, _screenHeightPx),
                             Direction.Right,
                             rand.Next(15, ((int)_screenHeightPx - 15)),
                             getColor(),
+                            true,
                             _spriteBatch,
                             _textureManager
                         )

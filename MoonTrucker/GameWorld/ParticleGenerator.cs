@@ -12,7 +12,8 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
     private Vector2 _end;
     private Direction _direction;
     private Color _color;
-    private double _minTimeBetweenParticles = 0.15;
+    private double _minTimeBetweenRacingParticles = 0.15;
+    private double _lastRacingParticleCreationTime = 0.0;
     private SpriteBatch _spriteBatch;
     private TextureManager _textureManager;
     private List<LinearParticleTrail> _racingParticles;
@@ -49,6 +50,7 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
         _origin = origin;
         _end = end;
         this.parseCoordsSetDirection(singleGenDir);
+        this.calculateGenerationBounds();
         _color = this.getColorForDirection(_direction);
         _spriteBatch = sb;
         _textureManager = texMan;
@@ -111,9 +113,63 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
         }
     }
 
+    private void calculateGenerationBounds()
+    {
+
+    }
+
     public void Draw()
     {
-        throw new NotImplementedException();
+
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        if (_racingParticles.Count < PARTICLE_LIMIT && gameTime.TotalGameTime.TotalSeconds - _lastRacingParticleCreationTime > _minTimeBetweenRacingParticles)
+        {
+            _lastRacingParticleCreationTime = gameTime.TotalGameTime.TotalSeconds;
+            // if (_lastGeneratedDirection == Direction.Right)
+            // {
+            //     _racingParticles.Add(
+            //         new LinearParticleTrail(
+            //             new Vector2(_screenWidthPx, _screenHeightPx),
+            //             Direction.Down,
+            //             rand.Next(15, ((int)_screenWidthPx - 15)),
+            //             getColor(),
+            //             _spriteBatch,
+            //             _textureManager
+            //         )
+            //     );
+            //     _lastGeneratedDirection = Direction.Down;
+            // }
+            // else
+            // {
+            //     _racingParticles.Add(
+            //         new LinearParticleTrail(
+            //             new Vector2(_screenWidthPx, _screenHeightPx),
+            //             Direction.Right,
+            //             rand.Next(15, ((int)_screenHeightPx - 15)),
+            //             getColor(),
+            //             _spriteBatch,
+            //             _textureManager
+            //         )
+            //     );
+            //     _lastGeneratedDirection = Direction.Right;
+            // }
+        }
+        List<LinearParticleTrail> toRemove = new List<LinearParticleTrail>();
+        _racingParticles.ForEach((lpt) =>
+        {
+            if (lpt.IsDone())
+            {
+                toRemove.Add(lpt);
+            }
+            else
+            {
+                lpt.Update(gameTime);
+            }
+        });
+        toRemove.ForEach(lpt => _racingParticles.Remove(lpt));
     }
 
     /// <summary>
