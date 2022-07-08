@@ -23,14 +23,14 @@ public class LinearParticleTrail
     private double _secondsBetweenUpdates = 1 / _frequency;
 
     /// <summary>
-    /// Draws a horiz/vert line of particles that decay in opacity. 
+    /// Draws a horiz/vert line of particles in a region that decay in opacity. Regions are always rectangular. Give top-left corner of region as origin. Give length/width as bounds.
     /// </summary>
     /// <param name="origin">Coordinates of the top left corner of the generation region. (in screen coords)</param>
     /// <param name="generationBounds">Dimensions of the region the line will run across (in screen coords)</param>
     /// <param name="dir">Whether the line should run horiz/vert.</param>
     /// <param name="lineCoord">The constant value in the equation of this line. If this is 50 and horiz, then y coord will always be 50. (in screen coords)</param>
     /// <param name="color"> The color of the particle</param>
-    /// <param name="shouldBuffer"> If true will add a buffer to each end of generation region to randomize pixel.</param>
+    /// <param name="shouldBuffer"> If true will add a buffer to each end of generation region to randomize pixel start and end points.</param>
     /// <param name="sb"> The sprite batch</param>
     /// <param name="texMan"> The texture manager </param>
     public LinearParticleTrail(Vector2 origin, Vector2 generationBounds, Direction dir, int lineCoord, Color color, bool shouldBuffer, SpriteBatch sb, TextureManager texMan)

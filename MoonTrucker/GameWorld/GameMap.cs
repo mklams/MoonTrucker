@@ -12,6 +12,7 @@ namespace MoonTrucker.GameWorld
     // TODO: Move tile logic to own class
     public class GameMap : IDrawable
     {
+        private static HashSet<char> _generatorTiles = new HashSet<char>() { (char)TileType.GenUp, (char)TileType.GenDown, (char)TileType.GenLeft, (char)TileType.GenRight };
         private char[][] _tileMap;
         private List<IDrawable> _mapProps;
         private float _tileWidth;
@@ -136,8 +137,15 @@ namespace MoonTrucker.GameWorld
 
                     Vector2 propDim = getPropDimensionsInSim(curCoordinate);
                     Vector2 curPosInSim = getCoordInSim(curCoordinate);
-
-                    var prop = CreatePropBodyForTile(propMapValue, propDim, PropFactory.GetOriginFromDimensions(propDim, curPosInSim), curPosInSim);
+                    IDrawable prop;
+                    if (_generatorTiles.Contains((char)propMapValue))
+                    {
+                        prop = CreatePropGraphicForTile(propMapValue, curCoordinate);
+                    }
+                    else
+                    {
+                        prop = CreatePropBodyForTile(propMapValue, propDim, PropFactory.GetOriginFromDimensions(propDim, curPosInSim), curPosInSim);
+                    }
                     if (prop != null) { props.Add(prop); }
                 }
             }
@@ -243,25 +251,29 @@ namespace MoonTrucker.GameWorld
 
         private IDrawable CreatePropGraphicForTile(TileType tile, MapCoordinate currCoord)
         {
-            Vector2 originSimCoord = getCoordInSim(currCoord); //top left corner
-            Vector2 end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Up, currCoord)); //top left corner
+            Vector2 originSimCoord = getCoordInSim(currCoord);
             ParticleGenerator partGen;
+            Vector2 end;
             switch (tile)
             {
                 case TileType.GenUp:
-                    partGen = new ParticleGenerator(originSimCoord, end, Direction.Up, _spriteBatch, _textureManager);
+                    end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Up, currCoord));
+                    partGen = new ParticleGenerator(this, originSimCoord, end, Direction.Up, _spriteBatch, _textureManager);
                     _particleGens.Add(partGen);
                     break;
                 case TileType.GenRight:
-                    partGen = new ParticleGenerator(originSimCoord, end, Direction.Right, _spriteBatch, _textureManager);
+                    end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Right, currCoord));
+                    partGen = new ParticleGenerator(this, originSimCoord, end, Direction.Right, _spriteBatch, _textureManager);
                     _particleGens.Add(partGen);
                     break;
                 case TileType.GenDown:
-                    partGen = new ParticleGenerator(originSimCoord, end, Direction.Down, _spriteBatch, _textureManager);
+                    end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Down, currCoord));
+                    partGen = new ParticleGenerator(this, originSimCoord, end, Direction.Down, _spriteBatch, _textureManager);
                     _particleGens.Add(partGen);
                     break;
                 case TileType.GenLeft:
-                    partGen = new ParticleGenerator(originSimCoord, end, Direction.Left, _spriteBatch, _textureManager);
+                    end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Left, currCoord));
+                    partGen = new ParticleGenerator(this, originSimCoord, end, Direction.Left, _spriteBatch, _textureManager);
                     _particleGens.Add(partGen);
                     break;
                 default: return null;
@@ -343,10 +355,10 @@ namespace MoonTrucker.GameWorld
             return simDim;
         }
 
-        private Vector2 getCoordInSim(MapCoordinate cord)
+        public Vector2 getCoordInSim(MapCoordinate coord)
         {
 
-            return cord.ToVector2() * _tileWidth;
+            return coord.ToVector2() * _tileWidth;
         }
     }
 
