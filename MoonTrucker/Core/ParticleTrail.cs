@@ -9,6 +9,7 @@ public class ParticleTrail
     private int _size;
     private SpriteBatch _spriteBatch;
     private TextureManager _textureManager;
+    private bool _started = false;
 
 
     public ParticleTrail(int size, SpriteBatch spriteBatch, TextureManager texMan)
@@ -22,6 +23,7 @@ public class ParticleTrail
 
     public void CreateParticle(Vector2 pos, Color color)
     {
+        if (!_started) { _started = true; }
         _particles.Add(new Particle(_size, pos, color, _spriteBatch, _textureManager));
     }
 
@@ -51,6 +53,11 @@ public class ParticleTrail
                 p.Draw();
             }
         });
+    }
+
+    public bool isDone()
+    {
+        return _started && _particles.Count == 0;
     }
 
     public Vector2 GetCoordinateOfOldestParticle()

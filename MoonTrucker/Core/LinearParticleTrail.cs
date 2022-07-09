@@ -87,7 +87,10 @@ public class LinearParticleTrail
             _lastParticleTimeSeconds = gameTime.TotalGameTime.TotalSeconds;
             _updateCurrentPosition();
             _particleTrail.Update();
-            _createParticleAtCurrentPosition();
+            if (!isLocationBeyondGenerationBounds(_currentPosition))
+            {
+                _createParticleAtCurrentPosition();
+            }
         }
     }
 
@@ -112,17 +115,26 @@ public class LinearParticleTrail
 
     public bool IsDone()
     {
+        if (_particleTrail.isDone())
+        {
+            return true;
+        }
         var oldestParticle = _particleTrail.GetCoordinateOfOldestParticle();
+        return isLocationBeyondGenerationBounds(oldestParticle);
+    }
+
+    private bool isLocationBeyondGenerationBounds(Vector2 location)
+    {
         switch (_direction)
         {
             case Direction.Right:
-                return oldestParticle.X > (_origin.X + _generationBounds.X);
+                return location.X > (_origin.X + _generationBounds.X);
             case Direction.Down:
-                return oldestParticle.Y > (_origin.Y + _generationBounds.Y);
+                return location.Y > (_origin.Y + _generationBounds.Y);
             case Direction.Left:
-                return oldestParticle.X < _origin.X;
+                return location.X < _origin.X;
             case Direction.Up:
-                return oldestParticle.Y < _origin.Y;
+                return location.Y < _origin.Y;
             default:
                 return true;
         }
