@@ -42,7 +42,7 @@ namespace MoonTrucker.GameWorld
             ConvertUnits.SetDisplayUnitToSimUnitRatio(14f);
             createCamera(renderer);
 
-            _propFactory = new PropFactory(_world, manager, spriteBatch);   
+            _propFactory = new PropFactory(_world, manager, spriteBatch);
         }
 
         public Vector2 CurrentVehiclePosition()
@@ -106,7 +106,7 @@ namespace MoonTrucker.GameWorld
 
         public void StartGame(LevelConfig[] config)
         {
-            _levels = new GameLevels(config, TILE_WIDTH, _propFactory, _world);
+            _levels = new GameLevels(config, TILE_WIDTH, _propFactory, _world, _spriteBatch, _manager);
             MediaPlayer.Stop();
             MediaPlayer.Play(_gameMusic);
             MediaPlayer.IsRepeating = true;
@@ -137,7 +137,7 @@ namespace MoonTrucker.GameWorld
         {
             _currentLevel.Update(gameTime);
             if (_currentLevel.LevelIsFinished && !_levels.AllLevelsComplete)
-            {   
+            {
                 _currentLevel = _levels.LoadNextLevel();
                 setupVehicle();
             }

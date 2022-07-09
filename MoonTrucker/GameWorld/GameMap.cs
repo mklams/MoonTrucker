@@ -59,6 +59,10 @@ namespace MoonTrucker.GameWorld
             }
         }
 
+        public void Update(GameTime gameTime){
+            _particleGens.ForEach(pg => pg.Update(gameTime));
+        }
+
         public bool IsPlayerInWinZone()
         {
             return _finish is null ? false : _finish.IsPlayerInFinishZone();

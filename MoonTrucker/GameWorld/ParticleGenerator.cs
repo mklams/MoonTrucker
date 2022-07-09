@@ -95,7 +95,10 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
                 _direction = Direction.Right;
             }
         }
-        throw new ArgumentException("Invalid coordinates. Must be in same row/column or same space (ie X == X || Y == Y or both). origin: (" + _mapOrigin.X + ", " + _mapOrigin.Y + "); end: (" + _mapEnd.X + ", " + _mapEnd.Y + ");");
+        else
+        {
+            throw new ArgumentException("Invalid coordinates. Must be in same row/column or same space (ie X == X || Y == Y or both). origin: (" + _mapOrigin.X + ", " + _mapOrigin.Y + "); end: (" + _mapEnd.X + ", " + _mapEnd.Y + ");");
+        }
     }
 
     private Color getColorForDirection(Direction dir)
@@ -142,7 +145,7 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
 
     public void Draw()
     {
-
+        _racingParticles.ForEach(rp => rp.Draw());
     }
 
     public void Update(GameTime gameTime)

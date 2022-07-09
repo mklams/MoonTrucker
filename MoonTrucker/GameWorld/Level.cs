@@ -3,10 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Genbox.VelcroPhysics.Dynamics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MoonTrucker.Core;
 
 namespace MoonTrucker.GameWorld
 {
-    public class Level: IDrawable, IObserver<GameTarget>
+    public class Level : IDrawable, IObserver<GameTarget>
     {
         private readonly LevelConfig _config;
         private GameMap _map;
@@ -21,10 +23,11 @@ namespace MoonTrucker.GameWorld
         public int TimeLeftInSeconds => _timer.GetTimeInSeconds();
         public bool AllTargetsCollected => (_targetsHit >= _map.GetNumberOfTargets() + _config.EndlessTargetCount) && !IsEndlessLevel;
 
-        public Level(LevelConfig config, float tileWidth, PropFactory propFactory)
+        public Level(LevelConfig config, float tileWidth, PropFactory propFactory, SpriteBatch spriteBatch, TextureManager texMan)
         {
             _config = config;
             _map = new GameMap(config, tileWidth, propFactory);
+            _map.InitializeGraphics(spriteBatch, texMan);
             _score = 0;
             _targetsHit = 0;
             _timer = new Timer(TimeLimit);
@@ -56,7 +59,7 @@ namespace MoonTrucker.GameWorld
         public Vector2 GetStartPosition()
         {
             return _map.GetStartPosition();
-        }      
+        }
 
         public bool IsTimeUp()
         {
@@ -72,6 +75,7 @@ namespace MoonTrucker.GameWorld
         {
             updateFinish();
             _timer.Update(gameTime);
+            _map.Update(gameTime);
         }
 
         private void updateFinish()
@@ -116,13 +120,13 @@ namespace MoonTrucker.GameWorld
             targetHit();
             target.Hide();
 
-            if(IsEndlessLevel)
+            if (IsEndlessLevel)
             {
                 target.Show();
                 _randomTargetPosition = _map.GetRandomTargetLocation();
                 target.SetPosition(_randomTargetPosition);
             }
-            
+
         }
         #endregion
     }
@@ -153,14 +157,14 @@ namespace MoonTrucker.GameWorld
 
         public int TotalScore => _totalScore;
 
-        public GameLevels(LevelConfig[] config, float tileWidth, PropFactory propFactory, World world)
+        public GameLevels(LevelConfig[] config, float tileWidth, PropFactory propFactory, World world, SpriteBatch spriteBatch, TextureManager texMan)
         {
             _levelsConfig = config;
             _world = world;
             _levels = new Level[_levelsConfig.Length];
             for (int i = 0; i < _levels.Length; i++)
             {
-                _levels[i] = new Level(_levelsConfig[i], tileWidth, propFactory);
+                _levels[i] = new Level(_levelsConfig[i], tileWidth, propFactory, spriteBatch, texMan);
             }
         }
 
@@ -168,7 +172,7 @@ namespace MoonTrucker.GameWorld
 
         public bool AllLevelsComplete => _completedAllLevels;
 
-        public int CurrentLevelNumber => _currentLevel +1;
+        public int CurrentLevelNumber => _currentLevel + 1;
 
         public Level RestLevels()
         {
@@ -183,7 +187,7 @@ namespace MoonTrucker.GameWorld
             _totalScore += CurrentLevel.GetScore();
 
             _currentLevel++;
-            if(_currentLevel >= _levels.Length)
+            if (_currentLevel >= _levels.Length)
             {
                 _completedAllLevels = true;
                 _currentLevel--; // Don't let the index get out of bounds
