@@ -8,7 +8,7 @@ using MoonTrucker.GameWorld;
 
 public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
 {
-    private readonly int PARTICLE_LIMIT = 15;
+    private readonly int PARTICLE_LIMIT = 50;
     private GameMap _map;
     private Vector2 _mapOrigin;
     private Vector2 _mapEnd;
@@ -16,7 +16,7 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
     private Vector2 _screenGenerationBounds;
     private Direction _direction;
     private Color _color;
-    private double _minTimeBetweenRacingParticles = 0.4;
+    private double _minTimeBetweenRacingParticles = 0.6;
     private double _lastRacingParticleCreationTime = 0.0;
     private SpriteBatch _spriteBatch;
     private TextureManager _textureManager;
@@ -126,19 +126,19 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
         {
             case Direction.Right:
                 _screenTopLeftOrigin = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)_mapOrigin.Y, (int)_mapOrigin.X)));
-                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate(1, (int)(_mapEnd.X - _mapOrigin.X))));
+                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate(1, (int)(_mapEnd.X - _mapOrigin.X) + 1)));
                 break;
             case Direction.Down:
                 _screenTopLeftOrigin = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)_mapOrigin.Y, (int)_mapOrigin.X)));
-                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)(_mapEnd.Y - _mapOrigin.Y), 1)));
+                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)(_mapEnd.Y - _mapOrigin.Y) + 1, 1)));
                 break;
             case Direction.Left:
                 _screenTopLeftOrigin = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)_mapEnd.Y, (int)_mapEnd.X)));
-                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate(1, (int)(_mapOrigin.X - _mapEnd.X))));
+                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate(1, (int)(_mapOrigin.X - _mapEnd.X) + 1)));
                 break;
             case Direction.Up:
                 _screenTopLeftOrigin = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)_mapEnd.Y, (int)_mapEnd.X)));
-                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)(_mapOrigin.Y - _mapEnd.Y), 1)));
+                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)(_mapOrigin.Y - _mapEnd.Y) + 1, 1)));
                 break;
             default:
                 break;
@@ -302,7 +302,17 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
 
     private static bool shouldGenerateOn(char c)
     {
-        return (c == (char)TileType.Road)
-        || (c == (char)TileType.Hidden);
+        switch ((TileType)c)
+        {
+            case TileType.TriangleDL:
+            case TileType.TriangleDR:
+            case TileType.TriangleUL:
+            case TileType.TriangleUR:
+            case TileType.BuildingAngled:
+            case TileType.Building:
+                return false;
+            default:
+                return true;
+        }
     }
 }
