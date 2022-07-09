@@ -8,23 +8,20 @@ using MoonTrucker.GameWorld;
 public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
 {
     private readonly int PARTICLE_LIMIT = 15;
-    private Vector2 _origin;
-    private Vector2 _end;
+    private GameMap _map;
+    private Vector2 _mapOrigin;
+    private Vector2 _mapEnd;
+    private Vector2 _simTopLeftOrigin;
+    private Vector2 _simGenerationBounds;
     private Direction _direction;
     private Color _color;
-    private double _minTimeBetweenParticles = 0.15;
+    private double _minTimeBetweenRacingParticles = 0.15;
+    private double _lastRacingParticleCreationTime = 0.0;
     private SpriteBatch _spriteBatch;
     private TextureManager _textureManager;
     private List<LinearParticleTrail> _racingParticles;
-    /// <summary>
-    /// The constant value of where particles should start generating. This is in the axis perpendicular to movement.
-    /// </summary>
-    private float generateStartCoord;
+    private int _genMargin = 15;
 
-    /// <summary>
-    /// The constant value of where particles should end. This is in the axis perpendicular to movement.
-    /// </summary>
-    private float generateEndCoord;
 
 
     /// <summary>
@@ -39,16 +36,18 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
     ///    [B]
     /// 
     /// </summary>
-    /// <param name="origin">Coord of upper left corner of space</param>
-    /// <param name="end">Coord of upper left cornner of end space. Will draw particles on end space.</param>
+    /// <param name="origin">Map coord of start gen space</param>
+    /// <param name="end">Map coord of end gen space. Will draw particles on end space.</param>
     /// <param name="singleGenDir">Required param only if origin and end are the same space. Otherwise ignored. Used to make a single space particle gen in the dir you want.</param>
     /// <param name="sb"></param>
     /// <param name="texMan"></param>
-    public ParticleGenerator(Vector2 origin, Vector2 end, Direction? singleGenDir, SpriteBatch sb, TextureManager texMan)
+    public ParticleGenerator(GameMap map, Vector2 origin, Vector2 end, Direction? singleGenDir, SpriteBatch sb, TextureManager texMan)
     {
-        _origin = origin;
-        _end = end;
+        _map = map;
+        _mapOrigin = origin;
+        _mapEnd = end;
         this.parseCoordsSetDirection(singleGenDir);
+        this.calculateSimOriginGenerationBounds();
         _color = this.getColorForDirection(_direction);
         _spriteBatch = sb;
         _textureManager = texMan;
@@ -62,10 +61,10 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
     /// <exception cref="ArgumentException"></exception>
     private void parseCoordsSetDirection(Direction? singleGenDir)
     {
-        if (_origin.X == _end.X)
+        if (_mapOrigin.X == _mapEnd.X)
         {
             //Same point
-            if (_origin.Y == _end.Y)
+            if (_mapOrigin.Y == _mapEnd.Y)
             {
                 if (singleGenDir != null)
                 {
@@ -75,7 +74,7 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
                 throw new ArgumentException("If both origin and end are same space, dir must be provided.");
             }
 
-            if (_origin.Y > _end.Y)
+            if (_mapOrigin.Y > _mapEnd.Y)
             {
                 _direction = Direction.Up;
             }
@@ -84,10 +83,10 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
                 _direction = Direction.Down;
             }
         }
-        else if (_origin.Y == _end.Y)
+        else if (_mapOrigin.Y == _mapEnd.Y)
         {
             //Don't need to check if they're same point, we already know X doesn't match
-            if (_origin.X > _end.X)
+            if (_mapOrigin.X > _mapEnd.X)
             {
                 _direction = Direction.Left;
             }
@@ -96,7 +95,10 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
                 _direction = Direction.Right;
             }
         }
-        throw new ArgumentException("Invalid coordinates. Must be in same row/column or same space (ie X == X || Y == Y or both). origin: (" + _origin.X + ", " + _origin.Y + "); end: (" + _end.X + ", " + _end.Y + ");");
+        else
+        {
+            throw new ArgumentException("Invalid coordinates. Must be in same row/column or same space (ie X == X || Y == Y or both). origin: (" + _mapOrigin.X + ", " + _mapOrigin.Y + "); end: (" + _mapEnd.X + ", " + _mapEnd.Y + ");");
+        }
     }
 
     private Color getColorForDirection(Direction dir)
@@ -111,9 +113,122 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
         }
     }
 
+    private void calculateSimOriginGenerationBounds()
+    {
+        if (_mapOrigin.Equals(_mapEnd))
+        {
+            _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapOrigin.X, (int)_mapOrigin.Y));
+            _simGenerationBounds = _map.getCoordInSim(new MapCoordinate(1, 1));
+        }
+        switch (_direction)
+        {
+            case Direction.Right:
+                _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapOrigin.X, (int)_mapOrigin.Y));
+                _simGenerationBounds = _map.getCoordInSim(new MapCoordinate((int)(_mapEnd.X - _mapOrigin.X), 1));
+                break;
+            case Direction.Down:
+                _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapOrigin.X, (int)_mapOrigin.Y));
+                _simGenerationBounds = _map.getCoordInSim(new MapCoordinate(1, (int)(_mapEnd.Y - _mapOrigin.Y)));
+                break;
+            case Direction.Left:
+                _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapEnd.X, (int)_mapEnd.Y));
+                _simGenerationBounds = _map.getCoordInSim(new MapCoordinate((int)(_mapOrigin.X - _mapEnd.X), 1));
+                break;
+            case Direction.Up:
+                _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapEnd.X, (int)_mapEnd.Y));
+                _simGenerationBounds = _map.getCoordInSim(new MapCoordinate(1, (int)(_mapOrigin.Y - _mapEnd.Y)));
+                break;
+            default:
+                break;
+        }
+    }
+
     public void Draw()
     {
-        throw new NotImplementedException();
+        _racingParticles.ForEach(rp => rp.Draw());
+    }
+
+    public void Update(GameTime gameTime)
+    {
+        List<LinearParticleTrail> toRemove = new List<LinearParticleTrail>();
+        _racingParticles.ForEach((lpt) =>
+        {
+            if (lpt.IsDone())
+            {
+                toRemove.Add(lpt);
+            }
+            else
+            {
+                lpt.Update(gameTime);
+            }
+        });
+        toRemove.ForEach(lpt => _racingParticles.Remove(lpt));
+        if (_racingParticles.Count < PARTICLE_LIMIT && gameTime.TotalGameTime.TotalSeconds - _lastRacingParticleCreationTime > _minTimeBetweenRacingParticles)
+        {
+            _lastRacingParticleCreationTime = gameTime.TotalGameTime.TotalSeconds;
+            var rand = new Random();
+            if (_direction == Direction.Right)
+            {
+                _racingParticles.Add(
+                    new LinearParticleTrail(
+                        _simTopLeftOrigin,
+                        _simGenerationBounds,
+                        _direction,
+                        rand.Next((int)_simTopLeftOrigin.Y + _genMargin, (int)_simTopLeftOrigin.Y + (int)_simGenerationBounds.Y - _genMargin),
+                        _color,
+                        false,
+                        _spriteBatch,
+                        _textureManager
+                    )
+                );
+            }
+            else if (_direction == Direction.Down)
+            {
+                _racingParticles.Add(
+                    new LinearParticleTrail(
+                        _simTopLeftOrigin,
+                        _simGenerationBounds,
+                        _direction,
+                        rand.Next((int)_simTopLeftOrigin.X + _genMargin, (int)_simTopLeftOrigin.X + (int)_simGenerationBounds.X - _genMargin),
+                        _color,
+                        false,
+                        _spriteBatch,
+                        _textureManager
+                    )
+                );
+            }
+            else if (_direction == Direction.Left)
+            {
+                _racingParticles.Add(
+                    new LinearParticleTrail(
+                        _simTopLeftOrigin,
+                        _simGenerationBounds,
+                        _direction,
+                        rand.Next((int)_simTopLeftOrigin.Y + _genMargin, (int)_simTopLeftOrigin.Y + (int)_simGenerationBounds.Y - _genMargin),
+                        _color,
+                        false,
+                        _spriteBatch,
+                        _textureManager
+                    )
+                );
+            }
+            else if (_direction == Direction.Up)
+            {
+                _racingParticles.Add(
+                    new LinearParticleTrail(
+                        _simTopLeftOrigin,
+                        _simGenerationBounds,
+                        _direction,
+                        rand.Next((int)_simTopLeftOrigin.X + _genMargin, (int)_simTopLeftOrigin.X + (int)_simGenerationBounds.X - _genMargin),
+                        _color,
+                        false,
+                        _spriteBatch,
+                        _textureManager
+                    )
+                );
+            }
+        }
+        _racingParticles.ForEach(rp => rp.Update(gameTime));
     }
 
     /// <summary>

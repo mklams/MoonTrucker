@@ -18,6 +18,7 @@
     <None Remove="Vehicle\" />
     <None Remove="GameWorld\Maps\" />
     <None Remove="GameWorld\Maps\Level.txt" />
+    <None Remove="GameWorld\Maps\PartGenTest.txt" />
     <None Remove="GameWorld\Maps\Map.txt" />
     <None Remove="GameWorld\Maps\TestBench.txt" />
     <None Remove="GameWorld\Maps\TestBench_.txt" />
@@ -26,6 +27,7 @@
     <EmbeddedResource Include="Icon.ico" />
     <EmbeddedResource Include="Icon.bmp" />
     <EmbeddedResource Include="GameWorld\Maps\Level.txt" />
+    <EmbeddedResource Include="GameWorld\Maps\PartGenTest.txt" />
     <EmbeddedResource Include="GameWorld\Maps\Map.txt" />
     <EmbeddedResource Include="GameWorld\Maps\TestBench.txt" />
     <EmbeddedResource Include="GameWorld\Maps\TestBench_.txt" />
