@@ -66,20 +66,25 @@ namespace MoonTrucker.GameWorld
 
         public bool IsPlayerInWinZone()
         {
-            return _finish is null ? false : _finish.IsPlayerInFinishZone();
+            return HasFinish() ?  _finish.IsPlayerInFinishZone(): false;
         }
 
         public void ActivateFinish()
         {
-            if (_finish != null)
+            if (HasFinish())
             {
                 _finish.MakeActive();
             }
         }
 
+        public bool HasFinish()
+        {
+            return _finish != null;
+        }
+
         public Vector2 GetFinishPosition()
         {
-            return _finish is null ? new Vector2(0, 0) : _finish.GetPosition();
+            return HasFinish() ? _finish.GetPosition(): new Vector2(0, 0);
         }
 
         public int GetNumberOfTargets()

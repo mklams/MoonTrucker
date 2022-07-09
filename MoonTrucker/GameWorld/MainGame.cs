@@ -136,8 +136,8 @@ namespace MoonTrucker.GameWorld
         public void updateLevel(GameTime gameTime)
         {
             _currentLevel.Update(gameTime);
-            if (_currentLevel.LevelIsFinished && !_levels.AllLevelsComplete)
-            {
+            if (_currentLevel.IsLevelFinished() && !_levels.AllLevelsComplete)
+            {   
                 _currentLevel = _levels.LoadNextLevel();
                 setupVehicle();
             }

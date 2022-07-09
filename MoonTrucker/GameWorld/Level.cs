@@ -19,7 +19,6 @@ namespace MoonTrucker.GameWorld
 
         public bool IsEndlessLevel => _config.IsEndlessMap;
         public TimeSpan TimeLimit => TimeSpan.FromSeconds(_config.TimeLimit);
-        public bool LevelIsFinished => _map.IsPlayerInWinZone();
         public int TimeLeftInSeconds => _timer.GetTimeInSeconds();
         public bool AllTargetsCollected => (_targetsHit >= _map.GetNumberOfTargets() + _config.EndlessTargetCount) && !IsEndlessLevel;
 
@@ -64,6 +63,12 @@ namespace MoonTrucker.GameWorld
         public bool IsTimeUp()
         {
             return _timer.IsTimerUp();
+        }
+
+        public bool IsLevelFinished()
+        {
+            return _map.IsPlayerInWinZone() ||
+                (!_map.HasFinish() && AllTargetsCollected);
         }
 
         public void Draw()
