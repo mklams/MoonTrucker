@@ -116,9 +116,9 @@ public class LinearParticleTrail
         switch (_direction)
         {
             case Direction.Right:
-                return oldestParticle.X > _generationBounds.X;
+                return oldestParticle.X > (_origin.X + _generationBounds.X);
             case Direction.Down:
-                return oldestParticle.Y > _generationBounds.Y;
+                return oldestParticle.Y > (_origin.Y + _generationBounds.Y);
             case Direction.Left:
                 return oldestParticle.X < _origin.X;
             case Direction.Up:

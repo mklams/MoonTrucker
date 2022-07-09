@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Genbox.VelcroPhysics.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MoonTrucker.Core;
@@ -11,16 +12,16 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
     private GameMap _map;
     private Vector2 _mapOrigin;
     private Vector2 _mapEnd;
-    private Vector2 _simTopLeftOrigin;
-    private Vector2 _simGenerationBounds;
+    private Vector2 _screenTopLeftOrigin;
+    private Vector2 _screenGenerationBounds;
     private Direction _direction;
     private Color _color;
-    private double _minTimeBetweenRacingParticles = 0.15;
+    private double _minTimeBetweenRacingParticles = 0.4;
     private double _lastRacingParticleCreationTime = 0.0;
     private SpriteBatch _spriteBatch;
     private TextureManager _textureManager;
     private List<LinearParticleTrail> _racingParticles;
-    private int _genMargin = 15;
+    private int _genMargin = 3;
 
 
 
@@ -106,7 +107,7 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
         switch (dir)
         {
             case Direction.Up: return Color.SkyBlue;
-            case Direction.Down: return Color.LightYellow;
+            case Direction.Down: return Color.Yellow;
             case Direction.Left: return Color.LimeGreen;
             case Direction.Right: return Color.Purple;
             default: throw new ArgumentException("Invalid Direction");
@@ -115,28 +116,29 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
 
     private void calculateSimOriginGenerationBounds()
     {
+        //TODO: If we ever unflip the Row/Column .ToVector2() function error of MapCoordinate, unflip _screenTopLeftOrigin and _screenGenerationBounds (X/Y)
         if (_mapOrigin.Equals(_mapEnd))
         {
-            _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapOrigin.X, (int)_mapOrigin.Y));
-            _simGenerationBounds = _map.getCoordInSim(new MapCoordinate(1, 1));
+            _screenTopLeftOrigin = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)_mapOrigin.Y, (int)_mapOrigin.X)));
+            _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate(1, 1)));
         }
         switch (_direction)
         {
             case Direction.Right:
-                _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapOrigin.X, (int)_mapOrigin.Y));
-                _simGenerationBounds = _map.getCoordInSim(new MapCoordinate((int)(_mapEnd.X - _mapOrigin.X), 1));
+                _screenTopLeftOrigin = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)_mapOrigin.Y, (int)_mapOrigin.X)));
+                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate(1, (int)(_mapEnd.X - _mapOrigin.X))));
                 break;
             case Direction.Down:
-                _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapOrigin.X, (int)_mapOrigin.Y));
-                _simGenerationBounds = _map.getCoordInSim(new MapCoordinate(1, (int)(_mapEnd.Y - _mapOrigin.Y)));
+                _screenTopLeftOrigin = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)_mapOrigin.Y, (int)_mapOrigin.X)));
+                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)(_mapEnd.Y - _mapOrigin.Y), 1)));
                 break;
             case Direction.Left:
-                _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapEnd.X, (int)_mapEnd.Y));
-                _simGenerationBounds = _map.getCoordInSim(new MapCoordinate((int)(_mapOrigin.X - _mapEnd.X), 1));
+                _screenTopLeftOrigin = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)_mapEnd.Y, (int)_mapEnd.X)));
+                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate(1, (int)(_mapOrigin.X - _mapEnd.X))));
                 break;
             case Direction.Up:
-                _simTopLeftOrigin = _map.getCoordInSim(new MapCoordinate((int)_mapEnd.X, (int)_mapEnd.Y));
-                _simGenerationBounds = _map.getCoordInSim(new MapCoordinate(1, (int)(_mapOrigin.Y - _mapEnd.Y)));
+                _screenTopLeftOrigin = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)_mapEnd.Y, (int)_mapEnd.X)));
+                _screenGenerationBounds = ConvertUnits.ToDisplayUnits(_map.getCoordInSim(new MapCoordinate((int)(_mapOrigin.Y - _mapEnd.Y), 1)));
                 break;
             default:
                 break;
@@ -171,10 +173,10 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
             {
                 _racingParticles.Add(
                     new LinearParticleTrail(
-                        _simTopLeftOrigin,
-                        _simGenerationBounds,
+                        _screenTopLeftOrigin,
+                        _screenGenerationBounds,
                         _direction,
-                        rand.Next((int)_simTopLeftOrigin.Y + _genMargin, (int)_simTopLeftOrigin.Y + (int)_simGenerationBounds.Y - _genMargin),
+                        rand.Next((int)_screenTopLeftOrigin.Y + _genMargin, (int)_screenTopLeftOrigin.Y + (int)_screenGenerationBounds.Y - _genMargin),
                         _color,
                         false,
                         _spriteBatch,
@@ -186,10 +188,10 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
             {
                 _racingParticles.Add(
                     new LinearParticleTrail(
-                        _simTopLeftOrigin,
-                        _simGenerationBounds,
+                        _screenTopLeftOrigin,
+                        _screenGenerationBounds,
                         _direction,
-                        rand.Next((int)_simTopLeftOrigin.X + _genMargin, (int)_simTopLeftOrigin.X + (int)_simGenerationBounds.X - _genMargin),
+                        rand.Next((int)_screenTopLeftOrigin.X + _genMargin, (int)_screenTopLeftOrigin.X + (int)_screenGenerationBounds.X - _genMargin),
                         _color,
                         false,
                         _spriteBatch,
@@ -201,10 +203,10 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
             {
                 _racingParticles.Add(
                     new LinearParticleTrail(
-                        _simTopLeftOrigin,
-                        _simGenerationBounds,
+                        _screenTopLeftOrigin,
+                        _screenGenerationBounds,
                         _direction,
-                        rand.Next((int)_simTopLeftOrigin.Y + _genMargin, (int)_simTopLeftOrigin.Y + (int)_simGenerationBounds.Y - _genMargin),
+                        rand.Next((int)_screenTopLeftOrigin.Y + _genMargin, (int)_screenTopLeftOrigin.Y + (int)_screenGenerationBounds.Y - _genMargin),
                         _color,
                         false,
                         _spriteBatch,
@@ -216,10 +218,10 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
             {
                 _racingParticles.Add(
                     new LinearParticleTrail(
-                        _simTopLeftOrigin,
-                        _simGenerationBounds,
+                        _screenTopLeftOrigin,
+                        _screenGenerationBounds,
                         _direction,
-                        rand.Next((int)_simTopLeftOrigin.X + _genMargin, (int)_simTopLeftOrigin.X + (int)_simGenerationBounds.X - _genMargin),
+                        rand.Next((int)_screenTopLeftOrigin.X + _genMargin, (int)_screenTopLeftOrigin.X + (int)_screenGenerationBounds.X - _genMargin),
                         _color,
                         false,
                         _spriteBatch,

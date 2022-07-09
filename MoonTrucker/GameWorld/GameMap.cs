@@ -59,7 +59,8 @@ namespace MoonTrucker.GameWorld
             }
         }
 
-        public void Update(GameTime gameTime){
+        public void Update(GameTime gameTime)
+        {
             _particleGens.ForEach(pg => pg.Update(gameTime));
         }
 
@@ -255,29 +256,29 @@ namespace MoonTrucker.GameWorld
 
         private IDrawable CreatePropGraphicForTile(TileType tile, MapCoordinate currCoord)
         {
-            Vector2 originSimCoord = getCoordInSim(currCoord);
+            Vector2 originMapCoord = currCoord.ToVector2();
             ParticleGenerator partGen;
             Vector2 end;
             switch (tile)
             {
                 case TileType.GenUp:
-                    end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Up, currCoord));
-                    partGen = new ParticleGenerator(this, originSimCoord, end, Direction.Up, _spriteBatch, _textureManager);
+                    end = ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Up, currCoord).ToVector2();
+                    partGen = new ParticleGenerator(this, originMapCoord, end, Direction.Up, _spriteBatch, _textureManager);
                     _particleGens.Add(partGen);
                     break;
                 case TileType.GenRight:
-                    end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Right, currCoord));
-                    partGen = new ParticleGenerator(this, originSimCoord, end, Direction.Right, _spriteBatch, _textureManager);
+                    end = ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Right, currCoord).ToVector2();
+                    partGen = new ParticleGenerator(this, originMapCoord, end, Direction.Right, _spriteBatch, _textureManager);
                     _particleGens.Add(partGen);
                     break;
                 case TileType.GenDown:
-                    end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Down, currCoord));
-                    partGen = new ParticleGenerator(this, originSimCoord, end, Direction.Down, _spriteBatch, _textureManager);
+                    end = ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Down, currCoord).ToVector2();
+                    partGen = new ParticleGenerator(this, originMapCoord, end, Direction.Down, _spriteBatch, _textureManager);
                     _particleGens.Add(partGen);
                     break;
                 case TileType.GenLeft:
-                    end = getCoordInSim(ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Left, currCoord));
-                    partGen = new ParticleGenerator(this, originSimCoord, end, Direction.Left, _spriteBatch, _textureManager);
+                    end = ParticleGenerator.FindGenEndPoint(_tileMap, Direction.Left, currCoord).ToVector2();
+                    partGen = new ParticleGenerator(this, originMapCoord, end, Direction.Left, _spriteBatch, _textureManager);
                     _particleGens.Add(partGen);
                     break;
                 default: return null;
