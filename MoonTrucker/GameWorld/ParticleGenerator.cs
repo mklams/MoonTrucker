@@ -17,6 +17,7 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
     private Direction _direction;
     private Color _color;
     private double _minTimeBetweenRacingParticles = 0.6;
+    private double _nextTimeBetweenRacingParticles = 0.1;
     private double _lastRacingParticleCreationTime = 0.0;
     private SpriteBatch _spriteBatch;
     private TextureManager _textureManager;
@@ -165,10 +166,11 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
             }
         });
         toRemove.ForEach(lpt => _racingParticles.Remove(lpt));
-        if (_racingParticles.Count < PARTICLE_LIMIT && gameTime.TotalGameTime.TotalSeconds - _lastRacingParticleCreationTime > _minTimeBetweenRacingParticles)
+        if (_racingParticles.Count < PARTICLE_LIMIT && gameTime.TotalGameTime.TotalSeconds - _lastRacingParticleCreationTime > _nextTimeBetweenRacingParticles)
         {
-            _lastRacingParticleCreationTime = gameTime.TotalGameTime.TotalSeconds;
             var rand = new Random();
+            _nextTimeBetweenRacingParticles = _minTimeBetweenRacingParticles + ((double)rand.Next(-2, 6) / 10);
+            _lastRacingParticleCreationTime = gameTime.TotalGameTime.TotalSeconds;
             if (_direction == Direction.Right)
             {
                 _racingParticles.Add(
@@ -304,10 +306,6 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
     {
         switch ((TileType)c)
         {
-            case TileType.TriangleDL:
-            case TileType.TriangleDR:
-            case TileType.TriangleUL:
-            case TileType.TriangleUR:
             case TileType.BuildingAngled:
             case TileType.Building:
                 return false;
