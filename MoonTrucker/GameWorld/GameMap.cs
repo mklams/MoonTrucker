@@ -11,8 +11,7 @@ namespace MoonTrucker.GameWorld
 {
     // TODO: Move tile logic to own class
     public class GameMap : IDrawable
-    {
-        private static HashSet<char> _generatorTiles = new HashSet<char>() { (char)TileType.GenUp, (char)TileType.GenDown, (char)TileType.GenLeft, (char)TileType.GenRight };
+    { 
         private char[][] _tileMap;
         private List<IDrawable> _mapProps;
         private float _tileWidth;
@@ -145,15 +144,17 @@ namespace MoonTrucker.GameWorld
 
                     if (!isFirstInBlock(curCoordinate)) { continue; }
 
-                    Vector2 propDim = getPropDimensionsInSim(curCoordinate);
-                    Vector2 curPosInSim = getCoordInSim(curCoordinate);
+                    
                     IDrawable prop;
-                    if (_generatorTiles.Contains((char)propMapValue))
+                    HashSet<TileType> generatorTiles = new HashSet<TileType>() { TileType.GenUp, TileType.GenDown, TileType.GenLeft, TileType.GenRight };
+                    if (generatorTiles.Contains(propMapValue))
                     {
                         prop = CreatePropGraphicForTile(propMapValue, curCoordinate);
                     }
                     else
                     {
+                        Vector2 propDim = getPropDimensionsInSim(curCoordinate);
+                        Vector2 curPosInSim = getCoordInSim(curCoordinate);
                         prop = CreatePropBodyForTile(propMapValue, propDim, PropFactory.GetOriginFromDimensions(propDim, curPosInSim), curPosInSim);
                     }
                     if (prop != null) { props.Add(prop); }
