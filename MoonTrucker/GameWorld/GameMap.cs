@@ -39,6 +39,7 @@ namespace MoonTrucker.GameWorld
 
         public void Load()
         {
+            _propFactory.SetObjectColor(_level.ObstacleColor);
             _tileMap = loadMapFromFile();
             _mapProps = parseMap();
             _mapProps.AddRange(createWalls());

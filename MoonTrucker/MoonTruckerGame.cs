@@ -19,17 +19,17 @@ namespace MoonTrucker
     {
         private LevelConfig[] _debug = new LevelConfig[1]
         {
-            new LevelConfig(int.MaxValue, (/* useSolidDebug */ false) ? "MoonTrucker.GameWorld.Maps.TestBench_.txt" : "MoonTrucker.GameWorld.Maps.TestBench.txt", 10)
+            new LevelConfig(int.MaxValue, (/* useSolidDebug */ false) ? "MoonTrucker.GameWorld.Maps.TestBench_.txt" : "MoonTrucker.GameWorld.Maps.TestBench.txt", Color.DarkSalmon, 10)
         };
         private LevelConfig[] _arcadeLevels = new LevelConfig[1]
         {
-            //new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Level.txt")
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level1.txt")
+            //new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Level.txt", Color.Aqua)
+            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level1.txt", Color.Purple)
         };
 
         private LevelConfig[] _endlessLevel = new LevelConfig[1]
         {
-            new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Map.txt", 10)
+            new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Map.txt", Color.Aqua, 10)
         };
 
         private const bool _fullScreen = false;

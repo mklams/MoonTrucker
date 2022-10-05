@@ -15,12 +15,19 @@ namespace MoonTrucker.GameWorld
         private World _world;
         private SpriteBatch _spriteBatch;
         private TextureManager _textureManager;
+        private Color _objectColor;
 
         public PropFactory(World world, TextureManager manager, SpriteBatch batch)
         {
             _world = world;
             _textureManager = manager;
             _spriteBatch = batch;
+            _objectColor = Color.Aqua;
+        }
+
+        public void SetObjectColor(Color color)
+        {
+            _objectColor = color;
         }
 
         public TriangleProp CreateTriangleBody(float height, Vector2 leftCorner, TriangleShape shape)
@@ -30,12 +37,12 @@ namespace MoonTrucker.GameWorld
 
         public RectangleProp CreateRectangleBody(float width, float height, Vector2 origin)
         {
-            return new RectangleProp(width, height, origin, _world, _textureManager, _spriteBatch);
+            return new RectangleProp(width, height, origin, _world, _textureManager, _spriteBatch, _objectColor);
         }
 
         public RectangleProp CreateRectangleSensor(float width, float height, Vector2 origin)
         {
-            return new RectangleProp(width, height, origin, _world, _textureManager, _spriteBatch, true);
+            return new RectangleProp(width, height, origin, _world, _textureManager, _spriteBatch, _objectColor, true);
         }
 
         public CircleProp CreateCircleSensor(float radius, Vector2 origin, OnCollisionHandler onCollisionHandler = null, OnSeparationHandler onSeparationHandler = null)
@@ -62,14 +69,14 @@ namespace MoonTrucker.GameWorld
         private SpriteBatch _batch;
         private Color _color = Color.White;
         // TODO: Abstract away the parameters wolrd, manager, batch
-        public RectangleProp(float width, float height, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
+        public RectangleProp(float width, float height, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, Color color, bool isSensor = false)
         {
             Body = BodyFactory.CreateRectangle(world, width, height, 1f, origin);
             Body.BodyType = BodyType.Static;
             Body.Restitution = 0f;//your buildings were bouncy with Restitution=1.
             Body.Friction = .5f;
             Body.IsSensor = isSensor;
-            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aqua);
+            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, color, color);
             _batch = batch;
 
             Body.OnCollision = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
