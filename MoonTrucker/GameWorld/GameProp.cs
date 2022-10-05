@@ -67,7 +67,7 @@ namespace MoonTrucker.GameWorld
         public Body Body;
         private Texture2D _sprite;
         private SpriteBatch _batch;
-        private Color _color = Color.White;
+        private Color _maskColor = Color.White;
         // TODO: Abstract away the parameters wolrd, manager, batch
         public RectangleProp(float width, float height, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, Color color, bool isSensor = false)
         {
@@ -83,7 +83,7 @@ namespace MoonTrucker.GameWorld
             {
                 if (isSensor)
                 {
-                    _color = Color.Tomato;
+                    _maskColor = new Color(Color.Gray, 0.5f);
                 }
             };
 
@@ -91,7 +91,7 @@ namespace MoonTrucker.GameWorld
             {
                 if (isSensor)
                 {
-                    _color = Color.White;
+                    _maskColor = Color.White;
                 }
             };
         }
@@ -99,7 +99,7 @@ namespace MoonTrucker.GameWorld
         public void Draw()
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _color, Body.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _maskColor, Body.Rotation, origin, 1f, SpriteEffects.None, 0f);
         }
     }
 

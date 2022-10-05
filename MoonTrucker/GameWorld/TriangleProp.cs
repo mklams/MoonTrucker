@@ -80,7 +80,7 @@ namespace MoonTrucker.GameWorld
         public Body Body;
         private Texture2D _sprite;
         private SpriteBatch _batch;
-        private Color _color = Color.White;
+        private Color _maksColor = Color.White;
         // TODO: Abstract away the parameters wolrd, manager, batch
         public TriangleProp(float height, Vector2 leftCorner, World world, TextureManager manager, SpriteBatch batch, TriangleShape shape, Color color, bool isSensor = false)
         {
@@ -97,7 +97,7 @@ namespace MoonTrucker.GameWorld
             {
                 if (isSensor)
                 {
-                    _color = Color.Tomato;
+                    _maksColor = new Color(Color.Black, 0.2f);
                 }
             };
 
@@ -105,13 +105,13 @@ namespace MoonTrucker.GameWorld
             {
                 if (isSensor)
                 {
-                    _color = Color.White;
+                    _maksColor = Color.White;
                 }
             };
         }
         public void Draw()
         {
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _color, Body.Rotation, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _maksColor, Body.Rotation, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
         }
     }
 }
