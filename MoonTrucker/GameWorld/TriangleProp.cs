@@ -82,7 +82,7 @@ namespace MoonTrucker.GameWorld
         private SpriteBatch _batch;
         private Color _color = Color.White;
         // TODO: Abstract away the parameters wolrd, manager, batch
-        public TriangleProp(float height, Vector2 leftCorner, World world, TextureManager manager, SpriteBatch batch, TriangleShape shape, bool isSensor = false)
+        public TriangleProp(float height, Vector2 leftCorner, World world, TextureManager manager, SpriteBatch batch, TriangleShape shape, Color color, bool isSensor = false)
         {
             Vertices vertices = GetVerticesForTriangleShape(shape, height);
             Body = BodyFactory.CreatePolygon(world, vertices, 1f, leftCorner);
@@ -90,7 +90,7 @@ namespace MoonTrucker.GameWorld
             //Body.Restitution = 0f;
             Body.Friction = .5f;
             Body.IsSensor = false;
-            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.Aqua, Color.Aqua);
+            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, color, Color.Black);
             _batch = batch;
 
             Body.OnCollision = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
