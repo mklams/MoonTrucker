@@ -21,10 +21,11 @@ namespace MoonTrucker
         {
             new LevelConfig(int.MaxValue, (/* useSolidDebug */ false) ? "MoonTrucker.GameWorld.Maps.TestBench_.txt" : "MoonTrucker.GameWorld.Maps.TestBench.txt", Color.DarkSalmon, 10)
         };
-        private LevelConfig[] _arcadeLevels = new LevelConfig[1]
+        private LevelConfig[] _arcadeLevels = new LevelConfig[2]
         {
-            //new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Level.txt", Color.Aqua)
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level1.txt", Color.Purple)
+            //new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Level.txt")
+            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level1.txt", Color.Aqua),
+            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level2.txt", Color.MediumPurple)
         };
 
         private LevelConfig[] _endlessLevel = new LevelConfig[1]
