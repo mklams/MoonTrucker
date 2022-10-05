@@ -90,7 +90,7 @@ namespace MoonTrucker.GameWorld
             //Body.Restitution = 0f;
             Body.Friction = .5f;
             Body.IsSensor = false;
-            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, color, color);
+            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, color, Color.Black);
             _batch = batch;
 
             Body.OnCollision = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
