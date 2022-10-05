@@ -32,7 +32,7 @@ namespace MoonTrucker.GameWorld
 
         public TriangleProp CreateTriangleBody(float height, Vector2 leftCorner, TriangleShape shape)
         {
-            return new TriangleProp(height, leftCorner, _world, _textureManager, _spriteBatch, shape);
+            return new TriangleProp(height, leftCorner, _world, _textureManager, _spriteBatch, shape, _objectColor);
         }
 
         public RectangleProp CreateRectangleBody(float width, float height, Vector2 origin)
