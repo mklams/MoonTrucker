@@ -8,7 +8,7 @@ using MoonTrucker.GameWorld;
 
 public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
 {
-    private readonly int PARTICLE_LIMIT = 50;
+    private readonly int PARTICLE_LIMIT = 100;
     private GameMap _map;
     private Vector2 _mapOrigin;
     private Vector2 _mapEnd;
@@ -16,7 +16,7 @@ public class ParticleGenerator : MoonTrucker.GameWorld.IDrawable
     private Vector2 _screenGenerationBounds;
     private Direction _direction;
     private Color _color;
-    private double _minTimeBetweenRacingParticles = 0.6;
+    private double _minTimeBetweenRacingParticles = 0.3;
     private double _nextTimeBetweenRacingParticles = 0.1;
     private double _lastRacingParticleCreationTime = 0.0;
     private SpriteBatch _spriteBatch;
