@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MoonTrucker.GameWorld;
-using System;
-using MoonTrucker.Core;
 using Microsoft.Xna.Framework.Media;
+using MoonTrucker.Core;
+using MoonTrucker.GameWorld;
 
 namespace MoonTrucker
 {
@@ -17,24 +17,30 @@ namespace MoonTrucker
 
     public class MoonTruckerGame : Game
     {
-        private LevelConfig[] _debug = new LevelConfig[1]
-        {
-            new LevelConfig(int.MaxValue, (/* useSolidDebug */ false) ? "MoonTrucker.GameWorld.Maps.TestBench_.txt" : "MoonTrucker.GameWorld.Maps.TestBench.txt", Color.DarkSalmon, 10)
-        };
-        private LevelConfig[] _arcadeLevels = new LevelConfig[5]
-        {
-            //new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Level.txt")
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level1.txt", Color.Aqua),
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level2.txt", Color.MediumPurple),
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level3.txt", Color.ForestGreen),
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level4.txt", Color.Salmon),
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level5.txt", Color.Orange)
-        };
+        private GameConfig _debug = new GameConfig
+        (
+            new LevelConfig[] { new LevelConfig((/* useSolidDebug */ false) ? "MoonTrucker.GameWorld.Maps.TestBench_.txt" : "MoonTrucker.GameWorld.Maps.TestBench.txt", Color.DarkSalmon, 10) },
+            int.MaxValue
+        );
 
-        private LevelConfig[] _endlessLevel = new LevelConfig[1]
-        {
-            new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Map.txt", Color.Aqua, 10)
-        };
+        private GameConfig _arcade = new GameConfig
+        (
+            new LevelConfig[] {
+                //new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Level.txt")
+            new LevelConfig("MoonTrucker.GameWorld.Maps.ArcadeMode.Level1.txt", Color.Aqua),
+            new LevelConfig("MoonTrucker.GameWorld.Maps.ArcadeMode.Level2.txt", Color.MediumPurple),
+            new LevelConfig("MoonTrucker.GameWorld.Maps.ArcadeMode.Level3.txt", Color.ForestGreen),
+            new LevelConfig("MoonTrucker.GameWorld.Maps.ArcadeMode.Level4.txt", Color.Salmon),
+            new LevelConfig("MoonTrucker.GameWorld.Maps.ArcadeMode.Level5.txt", Color.Orange)
+            },
+            60
+        );
+
+        private GameConfig _endless = new GameConfig
+        (
+            new LevelConfig[] { new LevelConfig("MoonTrucker.GameWorld.Maps.Map.txt", Color.Aqua, 10) },
+            15
+        );
 
         private const bool _fullScreen = false;
         private const int _resolutionWidthPx = 1920;
@@ -157,11 +163,11 @@ namespace MoonTrucker
         private void startGame()
         {
             var gameMode = _startMenu.SelectedGameMode;
-            var levels = (gameMode == GameMode.Arcade) ? _arcadeLevels :
+            var gameConfig = (gameMode == GameMode.Arcade) ? _arcade :
                          (gameMode == GameMode.Debug) ? _debug :
-                         _endlessLevel;
+                         _endless;
             _mainGame.SetMode(gameMode);
-            _mainGame.StartGame(levels);
+            _mainGame.StartGame(gameConfig);
             _gameState = GameState.Playing;
         }
 

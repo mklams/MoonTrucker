@@ -24,7 +24,6 @@ namespace MoonTrucker.GameWorld
         private Camera2D _camera;
         private SpriteBatch _spriteBatch;
         private TextureManager _manager;
-        private Level _currentLevel;
         private Song _gameMusic;
         private GameMode _mode = GameMode.Arcade;
 
@@ -64,7 +63,7 @@ namespace MoonTrucker.GameWorld
 
         public float GetTimeLeft()
         {
-            return _currentLevel.TimeLeftInSeconds;
+            return _levels.TimeLeftInSeconds;
         }
 
         public int GetCurrentLevelNumber()
@@ -75,54 +74,54 @@ namespace MoonTrucker.GameWorld
         public int GetScore()
         {
             // TODO: MainGame should not need to figure out how to calculate the current score
-            return _levels.TotalScore + _currentLevel.GetScore();
+            return _levels.TotalScore + _levels.CurrentLevel.GetScore();
         }
 
         public bool PlayerWon => _levels.AllLevelsComplete;
 
         public float GetAngleFromVehicleToDestination()
         {
-            return _currentLevel.AllTargetsCollected ? GetAngleFromVehicleToFinish() : GetAngleFromVehicleToTarget();
+            return _levels.CurrentLevel.AllTargetsCollected ? GetAngleFromVehicleToFinish() : GetAngleFromVehicleToTarget();
         }
 
         private float GetAngleFromVehicleToFinish()
         {
-            var finishPosition = _currentLevel.GetFinishPosition();
+            var finishPosition = _levels.CurrentLevel.GetFinishPosition();
             var vehiclePosition = _vehicle.GetPosition();
             return VectorHelpers.GetAngleFromAToB(vehiclePosition, finishPosition);
         }
 
         private float GetAngleFromVehicleToTarget()
         {
-            var targetPosition = _currentLevel.GetTargetPosition();
+            var targetPosition = _levels.CurrentLevel.GetTargetPosition();
             var vehiclePosition = _vehicle.GetPosition();
             return VectorHelpers.GetAngleFromAToB(vehiclePosition, targetPosition);
         }
 
         public bool ShowArrow()
         {
-            return _currentLevel.ShowArrow();
+            return _levels.CurrentLevel.ShowArrow();
         }
 
-        public void StartGame(LevelConfig[] config)
+        public void StartGame(GameConfig config)
         {
             _levels = new GameLevels(config, TILE_WIDTH, _propFactory, _world, _spriteBatch, _manager);
             MediaPlayer.Stop();
             MediaPlayer.Play(_gameMusic);
             MediaPlayer.IsRepeating = true;
-            _currentLevel = _levels.RestLevels();
+            _levels.RestLevels();
             setupVehicle();
         }
 
         private void setupVehicle()
         {
-            _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _currentLevel.GetStartPosition(), _world, _manager, _spriteBatch);
+            _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _levels.CurrentLevel.GetStartPosition(), _world, _manager, _spriteBatch);
             _camera.SetPosition(_vehicle.GetPosition());
         }
 
         public bool IsGameOver()
         {
-            return _currentLevel.IsTimeUp() || _levels.AllLevelsComplete;
+            return _levels.IsTimeUp() || _levels.AllLevelsComplete;
         }
 
         public void Update(GameTime gameTime, KeyboardState newKeyboardState)
@@ -135,10 +134,10 @@ namespace MoonTrucker.GameWorld
 
         public void updateLevel(GameTime gameTime)
         {
-            _currentLevel.Update(gameTime);
-            if (_currentLevel.IsLevelFinished() && !_levels.AllLevelsComplete)
+            _levels.Update(gameTime);
+            if (_levels.CurrentLevel.IsLevelFinished() && !_levels.AllLevelsComplete)
             {   
-                _currentLevel = _levels.LoadNextLevel();
+                _levels.LoadNextLevel();
                 setupVehicle();
             }
         }
@@ -147,7 +146,7 @@ namespace MoonTrucker.GameWorld
         {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
               null, _camera.GetViewTransformationMatrix());
-            _currentLevel.Draw();
+            _levels.CurrentLevel.Draw();
             _vehicle.Draw();
             _spriteBatch.End();
         }
