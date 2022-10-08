@@ -27,6 +27,10 @@ namespace MoonTrucker.GameWorld
         private Level _currentLevel;
         private Song _gameMusic;
         private GameMode _mode = GameMode.Arcade;
+        private DateTime _startTime = DateTime.Now;
+        private DateTime _endTime = DateTime.MaxValue;
+
+        public TimeSpan PlayTime => _endTime - _startTime;
 
         public GameMode Mode => _mode;
 
@@ -43,6 +47,7 @@ namespace MoonTrucker.GameWorld
             createCamera(renderer);
 
             _propFactory = new PropFactory(_world, manager, spriteBatch);
+            var test = PlayTime.TotalMilliseconds;
         }
 
         public Vector2 CurrentVehiclePosition()
@@ -72,10 +77,10 @@ namespace MoonTrucker.GameWorld
             return _levels.CurrentLevelNumber;
         }
 
-        public int GetScore()
+        public long GetScore()
         {
             // TODO: MainGame should not need to figure out how to calculate the current score
-            return _levels.TotalScore + _currentLevel.GetScore();
+            return _mode == GameMode.Arcade? (long) PlayTime.TotalSeconds : _levels.TotalScore + _currentLevel.GetScore();
         }
 
         public bool PlayerWon => _levels.AllLevelsComplete;
@@ -106,12 +111,13 @@ namespace MoonTrucker.GameWorld
 
         public void StartGame(LevelConfig[] config)
         {
-            _levels = new GameLevels(config, TILE_WIDTH, _propFactory, _world, _spriteBatch, _manager);
+            _levels = new GameLevels(config, Mode, TILE_WIDTH, _propFactory, _world, _spriteBatch, _manager);
             MediaPlayer.Stop();
             MediaPlayer.Play(_gameMusic);
             MediaPlayer.IsRepeating = true;
             _currentLevel = _levels.RestLevels();
             setupVehicle();
+            _startTime = DateTime.Now;
         }
 
         private void setupVehicle()
@@ -131,6 +137,11 @@ namespace MoonTrucker.GameWorld
             _vehicle.UpdateVehicle(newKeyboardState, gameTime);
             _world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             _camera.Position = ConvertUnits.ToDisplayUnits(_vehicle.GetPosition());
+
+            if (_levels.AllLevelsComplete)
+            {
+                _endTime = DateTime.Now;
+            }
         }
 
         public void updateLevel(GameTime gameTime)

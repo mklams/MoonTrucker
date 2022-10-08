@@ -16,15 +16,17 @@ namespace MoonTrucker.GameWorld
         private int _targetsHit;
         private Timer _timer;
         private Vector2 _randomTargetPosition;
+        private GameMode _gameMode;
 
         public bool IsEndlessLevel => _config.IsEndlessMap;
         public TimeSpan TimeLimit => TimeSpan.FromSeconds(_config.TimeLimit);
         public int TimeLeftInSeconds => _timer.GetTimeInSeconds();
         public bool AllTargetsCollected => (_targetsHit >= _map.GetNumberOfTargets() + _config.EndlessTargetCount) && !IsEndlessLevel;
 
-        public Level(LevelConfig config, float tileWidth, PropFactory propFactory, SpriteBatch spriteBatch, TextureManager texMan)
+        public Level(LevelConfig config, GameMode mode, float tileWidth, PropFactory propFactory, SpriteBatch spriteBatch, TextureManager texMan)
         {
             _config = config;
+            _gameMode = mode;
             _map = new GameMap(config, tileWidth, propFactory);
             _map.InitializeGraphics(spriteBatch, texMan);
             _score = 0;
@@ -37,7 +39,11 @@ namespace MoonTrucker.GameWorld
         {
             _map.Load();
             _map.SubscribeToTargets(this);
-            _map.SubscribeToTargets(_timer);
+            if(_gameMode != GameMode.Arcade)
+            {
+                _map.SubscribeToTargets(_timer);
+            }
+            
         }
 
         public int GetScore()
@@ -164,14 +170,14 @@ namespace MoonTrucker.GameWorld
 
         public int TotalScore => _totalScore;
 
-        public GameLevels(LevelConfig[] config, float tileWidth, PropFactory propFactory, World world, SpriteBatch spriteBatch, TextureManager texMan)
+        public GameLevels(LevelConfig[] config, GameMode mode, float tileWidth, PropFactory propFactory, World world, SpriteBatch spriteBatch, TextureManager texMan)
         {
             _levelsConfig = config;
             _world = world;
             _levels = new Level[_levelsConfig.Length];
             for (int i = 0; i < _levels.Length; i++)
             {
-                _levels[i] = new Level(_levelsConfig[i], tileWidth, propFactory, spriteBatch, texMan);
+                _levels[i] = new Level(_levelsConfig[i], mode, tileWidth, propFactory, spriteBatch, texMan);
             }
         }
 
