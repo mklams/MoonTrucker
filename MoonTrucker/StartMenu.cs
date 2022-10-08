@@ -127,10 +127,10 @@ namespace MoonTrucker
             _spriteBatch.DrawString(_font, highScoreMessage, messagePosition, _baseColor, 0f, Vector2.Zero, _highScoreTitleScale, SpriteEffects.None, 1);
 
             var scoreYPosition = (messagePosition.Y + 2 * spacing);
-            foreach (Score score in scores.GetTopScores())
+            foreach (Score score in scores.GetAllTopScores())
             {
                 scoreYPosition += spacing;
-                var scoreMessage = $"{score.Name}    {score.HitTotal}";
+                var scoreMessage = $"{score.PlayerName}    {score.Value}";
                 _spriteBatch.DrawString(_font, scoreMessage, new Vector2(getCenterXPositionForText(scoreMessage, _highScoreNameScale), scoreYPosition), _baseColor, 0, Vector2.Zero, _highScoreNameScale, SpriteEffects.None, 1);
             }
         }

@@ -58,7 +58,7 @@ namespace MoonTrucker.GameWorld
                     if(_highScoreName.Length > 0 && newKeyboardState.IsKeyDown(Keys.Enter))
                     {
                         _highScores.AddScore(new Score(_game.GetScore(), _highScoreName, _game.Mode));
-                        _gameSave.Save(_highScores.GetTopScores());
+                        _gameSave.Save(_highScores.GetAllTopScores());
 
                         _highScoreName = "";
                     }
@@ -80,7 +80,12 @@ namespace MoonTrucker.GameWorld
 
         public void Draw(GameState state)
         {
-            drawScore();
+            if(_game.Mode != GameMode.Arcade)
+            {
+                // Arcade mode only tacks fastest time not score
+                drawScore();
+            }
+            
             drawTimer();
             if(_game.ShowArrow())
             {
@@ -122,10 +127,17 @@ namespace MoonTrucker.GameWorld
 
         private void drawGameOver()
         {
-            string message = _game.PlayerWon ? "You Won! You are the raddest street racer!" : "Game Over";
-            var messagePosition = new Vector2(getCenterXPositionForText(message, _gameOverScale), _screenHeightPx * (1 / 3f));
+            string winnerMessage = _game.PlayerWon ? "You Won! You are the raddest street racer!" : "Game Over";
+            
+            var messagePosition = new Vector2(getCenterXPositionForText(winnerMessage, _gameOverScale), _screenHeightPx * (1 / 3f));
+            _spriteBatch.DrawString(_font, winnerMessage, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1);
 
-            _spriteBatch.DrawString(_font, message, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1);
+            if (_game.PlayerWon && _game.Mode == GameMode.Arcade)
+            {
+                messagePosition = new Vector2(getCenterXPositionForText(winnerMessage, _gameOverScale), _screenHeightPx * 0.42f);
+                var completionTimeMessage = $" You race won in {_game.GetScore()} seconds";
+                _spriteBatch.DrawString(_font, completionTimeMessage, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1);
+            }  
         }
 
         private void drawHighScore()

@@ -10,14 +10,15 @@ namespace MoonTrucker.Core
 {
     public class Score
     {
-        public int HitTotal;
-        public string Name;
+        public long Value;
+        public string PlayerName;
         public GameMode Mode;
+        public bool LowerIsBetter;
 
-        public Score(int pointTotal, string name, GameMode mode = GameMode.Arcade)
+        public Score(long score, string name, GameMode mode)
         {
-            HitTotal = pointTotal;
-            Name = name;
+            Value = score;
+            PlayerName = name;
             Mode = mode;
         }
         public Score() { }
@@ -34,7 +35,6 @@ namespace MoonTrucker.Core
             Scores = previousScores;
         }
 
-
         public HighScores() : this(new List<Score>()) { }
 
         public int HighScoreCountForMode(GameMode mode)
@@ -42,22 +42,29 @@ namespace MoonTrucker.Core
             return Scores.Where(score => score.Mode == mode).Count();
         }
 
-        public List<Score> GetTopScores(int topNumber = TOTAL_HIGH_SCORES)
+        public List<Score> GetAllTopScores()
         {
-            return (from score in Scores
-                    orderby score.HitTotal descending
-                    select score).Take(topNumber).ToList();
+            List<Score> topScores = new List<Score>();
+            foreach(GameMode mode in Enum.GetValues(typeof(GameMode)))
+            {
+                topScores.AddRange(GetTopScoresForMode(mode));
+            }
+
+            return topScores;
         }
 
-        public List<Score> GetTopScoresForMode(GameMode mode, int topNumber = TOTAL_HIGH_SCORES)
+        public List<Score> GetTopScoresForMode(GameMode mode)
         {
-            return (from score in Scores
+            var scoreForMode = from score in Scores
                     where score.Mode == mode
-                    orderby score.HitTotal descending
-                    select score).Take(topNumber).ToList();
+                    orderby score.Value descending
+                    select score;
+
+            var orderedScores = IsLowerBetter(mode) ? scoreForMode.OrderBy(score => score.Value) : scoreForMode.OrderByDescending(score => score.Value);
+            return orderedScores.Take(TOTAL_HIGH_SCORES).ToList();
         }
 
-        public bool IsATopScore(int score, GameMode mode)
+        public bool IsATopScore(long score, GameMode mode)
         {
             if(score == 0)
             {
@@ -66,8 +73,8 @@ namespace MoonTrucker.Core
 
             if(HighScoreCountForMode(mode) > TOTAL_HIGH_SCORES)
             {
-                var scores = GetTopScoresForMode(mode, TOTAL_HIGH_SCORES);
-                return scores.Last().HitTotal < score;
+                var scores = GetTopScoresForMode(mode);
+                return IsLowerBetter(mode) ? scores.Last().Value > score : scores.Last().Value < score;
             }
 
             return true;
@@ -76,6 +83,12 @@ namespace MoonTrucker.Core
         public void AddScore(Score score)
         {
             Scores.Add(score);
+        }
+
+        private bool IsLowerBetter(GameMode mode)
+        {
+            // TODO: HighScore should know need to know which modes use LowerIsBetter
+            return mode == GameMode.Arcade;
         }
     }
 
