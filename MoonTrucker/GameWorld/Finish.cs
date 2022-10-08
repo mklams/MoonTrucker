@@ -3,17 +3,20 @@ using Genbox.VelcroPhysics.Collision.ContactSystem;
 using Genbox.VelcroPhysics.Collision.Handlers;
 using Genbox.VelcroPhysics.Dynamics;
 using Microsoft.Xna.Framework;
+using MoonTrucker.Core;
 
 namespace MoonTrucker.GameWorld
 {
-    public class Finish: IDrawable
+    public class Finish : IDrawable
     {
         private CircleProp _body;
         private bool _isActive = false; // Default to not having the finish be active
         private bool _playerHit = false;
+        private TextureManager _textureManager;
 
-        public Finish(float radius, Vector2 position, PropFactory bodyFactory)
+        public Finish(float radius, Vector2 position, PropFactory bodyFactory, TextureManager texMan)
         {
+            _textureManager = texMan;
             OnCollisionHandler onHitAction = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
             {
                 if (_isActive)
@@ -27,8 +30,8 @@ namespace MoonTrucker.GameWorld
                 _playerHit = false;
             };
 
-            _body = bodyFactory.CreateCircleSensor(radius, position, onHitAction);
-            _body.SetColor(Color.Green);
+            _body = bodyFactory.CreateCircleSensor(radius, position, _textureManager.GetTexture("CheckeredFlag"), onHitAction);
+            _body.SetColor(Color.White);
         }
 
         public Vector2 GetPosition()
@@ -58,7 +61,7 @@ namespace MoonTrucker.GameWorld
             {
                 _body.Draw();
             }
-            
+
         }
     }
 }

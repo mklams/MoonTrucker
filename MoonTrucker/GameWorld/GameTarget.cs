@@ -28,13 +28,13 @@ namespace MoonTrucker.GameWorld
                 }
                 HitTotal++;
             };
-            
-            _body = bodyFactory.CreateCircleSensor(radius, position, onHitAction);
+
+            _body = bodyFactory.CreateCircleSensor(radius, position, null, onHitAction);
         }
 
         public void Draw()
         {
-            if(!_isHidden)
+            if (!_isHidden)
             {
                 _body.Draw();
             }

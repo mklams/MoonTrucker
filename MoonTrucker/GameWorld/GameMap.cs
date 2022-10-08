@@ -255,7 +255,7 @@ namespace MoonTrucker.GameWorld
                 case TileType.Hidden:
                     return _propFactory.CreateRectangleSensor(propDim.X, propDim.Y, origin);
                 case TileType.Finish:
-                    _finish = new Finish(propDim.X / 2f, origin, _propFactory);
+                    _finish = new Finish(propDim.X / 2f, origin, _propFactory, _textureManager);
                     return _finish;
                 case TileType.Target:
                     var target = new GameTarget(_tileWidth / 4f, origin, _propFactory);

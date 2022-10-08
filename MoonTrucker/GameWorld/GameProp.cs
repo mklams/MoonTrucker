@@ -45,9 +45,9 @@ namespace MoonTrucker.GameWorld
             return new RectangleProp(width, height, origin, _world, _textureManager, _spriteBatch, _objectColor, true);
         }
 
-        public CircleProp CreateCircleSensor(float radius, Vector2 origin, OnCollisionHandler onCollisionHandler = null, OnSeparationHandler onSeparationHandler = null)
+        public CircleProp CreateCircleSensor(float radius, Vector2 origin, Texture2D? texture, OnCollisionHandler onCollisionHandler = null, OnSeparationHandler onSeparationHandler = null)
         {
-            var prop = new CircleProp(radius, origin, _world, _textureManager, _spriteBatch, true);
+            var prop = new CircleProp(radius, origin, _world, _textureManager, _spriteBatch, texture, true);
 
             // TODO: Violates demeters law
             prop.Body.OnCollision = onCollisionHandler;
@@ -110,14 +110,14 @@ namespace MoonTrucker.GameWorld
         private SpriteBatch _batch;
         private Color _color = Color.White;
         // TODO: Abstract away the parameters wolrd, manager, batch
-        public CircleProp(float radius, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, bool isSensor = false)
+        public CircleProp(float radius, Vector2 origin, World world, TextureManager manager, SpriteBatch batch, Texture2D? texture, bool isSensor = false)
         {
             Body = BodyFactory.CreateCircle(world, radius, 1f, origin);
             Body.BodyType = BodyType.Static;
             Body.Restitution = 1f;
             Body.Friction = 1f;
             Body.IsSensor = isSensor;
-            _sprite = manager.TextureFromShape(Body.FixtureList[0].Shape, Color.White, Color.White);
+            _sprite = (texture != null) ? texture : manager.TextureFromShape(Body.FixtureList[0].Shape, Color.White, Color.White);
             _batch = batch;
         }
 
