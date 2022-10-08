@@ -150,12 +150,15 @@ namespace MoonTrucker.GameWorld
         public bool IsEndlessMap => EndlessTargetCount > 0;
         public readonly Color ObstacleColor;
 
-        public LevelConfig(int timeLimt, string mapName, Color obstacleColor, int endlessTargetCount = 0)
+        public readonly Color ContrastColor;
+
+        public LevelConfig(int timeLimt, string mapName, Color obstacleColor, Color contrastColor, int endlessTargetCount = 0)
         {
             TimeLimit = timeLimt;
             MapName = mapName;
             EndlessTargetCount = endlessTargetCount;
             ObstacleColor = obstacleColor;
+            ContrastColor = contrastColor;
         }
     }
 
