@@ -48,7 +48,7 @@ namespace MoonTrucker.GameWorld
             _tileMap = loadMapFromFile();
             _mapProps = parseMap();
             _mapProps.AddRange(createWalls());
-            _mapProps.Add(new GridOverlay(this, _spriteBatch, _textureManager));
+            _mapProps.Add(new GridOverlay(this, _level.ContrastColor, _spriteBatch, _textureManager));
         }
 
         public void InitializeGraphics(SpriteBatch sb, TextureManager texMan)

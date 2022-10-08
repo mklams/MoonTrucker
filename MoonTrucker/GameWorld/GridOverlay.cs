@@ -11,15 +11,17 @@ public class GridOverlay : MoonTrucker.GameWorld.IDrawable
     private SpriteBatch _spriteBatch;
     private TextureManager _textureManager;
     private List<Rectangle> _grid;
+    private Color _color;
     private float _tileWidth;
     private float _infiniteIllusionBuffer = 6;
 
     private Texture2D _pixel;
     private Vector2 _mapSize;
 
-    public GridOverlay(GameMap gm, SpriteBatch sb, TextureManager texMan)
+    public GridOverlay(GameMap gm, Color color, SpriteBatch sb, TextureManager texMan)
     {
         _pixel = texMan.GetTexture("pixel");
+        _color = color;
         _gameMap = gm;
         _tileWidth = _gameMap.GetTileWidth();
         _infiniteIllusionBuffer *= _tileWidth;
@@ -32,7 +34,7 @@ public class GridOverlay : MoonTrucker.GameWorld.IDrawable
 
     public void Draw()
     {
-        _grid.ForEach(r => _spriteBatch.Draw(_pixel, r, Color.Green));
+        _grid.ForEach(r => _spriteBatch.Draw(_pixel, r, _color));
     }
 
     private void initialize()
