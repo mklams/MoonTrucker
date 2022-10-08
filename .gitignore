@@ -118,3 +118,5 @@ MoonTrucker/bin/Debug/netcoreapp3.1/Content/GameAssets/ArrowLeft.xnb
 MoonTrucker/Content/obj/DesktopGL/Content/GameAssets/ArrowLeft.mgcontent
 MoonTrucker/Content/obj/DesktopGL/Content/GameAssets/ArrowRight.mgcontent
 MoonTrucker/bin/Debug/netcoreapp3.1/Content/GameAssets/ArrowRight.xnb
+MoonTrucker/bin/Debug/netcoreapp3.1/Content/GameAssets/CheckeredFlag.xnb
+MoonTrucker/Content/bin/DesktopGL/Content/GameAssets/CheckeredFlag.xnb
