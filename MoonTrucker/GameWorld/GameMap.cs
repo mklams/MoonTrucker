@@ -11,7 +11,7 @@ namespace MoonTrucker.GameWorld
 {
     // TODO: Move tile logic to own class
     public class GameMap : IDrawable
-    { 
+    {
         private char[][] _tileMap;
         private List<IDrawable> _mapProps;
         private float _tileWidth;
@@ -25,8 +25,13 @@ namespace MoonTrucker.GameWorld
         private SpriteBatch _spriteBatch;
         private TextureManager _textureManager;
 
-        private float _mapHeight => _tileMap.Length * _tileWidth;
-        private float _mapWidth => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
+        public float Height => _tileMap.Length * _tileWidth;
+        public float Width => _tileMap.Select(mapRow => mapRow.Length).Max() * _tileWidth;
+
+        public float GetTileWidth()
+        {
+            return _tileWidth;
+        }
 
         public GameMap(LevelConfig level, float tileWidth, PropFactory propFactory)
         {
@@ -43,6 +48,7 @@ namespace MoonTrucker.GameWorld
             _tileMap = loadMapFromFile();
             _mapProps = parseMap();
             _mapProps.AddRange(createWalls());
+            _mapProps.Add(new GridOverlay(this, _spriteBatch, _textureManager));
         }
 
         public void InitializeGraphics(SpriteBatch sb, TextureManager texMan)
@@ -66,7 +72,7 @@ namespace MoonTrucker.GameWorld
 
         public bool IsPlayerInWinZone()
         {
-            return HasFinish() ?  _finish.IsPlayerInFinishZone(): false;
+            return HasFinish() ? _finish.IsPlayerInFinishZone() : false;
         }
 
         public void ActivateFinish()
@@ -84,7 +90,7 @@ namespace MoonTrucker.GameWorld
 
         public Vector2 GetFinishPosition()
         {
-            return HasFinish() ? _finish.GetPosition(): new Vector2(0, 0);
+            return HasFinish() ? _finish.GetPosition() : new Vector2(0, 0);
         }
 
         public int GetNumberOfTargets()
@@ -145,7 +151,7 @@ namespace MoonTrucker.GameWorld
 
                     if (!isFirstInBlock(curCoordinate)) { continue; }
 
-                    
+
                     IDrawable prop;
                     HashSet<TileType> generatorTiles = new HashSet<TileType>() { TileType.GenUp, TileType.GenDown, TileType.GenLeft, TileType.GenRight };
                     if (generatorTiles.Contains(propMapValue))
@@ -175,16 +181,16 @@ namespace MoonTrucker.GameWorld
         {
             const float wallWidth = 2f;
             List<IDrawable> walls = new List<IDrawable>();
-            var topWall = _propFactory.CreateRectangleBody(_mapWidth, wallWidth, new Vector2(_mapWidth / 2f, wallWidth / 2f));
+            var topWall = _propFactory.CreateRectangleBody(Width, wallWidth, new Vector2(Width / 2f, wallWidth / 2f));
             walls.Add(topWall);
 
-            var leftWall = _propFactory.CreateRectangleBody(wallWidth, _mapHeight, new Vector2(wallWidth / 2f, _mapHeight / 2f));
+            var leftWall = _propFactory.CreateRectangleBody(wallWidth, Height, new Vector2(wallWidth / 2f, Height / 2f));
             walls.Add(leftWall);
 
-            var rightWall = _propFactory.CreateRectangleBody(wallWidth, _mapHeight, new Vector2(_mapWidth - (wallWidth / 2f), _mapHeight / 2f));
+            var rightWall = _propFactory.CreateRectangleBody(wallWidth, Height, new Vector2(Width - (wallWidth / 2f), Height / 2f));
             walls.Add(rightWall);
 
-            var bottomWall = _propFactory.CreateRectangleBody(_mapWidth, wallWidth, new Vector2(_mapWidth / 2f, _mapHeight - (wallWidth / 2f)));
+            var bottomWall = _propFactory.CreateRectangleBody(Width, wallWidth, new Vector2(Width / 2f, Height - (wallWidth / 2f)));
             walls.Add(bottomWall);
 
             return walls;
