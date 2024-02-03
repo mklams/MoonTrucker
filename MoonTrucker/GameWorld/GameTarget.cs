@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Genbox.VelcroPhysics.Collision.ContactSystem;
 using Genbox.VelcroPhysics.Collision.Handlers;
 using Genbox.VelcroPhysics.Dynamics;
+using MoonTrucker.Core;
 using Microsoft.Xna.Framework;
 
 namespace MoonTrucker.GameWorld
@@ -14,13 +15,27 @@ namespace MoonTrucker.GameWorld
         public int HitTotal = 0;
         private bool _isHidden = false;
 
+        private float _radius;
+
+        private Vector2 _position;
+
+        private PropFactory _bodyFactory;
+
+        private TextureManager _texMan;
+
+        private OnCollisionHandler _onHitAction;
+
         private List<IObserver<GameTarget>> _observers = new List<IObserver<GameTarget>>();
 
-        public GameTarget(float radius, Vector2 position, PropFactory bodyFactory, bool isMoving = false)
+        public GameTarget(float radius, Vector2 position, PropFactory bodyFactory, TextureManager texMan, bool isMoving = false)
         {
             IsMovingTarget = isMoving;
+            _radius = radius;
+            _position = position;
+            _bodyFactory = bodyFactory;
+            _texMan = texMan;
 
-            OnCollisionHandler onHitAction = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
+            _onHitAction = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
             {
                 foreach (var observer in _observers)
                 {
@@ -29,7 +44,12 @@ namespace MoonTrucker.GameWorld
                 HitTotal++;
             };
 
-            _body = bodyFactory.CreateCircleSensor(radius, position, null, onHitAction);
+            _body = bodyFactory.CreateCircleSensor(_radius, _position, _texMan.GetTexture("DeactivatedGate"), _onHitAction);
+        }
+
+        public void Hit()
+        {
+            _body = _bodyFactory.CreateCircleSensor(_radius, _position, _texMan.GetTexture("ActivatedGate"), null);
         }
 
         public void Draw()

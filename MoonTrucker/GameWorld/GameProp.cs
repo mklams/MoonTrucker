@@ -126,6 +126,11 @@ namespace MoonTrucker.GameWorld
             _color = color;
         }
 
+        public void UpdateSprite(Texture2D texture)
+        {
+            _sprite = texture;
+        }
+
         public void Draw()
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);

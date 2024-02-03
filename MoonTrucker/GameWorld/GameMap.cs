@@ -258,7 +258,7 @@ namespace MoonTrucker.GameWorld
                     _finish = new Finish(propDim.X / 2f, origin, _propFactory, _textureManager);
                     return _finish;
                 case TileType.Target:
-                    var target = new GameTarget(_tileWidth / 4f, origin, _propFactory);
+                    var target = new GameTarget(_tileWidth / 2.8f, origin, _propFactory, _textureManager);
                     _targets.Add(target);
                     _numberOfTargets++;
                     return target;

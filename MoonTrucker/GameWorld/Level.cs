@@ -39,11 +39,11 @@ namespace MoonTrucker.GameWorld
         {
             _map.Load();
             _map.SubscribeToTargets(this);
-            if(_gameMode != GameMode.Arcade)
+            if (_gameMode != GameMode.Arcade)
             {
                 _map.SubscribeToTargets(_timer);
             }
-            
+
         }
 
         public int GetScore()
@@ -109,8 +109,12 @@ namespace MoonTrucker.GameWorld
             return elapsedTime;
         }
 
-        private void targetHit()
+        private void targetHit(GameTarget target)
         {
+            if (!IsEndlessLevel)
+            {
+                target.Hit();
+            }
             _targetsHit++;
             _score += 100; // targets worth 100 points
         }
@@ -128,8 +132,7 @@ namespace MoonTrucker.GameWorld
 
         public void OnNext(GameTarget target)
         {
-            targetHit();
-            target.Hide();
+            targetHit(target);
 
             if (IsEndlessLevel)
             {
