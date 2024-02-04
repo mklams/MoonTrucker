@@ -109,14 +109,14 @@ namespace MoonTrucker.GameWorld
         private void drawScore()
         {
             var scorePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
-            _spriteBatch.DrawString(_font, $"Score: {_game.GetScore()}", scorePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 2f);
+            _spriteBatch.DrawString(_font, $"Score: {_game.GetScore()}", scorePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1f);
         }
 
         private void drawTimer()
         {
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 0));
 
-            _spriteBatch.DrawString(_font, $"Countdown: {_game.GetTimeLeft()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 2f);
+            _spriteBatch.DrawString(_font, $"Countdown: {_game.GetTimeLeft()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1f);
         }
 
         private void drawLevel()
@@ -155,7 +155,7 @@ namespace MoonTrucker.GameWorld
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
             var destPosition = _game.GetAngleFromVehicleToDestination();
-            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, destPosition, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 2f);
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, destPosition, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
         }
 
         public float getCenterXPositionForText(string text, float scale)

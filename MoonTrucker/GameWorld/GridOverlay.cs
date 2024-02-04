@@ -13,6 +13,7 @@ public class GridOverlay : MoonTrucker.GameWorld.IDrawable
     private List<Rectangle> _grid;
     private Color _color;
     private float _tileWidth;
+    private float _lineWidth;
     private float _infiniteIllusionBuffer = 6;
 
     private Texture2D _pixel;
@@ -24,6 +25,7 @@ public class GridOverlay : MoonTrucker.GameWorld.IDrawable
         _color = color;
         _gameMap = gm;
         _tileWidth = _gameMap.GetTileWidth();
+        _lineWidth = _tileWidth / 4;
         _infiniteIllusionBuffer *= _tileWidth;
         _spriteBatch = sb;
         _textureManager = texMan;
@@ -39,11 +41,11 @@ public class GridOverlay : MoonTrucker.GameWorld.IDrawable
 
     private void initialize()
     {
-        for (float i = ConvertUnits.ToDisplayUnits(-_infiniteIllusionBuffer); i < ConvertUnits.ToDisplayUnits(_gameMap.Width + _infiniteIllusionBuffer); i += ConvertUnits.ToDisplayUnits(_tileWidth))
+        for (float i = ConvertUnits.ToDisplayUnits(-_infiniteIllusionBuffer); i < ConvertUnits.ToDisplayUnits(_gameMap.Width + _infiniteIllusionBuffer); i += ConvertUnits.ToDisplayUnits(_lineWidth))
         {
             _grid.Add(new Rectangle((int)i, (int)-ConvertUnits.ToDisplayUnits(_gameMap.Height + _infiniteIllusionBuffer), 3, (int)(8 * ConvertUnits.ToDisplayUnits(_gameMap.Height))));
         }
-        for (float j = ConvertUnits.ToDisplayUnits(-_infiniteIllusionBuffer); j < ConvertUnits.ToDisplayUnits(_gameMap.Height + _infiniteIllusionBuffer); j += ConvertUnits.ToDisplayUnits(_tileWidth))
+        for (float j = ConvertUnits.ToDisplayUnits(-_infiniteIllusionBuffer); j < ConvertUnits.ToDisplayUnits(_gameMap.Height + _infiniteIllusionBuffer); j += ConvertUnits.ToDisplayUnits(_lineWidth))
         {
             _grid.Add(new Rectangle((int)-ConvertUnits.ToDisplayUnits(_gameMap.Width + _infiniteIllusionBuffer), (int)j, (int)(8 * ConvertUnits.ToDisplayUnits(_gameMap.Height + _infiniteIllusionBuffer)), 3));
         }
