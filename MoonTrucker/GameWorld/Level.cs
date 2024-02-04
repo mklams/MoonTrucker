@@ -111,6 +111,10 @@ namespace MoonTrucker.GameWorld
 
         private void targetHit(GameTarget target)
         {
+            if (target.IsActivated())
+            {
+                return;
+            }
             if (!IsEndlessLevel)
             {
                 target.Hit();

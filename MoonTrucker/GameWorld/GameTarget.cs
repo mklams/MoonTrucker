@@ -27,6 +27,8 @@ namespace MoonTrucker.GameWorld
 
         private List<IObserver<GameTarget>> _observers = new List<IObserver<GameTarget>>();
 
+        private bool _isActivated;
+
         public GameTarget(float radius, Vector2 position, PropFactory bodyFactory, TextureManager texMan, bool isMoving = false)
         {
             IsMovingTarget = isMoving;
@@ -34,6 +36,7 @@ namespace MoonTrucker.GameWorld
             _position = position;
             _bodyFactory = bodyFactory;
             _texMan = texMan;
+            _isActivated = false;
 
             _onHitAction = (Fixture fixtureA, Fixture fixtureB, Contact contact) =>
             {
@@ -49,7 +52,13 @@ namespace MoonTrucker.GameWorld
 
         public void Hit()
         {
+            _isActivated = true;
             _body = _bodyFactory.CreateCircleSensor(_radius, _position, _texMan.GetTexture("ActivatedGate"), null);
+        }
+
+        public bool IsActivated()
+        {
+            return _isActivated;
         }
 
         public void Draw()
