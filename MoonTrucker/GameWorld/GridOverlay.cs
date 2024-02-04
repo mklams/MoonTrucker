@@ -34,7 +34,7 @@ public class GridOverlay : MoonTrucker.GameWorld.IDrawable
 
     public void Draw()
     {
-        _grid.ForEach(r => _spriteBatch.Draw(_pixel, r, _color * 0.5f));
+        _grid.ForEach(r => _spriteBatch.Draw(_pixel, r, null, _color * 0.5f, 0.0f, Vector2.Zero, SpriteEffects.None, 0.1f));
     }
 
     private void initialize()

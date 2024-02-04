@@ -99,7 +99,7 @@ namespace MoonTrucker.GameWorld
         public void Draw()
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _maskColor, Body.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _maskColor, Body.Rotation, origin, 1f, SpriteEffects.None, .5f);
         }
     }
 
@@ -134,7 +134,7 @@ namespace MoonTrucker.GameWorld
         public void Draw()
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _color, Body.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _color, Body.Rotation, origin, 1f, SpriteEffects.None, 1f);
         }
     }
 }

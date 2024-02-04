@@ -18,7 +18,7 @@ namespace MoonTrucker.GameWorld
         UpLeft
     }
 
-    
+
 
     public class TriangleProp : IDrawable
     {
@@ -111,7 +111,7 @@ namespace MoonTrucker.GameWorld
         }
         public void Draw()
         {
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _maksColor, Body.Rotation, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(Body.Position), null, _maksColor, Body.Rotation, new Vector2(0, 0), 1f, SpriteEffects.None, .5f);
         }
     }
 }

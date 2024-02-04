@@ -15,7 +15,7 @@ namespace MoonTrucker.GameWorld
         private float _screenHeightPx;
         private ResolutionIndependentRenderer _independentRenderer;
         private MainGame _game;
-        private GameSave _gameSave; 
+        private GameSave _gameSave;
         private HighScores _highScores;
         private float _hudScale = 0.2f;
         private float _gameOverScale = 0.3f;
@@ -50,12 +50,12 @@ namespace MoonTrucker.GameWorld
 
         public void Update(GameState gameState, KeyboardState newKeyboardState, KeyboardState oldKeyboardState)
         {
-            if(gameState == GameState.GameOver)
+            if (gameState == GameState.GameOver)
             {
                 if (IsHighScoreGame())
                 {
 
-                    if(_highScoreName.Length > 0 && newKeyboardState.IsKeyDown(Keys.Enter))
+                    if (_highScoreName.Length > 0 && newKeyboardState.IsKeyDown(Keys.Enter))
                     {
                         _highScores.AddScore(new Score(_game.GetScore(), _highScoreName, _game.Mode));
                         _gameSave.Save(_highScores.GetAllTopScores());
@@ -80,23 +80,23 @@ namespace MoonTrucker.GameWorld
 
         public void Draw(GameState state)
         {
-            if(_game.Mode != GameMode.Arcade)
+            if (_game.Mode != GameMode.Arcade)
             {
                 // Arcade mode only tacks fastest time not score
                 drawScore();
             }
-            
+
             drawTimer();
-            if(_game.ShowArrow())
+            if (_game.ShowArrow())
             {
                 drawArrow();
             }
 
-            if(_game.Mode != GameMode.Endless)
+            if (_game.Mode != GameMode.Endless)
             {
                 drawLevel();
             }
-            
+
 
 
             if (state == GameState.GameOver)
@@ -109,44 +109,44 @@ namespace MoonTrucker.GameWorld
         private void drawScore()
         {
             var scorePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(5, 0));
-            _spriteBatch.DrawString(_font, $"Score: {_game.GetScore()}", scorePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1);
+            _spriteBatch.DrawString(_font, $"Score: {_game.GetScore()}", scorePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 2f);
         }
 
         private void drawTimer()
         {
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(200, 0));
 
-            _spriteBatch.DrawString(_font, $"Countdown: {_game.GetTimeLeft()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1);
+            _spriteBatch.DrawString(_font, $"Countdown: {_game.GetTimeLeft()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 2f);
         }
 
         private void drawLevel()
         {
             var timePosition = _independentRenderer.ScaleMouseToScreenCoordinates(new Vector2(500, 0));
-            _spriteBatch.DrawString(_font, $"Level: {_game.GetCurrentLevelNumber()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1);
+            _spriteBatch.DrawString(_font, $"Level: {_game.GetCurrentLevelNumber()}", timePosition, Color.Red, 0, Vector2.Zero, _hudScale, SpriteEffects.None, 1f);
         }
 
         private void drawGameOver()
         {
             string winnerMessage = _game.PlayerWon ? "You Won! You are the raddest street racer!" : "Game Over";
-            
+
             var messagePosition = new Vector2(getCenterXPositionForText(winnerMessage, _gameOverScale), _screenHeightPx * (1 / 3f));
-            _spriteBatch.DrawString(_font, winnerMessage, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1);
+            _spriteBatch.DrawString(_font, winnerMessage, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1f);
 
             if (_game.PlayerWon && _game.Mode == GameMode.Arcade)
             {
                 messagePosition = new Vector2(getCenterXPositionForText(winnerMessage, _gameOverScale), _screenHeightPx * 0.42f);
                 var completionTimeMessage = $" You race won in {_game.GetScore()} seconds";
-                _spriteBatch.DrawString(_font, completionTimeMessage, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1);
-            }  
+                _spriteBatch.DrawString(_font, completionTimeMessage, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1f);
+            }
         }
 
         private void drawHighScore()
         {
-            if(IsHighScoreGame())
+            if (IsHighScoreGame())
             {
                 var message = $"New High Score! Enter your name: {_highScoreName}";
                 var messagePosition = new Vector2(getCenterXPositionForText(message, _highScoreScale), _screenHeightPx * (1 / 2f));
-                _spriteBatch.DrawString(_font, message, messagePosition, Color.Red, 0, Vector2.Zero, _highScoreScale, SpriteEffects.None, 1);
+                _spriteBatch.DrawString(_font, message, messagePosition, Color.Red, 0, Vector2.Zero, _highScoreScale, SpriteEffects.None, 1f);
             }
         }
 
@@ -155,12 +155,12 @@ namespace MoonTrucker.GameWorld
             var arrowPosition = new Vector2(_screenWidthPx / 2f, 70);
             var arrowCenter = new Vector2(_arrow.Width / 2f, _arrow.Height / 2f);
             var destPosition = _game.GetAngleFromVehicleToDestination();
-            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, destPosition, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 1f);
+            _spriteBatch.Draw(_arrow, arrowPosition, null, Color.White, destPosition, arrowCenter, new Vector2(.15f, .15f), SpriteEffects.None, 2f);
         }
 
         public float getCenterXPositionForText(string text, float scale)
         {
-            var messageWidth = _font.MeasureString(text).X* scale;
+            var messageWidth = _font.MeasureString(text).X * scale;
             return _screenWidthPx * 0.5f - messageWidth * 0.5f;
         }
     }

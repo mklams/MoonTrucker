@@ -25,7 +25,7 @@ namespace MoonTrucker
 
         public virtual void Draw(Vector2 orgin, float direction)
         {
-            _spriteBatch.Draw(Image, orgin, null, ImageColor, direction, new Vector2(Image.Width / 2, Image.Height / 2), ImageScale, SpriteEffects.None, 0);
+            _spriteBatch.Draw(Image, orgin, null, ImageColor, direction, new Vector2(Image.Width / 2, Image.Height / 2), ImageScale, SpriteEffects.None, .5f);
         }
     }
 

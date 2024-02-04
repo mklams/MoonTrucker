@@ -76,7 +76,7 @@ namespace MoonTrucker.Vehicle
         public void Draw()
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, Color.White, _vehicleBody.Rotation, origin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, Color.White, _vehicleBody.Rotation, origin, 1f, SpriteEffects.None, .5f);
             this.drawTailLights(origin);
         }
 
@@ -108,7 +108,7 @@ namespace MoonTrucker.Vehicle
                     tailLightColor = Color.White;
                 }
             }
-            _batch.Draw(_light, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, tailLightColor, _vehicleBody.Rotation, carOrigin, 1f, SpriteEffects.None, 0f);
+            _batch.Draw(_light, ConvertUnits.ToDisplayUnits(_vehicleBody.Position), null, tailLightColor, _vehicleBody.Rotation, carOrigin, 1f, SpriteEffects.None, 1f);
 
         }
 

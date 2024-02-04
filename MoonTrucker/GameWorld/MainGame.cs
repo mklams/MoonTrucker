@@ -80,7 +80,7 @@ namespace MoonTrucker.GameWorld
         public long GetScore()
         {
             // TODO: MainGame should not need to figure out how to calculate the current score
-            return _mode == GameMode.Arcade? (long) PlayTime.TotalSeconds : _levels.TotalScore + _currentLevel.GetScore();
+            return _mode == GameMode.Arcade ? (long)PlayTime.TotalSeconds : _levels.TotalScore + _currentLevel.GetScore();
         }
 
         public bool PlayerWon => _levels.AllLevelsComplete;
@@ -148,7 +148,7 @@ namespace MoonTrucker.GameWorld
         {
             _currentLevel.Update(gameTime);
             if (_currentLevel.IsLevelFinished() && !_levels.AllLevelsComplete)
-            {   
+            {
                 _currentLevel = _levels.LoadNextLevel();
                 setupVehicle();
             }
@@ -156,7 +156,7 @@ namespace MoonTrucker.GameWorld
 
         public void Draw()
         {
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
+            _spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.LinearWrap, DepthStencilState.None, RasterizerState.CullNone,
               null, _camera.GetViewTransformationMatrix());
             _currentLevel.Draw();
             _vehicle.Draw();
