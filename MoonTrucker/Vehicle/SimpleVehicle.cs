@@ -156,7 +156,7 @@ namespace MoonTrucker.Vehicle
             //Front left tire
             var jointDef = this.createJointDef();
             var relPosition = new Vector2(1.7f, -0.6f);
-            var tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, false);
+            var tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, false, null);
             jointDef.BodyB = tire.GetBody();
             jointDef.LocalAnchorA = relPosition;
             frontLeftJoint = (RevoluteJoint)_world.CreateJoint(jointDef);
@@ -165,7 +165,7 @@ namespace MoonTrucker.Vehicle
             //Front right tire
             jointDef = this.createJointDef();
             relPosition = new Vector2(1.7f, 0.6f);
-            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, false);
+            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, false, null);
             jointDef.BodyB = tire.GetBody();
             jointDef.LocalAnchorA = relPosition;
             frontRightJoint = (RevoluteJoint)_world.CreateJoint(jointDef);
@@ -174,7 +174,7 @@ namespace MoonTrucker.Vehicle
             //Back left tire
             jointDef = this.createJointDef();
             relPosition = new Vector2(-1.7f, -0.6f);
-            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, true);
+            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, true, _contrastColor);
             jointDef.BodyB = tire.GetBody();
             jointDef.LocalAnchorA = relPosition;
             _world.CreateJoint(jointDef);
@@ -183,7 +183,7 @@ namespace MoonTrucker.Vehicle
             //Back right tire
             jointDef = this.createJointDef();
             relPosition = new Vector2(-1.7f, 0.6f);
-            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, true);
+            tire = new SimpleTire(_body.GetWorldPoint(relPosition), _world, _textureManager, _batch, true, _contrastColor);
             jointDef.BodyB = tire.GetBody();
             jointDef.LocalAnchorA = relPosition;
             _world.CreateJoint(jointDef);

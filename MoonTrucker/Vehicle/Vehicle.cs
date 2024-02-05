@@ -14,8 +14,8 @@ namespace MoonTrucker.Vehicle
         private Texture2D _sprite;
         private Texture2D _light;
 
-        private Color _mainColor;
-        private Color _contrastColor;
+        protected Color _mainColor;
+        protected Color _contrastColor;
 
         protected Body _body { get; }
         protected SpriteBatch _batch;

@@ -18,7 +18,7 @@ namespace MoonTrucker.GameWorld
         private GameSave _gameSave;
         private HighScores _highScores;
         private float _hudScale = 0.2f;
-        private float _gameOverScale = 0.3f;
+        private float _gameOverScale = 0.35f;
         private float _highScoreScale = 0.25f;
 
         //TODO: Break out getting high score initials to own class
@@ -102,7 +102,10 @@ namespace MoonTrucker.GameWorld
             if (state == GameState.GameOver)
             {
                 drawGameOver();
-                drawHighScore();
+                if (_game.PlayerWon)
+                {
+                    drawHighScore();
+                }
             }
         }
 
@@ -135,7 +138,13 @@ namespace MoonTrucker.GameWorld
             if (_game.PlayerWon && _game.Mode == GameMode.Arcade)
             {
                 messagePosition = new Vector2(getCenterXPositionForText(winnerMessage, _gameOverScale), _screenHeightPx * 0.42f);
-                var completionTimeMessage = $" You race won in {_game.GetScore()} seconds";
+                var completionTimeMessage = $" Finished race in {_game.GetScore()} seconds";
+                _spriteBatch.DrawString(_font, completionTimeMessage, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1f);
+            }
+            else if (_game.Mode == GameMode.Arcade)
+            {
+                messagePosition = new Vector2(getCenterXPositionForText(winnerMessage, _gameOverScale), _screenHeightPx * 0.42f);
+                var completionTimeMessage = "You ran out of time!";
                 _spriteBatch.DrawString(_font, completionTimeMessage, messagePosition, Color.Red, 0, Vector2.Zero, _gameOverScale, SpriteEffects.None, 1f);
             }
         }

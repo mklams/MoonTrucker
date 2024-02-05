@@ -21,14 +21,15 @@ namespace MoonTrucker
         {
             new LevelConfig(int.MaxValue, (/* useSolidDebug */ false) ? "MoonTrucker.GameWorld.Maps.TestBench_.txt" : "MoonTrucker.GameWorld.Maps.TestBench.txt", Color.DarkSalmon, Color.LightCoral, 10)
         };
-        private LevelConfig[] _arcadeLevels = new LevelConfig[5]
+        private LevelConfig[] _arcadeLevels = new LevelConfig[1]
         {
             //new LevelConfig(15, "MoonTrucker.GameWorld.Maps.Level.txt")
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level1.txt", Color.Blue, Color.LightBlue),
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level2.txt", Color.MediumPurple, Color.Indigo),
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level3.txt", Color.ForestGreen, Color.LimeGreen),
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level4.txt", Color.Salmon, Color.Red),
-            new LevelConfig(60, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level5.txt", Color.Orange, Color.DarkOrange)
+            /*new LevelConfig(10, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level1.txt", Color.Blue, Color.LightBlue),
+            new LevelConfig(30, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level2.txt", Color.MediumPurple, Color.Indigo),
+            new LevelConfig(15, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level3.txt", Color.ForestGreen, Color.LimeGreen),
+            new LevelConfig(25, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level4.txt", Color.Salmon, Color.Red),
+            new LevelConfig(30, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level5.txt", Color.Orange, Color.DarkOrange),*/
+            new LevelConfig(55, "MoonTrucker.GameWorld.Maps.ArcadeMode.Level6.txt", Color.Fuchsia, Color.DeepPink)
         };
 
         private LevelConfig[] _endlessLevel = new LevelConfig[1]

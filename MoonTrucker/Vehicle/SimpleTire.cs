@@ -19,7 +19,7 @@ namespace MoonTrucker.Vehicle
         private FreeformParticleTrail _tireTrail;
         private bool _sliding;
 
-        public SimpleTire(Vector2 position, World world, TextureManager manager, SpriteBatch batch, bool hasTrail)
+        public SimpleTire(Vector2 position, World world, TextureManager manager, SpriteBatch batch, bool hasTrail, Color? trailColor)
         {
             _body = BodyFactory.CreateRectangle(world, _width, _height, 1f, position, 0, BodyType.Dynamic);
             _body.LinearDamping = 0f; //makes car appear "floaty"
@@ -36,7 +36,7 @@ namespace MoonTrucker.Vehicle
             _body.UserData = this;
             if (hasTrail)
             {
-                _tireTrail = new FreeformParticleTrail(5, Color.Red, _batch, manager);
+                _tireTrail = new FreeformParticleTrail(5, (trailColor != null) ? (Color)trailColor : Color.Red, _batch, manager);
             }
         }
 
