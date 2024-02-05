@@ -11,8 +11,11 @@ namespace MoonTrucker.Vehicle
 {
     public abstract class Vehicle
     {
-        private Texture2D _sprite { get; }
-        private Texture2D _light { get; }
+        private Texture2D _sprite;
+        private Texture2D _light;
+
+        private Color _mainColor;
+        private Color _contrastColor;
 
         protected Body _body { get; }
         protected SpriteBatch _batch;
@@ -25,7 +28,7 @@ namespace MoonTrucker.Vehicle
 
         public float Height { get; }
         public float Width { get; }
-        public Vehicle(float width, float height, Vector2 position, World world, TextureManager manager, SpriteBatch batch)
+        public Vehicle(float width, float height, Vector2 position, World world, Color mainColor, Color contrastColor, TextureManager manager, SpriteBatch batch)
         {
             Height = height;
             Width = width;
@@ -33,6 +36,8 @@ namespace MoonTrucker.Vehicle
             _world = world;
             _textureManager = manager;
             _body = BodyFactory.CreateRectangle(world, height, width, 1f, position, 0, BodyType.Dynamic);
+            _mainColor = mainColor;
+            _contrastColor = contrastColor;
 
             //from https://box2d.org/documentation/md__d_1__git_hub_box2d_docs_dynamics.html
             _body.LinearDamping = 0f; //makes car appear "floaty" if > 0
@@ -44,7 +49,8 @@ namespace MoonTrucker.Vehicle
             _body.Inertia = 1f;
             //_body.Mass = 1f;
 
-            _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, Color.Transparent, Color.Salmon);
+            _sprite = manager.TextureFromShape(_body.FixtureList[0].Shape, _mainColor
+            , _contrastColor);
             _light = new Texture2D(manager.graphicsDevice, 3, (int)ConvertUnits.ToDisplayUnits(width));
             Color[] colors = new Color[(3 * (int)ConvertUnits.ToDisplayUnits(width))];
             for (int i = 0; i < (3 * (int)ConvertUnits.ToDisplayUnits(width)); i++)
@@ -116,7 +122,7 @@ namespace MoonTrucker.Vehicle
                     tailLightColor = Color.White;
                 }
             }
-            _batch.Draw(_light, ConvertUnits.ToDisplayUnits(_body.Position), null, tailLightColor, _body.Rotation, carOrigin, 1f, SpriteEffects.None, 1f);
+            _batch.Draw(_light, ConvertUnits.ToDisplayUnits(_body.Position), null, tailLightColor, _body.Rotation, carOrigin, 1f, SpriteEffects.None, .51f);
 
         }
 

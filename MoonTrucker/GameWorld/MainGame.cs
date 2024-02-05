@@ -116,13 +116,13 @@ namespace MoonTrucker.GameWorld
             MediaPlayer.Play(_gameMusic);
             MediaPlayer.IsRepeating = true;
             _currentLevel = _levels.RestLevels();
-            setupVehicle();
+            setupVehicle(_currentLevel.GetObstacleColor(), _currentLevel.GetContrastColor());
             _startTime = DateTime.Now;
         }
 
-        private void setupVehicle()
+        private void setupVehicle(Color mainColor, Color contrastColor)
         {
-            _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _currentLevel.GetStartPosition(), _world, _manager, _spriteBatch);
+            _vehicle = new SimpleVehicle(V_WIDTH, V_HEIGHT, _currentLevel.GetStartPosition(), _world, mainColor, contrastColor, _manager, _spriteBatch);
             _camera.SetPosition(_vehicle.GetPosition());
         }
 
@@ -150,7 +150,7 @@ namespace MoonTrucker.GameWorld
             if (_currentLevel.IsLevelFinished() && !_levels.AllLevelsComplete)
             {
                 _currentLevel = _levels.LoadNextLevel();
-                setupVehicle();
+                setupVehicle(_currentLevel.GetObstacleColor(), _currentLevel.GetContrastColor());
             }
         }
 

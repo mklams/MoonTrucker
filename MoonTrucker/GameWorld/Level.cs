@@ -51,6 +51,16 @@ namespace MoonTrucker.GameWorld
             return _score;
         }
 
+        public Color GetObstacleColor()
+        {
+            return _config.ObstacleColor;
+        }
+
+        public Color GetContrastColor()
+        {
+            return _config.ContrastColor;
+        }
+
         public Vector2 GetFinishPosition()
         {
             return _map.GetFinishPosition();

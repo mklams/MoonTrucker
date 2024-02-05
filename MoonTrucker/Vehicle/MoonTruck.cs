@@ -24,7 +24,7 @@ namespace MoonTrucker.Vehicle
             World world,
             TextureManager manager,
             SpriteBatch batch)
-        : base(width, height, position, world, manager, batch)
+        : base(width, height, position, world, Color.Blue, Color.LightBlue, manager, batch)
         {
             this._initializeTires();
         }

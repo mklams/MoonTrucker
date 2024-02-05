@@ -25,7 +25,7 @@ public class GridOverlay : MoonTrucker.GameWorld.IDrawable
         _color = color;
         _gameMap = gm;
         _tileWidth = _gameMap.GetTileWidth();
-        _lineWidth = _tileWidth / 4;
+        _lineWidth = _tileWidth / 2;
         _infiniteIllusionBuffer *= _tileWidth;
         _spriteBatch = sb;
         _textureManager = texMan;

@@ -32,7 +32,7 @@ public class Particle
 
     public void Draw()
     {
-        _spriteBatch.Draw(_pixel, new Rectangle((int)Position.X, (int)Position.Y, _size, _size), _color * (_opacity / 300f));
+        _spriteBatch.Draw(_pixel, new Rectangle((int)Position.X, (int)Position.Y, _size, _size), _color * (_opacity / 100f));
     }
 
     public bool IsDone()

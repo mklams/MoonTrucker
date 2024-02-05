@@ -59,7 +59,7 @@ namespace MoonTrucker.Vehicle
         {
             var origin = new Vector2(_sprite.Width / 2f, _sprite.Height / 2f);
             _tireTrail?.Draw();
-            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_body.Position), null, Color.White, _body.Rotation, origin, 1f, SpriteEffects.None, .5f);
+            _batch.Draw(_sprite, ConvertUnits.ToDisplayUnits(_body.Position), null, Color.Black, _body.Rotation, origin, 1f, SpriteEffects.None, .6f);
         }
 
         public void OnDestroy()
